@@ -246,7 +246,7 @@ class BasicInterface(InterfaceObject):
         -------
         response : boto3 response
         '''
-        assert os.path.exist(flname)
+        assert os.path.exists(flname)
         if object_name is None:
             object_name = os.path.abspath(flname)
         object_name = remove_root(object_name)
