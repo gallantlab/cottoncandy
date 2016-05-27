@@ -449,7 +449,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, gzip=True, **metadata):
+    def upload_raw_array(self, object_name, array, gzip=True, acl='public-read', **metadata):
         '''Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -461,6 +461,9 @@ class ArrayInterface(BasicInterface):
         array : np.ndarray
         gzip  : bool, optional
             Whether to gzip the array
+        acl : str
+            "access control list", specifies permissions for s3 data.
+            default is 'public-read' (only owner can write/delete, all else can read)
         metadata : dict, optional
 
         Notes
@@ -497,7 +500,7 @@ class ArrayInterface(BasicInterface):
         if data_nbytes > 100*MB:
             response = self.mpu_fileobject(object_name, fl, **meta)
         else:
-            response = self.get_object(object_name).put(Body=fl, Metadata=meta)
+            response = self.get_object(object_name).put(Body=fl, ACL=acl, Metadata=meta)
 
         return response
 
@@ -540,7 +543,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def dict2cloud(self, object_name, array_dict, **metadata):
+    def dict2cloud(self, object_name, array_dict, acl='public-read', **metadata):
         '''Upload an arbitrary depth dictionary containing arrays
 
         Parameters
@@ -554,11 +557,11 @@ class ArrayInterface(BasicInterface):
             name = SEPARATOR.join([object_name, k])
 
             if isinstance(v, dict):
-                _ = self.dict2cloud(name, v, **metadata)
+                _ = self.dict2cloud(name, v, acl=acl, **metadata)
             elif isinstance(v, np.ndarray):
-                _ = self.upload_raw_array(name, v, **metadata)
+                _ = self.upload_raw_array(name, v, acl=acl, **metadata)
             else: # try converting to array
-                _ = self.upload_raw_array(name, np.asarray(v))
+                _ = self.upload_raw_array(name, np.asarray(v), acl=acl)
         print 'Uploaded arrays in "%s"'%object_name
 
     @clean_object_name
