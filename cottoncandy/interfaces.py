@@ -855,6 +855,27 @@ class FileSystemInterface(BasicInterface):
         return browser.S3Directory('', interface=self)
 
     def rm(self, object_name, recursive=False):
+        """Delete an object, or a subtree ('path/to/stuff').
+
+        Parameters
+        ----------
+        object_name : str
+            The name of the object to delete. It can also
+            be a subtree
+        recursive : str
+            When deleting a subtree, set ``recursive=True``. This is
+            similar in behavior to 'rm -r /path/to/directory'.
+
+        Example
+        -------
+        >>> import cottoncandy as cc
+        >>> cci = cc.get_interface('mybucket', verbose=False)
+        >>> response = cci.rm('data/experiment/file01.txt')
+        >>> cci.rm('data/experiment')
+        cannot remove 'data/experiment': use `recursive` to remove branch
+        >>> cci.rm('data/experiment', recursive=True)
+        deleting 15 objects...
+        """
         if self.exists_object(object_name):
             return self.get_object(object_name).delete()
 
