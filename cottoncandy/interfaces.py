@@ -564,6 +564,25 @@ class ArrayInterface(BasicInterface):
                 _ = self.upload_raw_array(name, np.asarray(v), acl=acl)
         print 'Uploaded arrays in "%s"'%object_name
 
+
+    @clean_object_name
+    def cloud2dataset(self, object_root, **metadata):
+        '''Get a dataset representation of the object branch.
+
+        Parameters
+        ----------
+        object_root : str
+            The branch to create a dataset from
+
+        Returns
+        -------
+        cc_dataset_object  : cottoncandy.BrowserObject
+            This can be conceptualized as implementing an h5py/pytables
+            object with ``load()`` and ``keys()`` methods.
+        '''
+        from .browser import S3Directory
+        return S3Directory(object_root, interface=self)
+
     @clean_object_name
     def upload_dask_array(self, object_name, arr, axis=-1, buffersize=100*MB):
         '''Upload an array in chunks and store the metadata to reconstruct
