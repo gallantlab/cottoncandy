@@ -854,6 +854,25 @@ class FileSystemInterface(BasicInterface):
         '''
         return browser.S3Directory('', interface=self)
 
+    def rm(self, object_name, recursive=False):
+        if self.exists_object(object_name):
+            return self.get_object(object_name).delete()
+
+        has_objects = len(self.lsdir(object_name))>0
+        if has_objects:
+            if recursive:
+                all_objects = self.glob(object_name)
+                print('deleting %i objects...'%len(all_objects))
+                for obname in self.glob(object_name):
+                    _ = self.get_object(obname).delete()
+                return
+
+        msg = "cannot remove '%s': use `recursive` to remove branch" \
+              if has_objects else \
+              "nothing found under '%s"
+        print(msg%object_name)
+
+
 
 class DefaultInterface(FileSystemInterface,
                        ArrayInterface,
