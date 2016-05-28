@@ -195,8 +195,10 @@ class S3HDF5(S3Directory):
             obj = self.interface.get_object(self._fullpath)
             if 'shape' in obj.metadata:
                 shape =  obj.metadata['shape']
-                details = (__package__, self.interface.bucket_name, self._curdir, shape)
-                return "%s-dataset <bucket:%s [%s:shape=(%s)]>"%details
+                size = obj.load()
+                size = obj.meta.data['ContentLength']/2.**20
+                details = (__package__, self.interface.bucket_name, size, shape)
+                return "%s-dataset <bucket:%s [%0.01fMB:shape=(%s)]>"%details
         # otherwise it's the file itself
         details = (__package__, self.interface.bucket_name,self._curdir, len(self._subdirs))
         return "<%s-group <bucket:%s> (%s: %i keys)>"%details
