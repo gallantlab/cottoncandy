@@ -726,7 +726,7 @@ class FileSystemInterface(BasicInterface):
         return map(os.path.normpath, object_names)
 
     @clean_object_name
-    def ls(self, pattern, page_size=10**3, limit=10**3):
+    def ls(self, pattern, page_size=10**3, limit=10**3, verbose=False):
         '''File-system like search for S3 objects
         '''
         pattern = remove_trivial_magic(pattern)
@@ -756,7 +756,9 @@ class FileSystemInterface(BasicInterface):
             object_names = {SEPARATOR.join(t.split(SEPARATOR)[:depth]):1 for t in object_names}.keys()
             # filter the list with glob pattern
             object_names = fnmatch.filter(object_names, pattern)
-        print '\n'.join(sorted(object_names))
+        if verbose:
+            print('\n'.join(sorted(object_names)))
+        return object_names
 
     @clean_object_name
     def glob(self, pattern, **kwargs):
@@ -879,7 +881,7 @@ class FileSystemInterface(BasicInterface):
         if self.exists_object(object_name):
             return self.get_object(object_name).delete()
 
-        has_objects = len(self.lsdir(object_name))>0
+        has_objects = len(self.ls(object_name))>0
         if has_objects:
             if recursive:
                 all_objects = self.glob(object_name)
