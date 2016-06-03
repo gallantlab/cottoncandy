@@ -3,20 +3,21 @@
 import os
 
 from utils import (clean_object_name,
-                    has_magic,
-                    has_real_magic,
-                    has_trivial_magic,
-                    remove_trivial_magic,
-                    remove_root,
-                    mk_aws_path,
-                    objects2names,
-                    unquote_names,
-                    print_objects,
-                    get_fileobject_size,
-                    read_buffered,
-                    GzipInputStream,
-                    generate_ndarray_chunks,
-                    )
+                   has_magic,
+                   has_real_magic,
+                   has_trivial_magic,
+                   remove_trivial_magic,
+                   remove_root,
+                   mk_aws_path,
+                   objects2names,
+                   unquote_names,
+                   print_objects,
+                   get_fileobject_size,
+                   get_object_size,
+                   read_buffered,
+                   GzipInputStream,
+                   generate_ndarray_chunks,
+                   )
 
 
 
@@ -149,8 +150,10 @@ class S3Directory(S3FSLike):
             return "%s-path <bucket:%s> %s"%details
         else:
             # no children, it's gotta be an object b/c we're in S3
-            details = (__package__, self.interface.bucket_name, self._curdir)
-            return "%s-file <bucket:%s> %s"%details
+            obj = self.interface.get_object(self._fullpath)
+            size = get_object_size(obj)
+            details = (__package__, self.interface.bucket_name, size)
+            return "%s-file <bucket:%s> [%0.01fMB]"%details
 
     def __len__(self):
         return len(self._subdirs)
@@ -195,8 +198,7 @@ class S3HDF5(S3Directory):
             obj = self.interface.get_object(self._fullpath)
             if 'shape' in obj.metadata:
                 shape =  obj.metadata['shape']
-                size = obj.load()
-                size = obj.meta.data['ContentLength']/2.**20
+                size = get_object_size(obj)
                 details = (__package__, self.interface.bucket_name, size, shape)
                 return "%s-dataset <bucket:%s [%0.01fMB:shape=(%s)]>"%details
         # otherwise it's the file itself

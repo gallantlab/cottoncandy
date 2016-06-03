@@ -32,6 +32,12 @@ SEPARATOR = '/'
 # misc functions
 ##############################
 
+def get_object_size(boto_s3_object):
+    '''Return the size of the S3 object in MB
+    '''
+    boto_s3_object.load()
+    return boto_s3_object.meta.data['ContentLength']/2.**20
+
 
 def get_fileobject_size(file_object):
     '''Return byte size of file-object
