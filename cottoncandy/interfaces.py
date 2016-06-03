@@ -562,8 +562,43 @@ class ArrayInterface(BasicInterface):
                 _ = self.upload_raw_array(name, v, acl=acl, **metadata)
             else: # try converting to array
                 _ = self.upload_raw_array(name, np.asarray(v), acl=acl)
-        print 'Uploaded arrays in "%s"'%object_name
+        print('uploaded arrays in "%s"'%object_name)
 
+    @clean_object_name
+    def cloud2dict(self, object_root, **metadata):
+        '''Download all the arrays of the object branch and return a dictionary.
+        This is the complement to ``dict2cloud``
+
+        Parameters
+        ----------
+        object_root : str
+            The branch to create the dictionary from
+
+        Returns
+        -------
+        datadict  : dict
+            An arbitrary depth dictionary.
+        '''
+        from .browser import S3Directory
+        ob = S3Directory(object_root, interface=self)
+
+        datadict = {}
+        subdirs = ob._ls()
+
+        for subdir in subdirs:
+            path = os.path.join(object_root, subdir)
+            if self.exists_object(path):
+                # TODO: allow non-array things
+                try:
+                    arr = self.download_raw_array(path)
+                except KeyError, e:
+                    print('could not download "%s: missing %s from metadata"'%(path, e))
+                    arr = None
+                datadict[subdir] = arr
+            else:
+                datadict[subdir] = self.cloud2dict(path)
+        print('downloaded arrays in "%s"'%object_root)
+        return datadict
 
     @clean_object_name
     def cloud2dataset(self, object_root, **metadata):
