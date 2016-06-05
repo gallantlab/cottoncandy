@@ -103,8 +103,9 @@ def print_objects(object_list):
         maxlen = max(map(len, object_names))
         dates = [t.last_modified.astimezone(tzlocal()).strftime('%Y/%m/%d (%H:%M:%S)')\
                  for t in object_list]
-        padding = '{0: <%i} {1}'%(min(maxlen+5, 80))
-        info = [padding.format(name,date) for name,date in zip(object_names, dates)]
+        padding = '{0: <%i} {1} {2}M'%(min(maxlen+3, 70))
+        sizes = [round(t.meta.data['Size']/2.**20,1) for t in object_list]
+        info = [padding.format(name,date,size) for name,date,size in zip(object_names, dates, sizes)]
         print '\n'.join(info)
 
 

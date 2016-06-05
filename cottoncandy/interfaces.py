@@ -97,10 +97,24 @@ class BasicInterface(InterfaceObject):
         s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
         return s3
 
+    def _get_bucket_name(self, bucket_name):
+        bucket_name = self.bucket_name \
+                      if bucket_name is None\
+                      else bucket_name
+        return bucket_name
+
     @clean_object_name
-    def exists_object(self, object_name):
-        '''Check whether object exists in bucket'''
-        ob = self.connection.Object(self.bucket_name, object_name)
+    def exists_object(self, object_name, bucket_name=None):
+        '''Check whether object exists in bucket
+
+        Parameters
+        ----------
+        object_name : str
+            The object name
+            '''
+        bucket_name = self._get_bucket_name(bucket_name)
+        ob = self.connection.Object(key=object_name, bucket_name=bucket_name)
+
         try:
             ob.load()
         except botocore.exceptions.ClientError as e:
@@ -197,9 +211,10 @@ class BasicInterface(InterfaceObject):
         print '\n'.join(info)
 
     @clean_object_name
-    def get_object(self, object_name):
+    def get_object(self, object_name, bucket_name=None):
         """Get a boto3 object. Create it if it doesn't exist"""
-        return self.connection.Object(self.bucket_name, object_name)
+        bucket_name = self._get_bucket_name(bucket_name)
+        return self.connection.Object(bucket_name=bucket_name, key=object_name)
 
     def show_objects(self, limit=1000, page_size=1000):
         '''Print objects in the current bucket'''
@@ -890,6 +905,68 @@ class FileSystemInterface(BasicInterface):
         See documentation for ``cottoncandy.get_browser``
         '''
         return browser.S3Directory('', interface=self)
+
+    def cp(self, source_name, dest_name,
+           source_bucket=None, dest_bucket=None, overwrite=False):
+        '''Copy an object
+
+        Parameters
+        ----------
+        source_name : str
+            Name of object to be copied
+        dest_name : str
+            Copy name
+        source_bucket : str
+            If copying from a bucket different from the default.
+            Defaults to ``self.bucket_name``
+        dest_bucket : str
+            If copying to a bucket different from the source bucket.
+            Defaults to ``source_bucket``
+        overwrite : bool (defaults to False)
+            Whether to overwrite the `dest_name` object if it already exists
+        '''
+        # TODO: support directories
+        source_bucket = self._get_bucket_name(source_bucket)
+        dest_bucket = source_bucket if (dest_bucket is None) else dest_bucket
+        dest_bucket = self._get_bucket_name(dest_bucket)
+
+        assert self.exists_object(source_name, bucket_name=source_bucket)
+        ob_new = self.get_object(dest_name, bucket_name=dest_bucket)
+
+        if self.exists_object(ob_new.key, bucket_name=dest_bucket):
+            assert overwrite is True
+
+        fpath = os.path.join(source_bucket, source_name)
+        ob_new.copy_from(CopySource=fpath)
+        return ob_new
+
+    def mv(self, source_name, dest_name,
+           source_bucket=None, dest_bucket=None, overwrite=False):
+        '''Move an object (make copy and delete old object)
+
+        Parameters
+        ----------
+        source_name : str
+            Name of object to be moved
+        dest_name : str
+            New object name
+        source_bucket : str
+            If moving object from a bucket different from the default.
+            Defaults to ``self.bucket_name``
+        dest_bucket : str (defaults to None)
+            If moving to another bucket, provide the bucket name.
+            Defaults to ``source_bucket``
+        overwrite : bool (defaults to False)
+            Whether to overwrite the `dest_name` object if it already exists.
+        '''
+        # TODO: Support directories
+        new_ob = self.cp(source_name, dest_name,
+                         source_bucket=source_bucket,
+                         dest_bucket=dest_bucket,
+                         overwrite=overwrite)
+        old_ob = self.get_object(source_name, bucket_name=source_bucket)
+        old_ob.delete()
+        return new_ob
 
     def rm(self, object_name, recursive=False):
         """Delete an object, or a subtree ('path/to/stuff').
