@@ -140,6 +140,10 @@ def remove_root(string_):
 # path handling
 ##############################
 
+check_digits = re.compile('[0-9]')
+
+def has_start_digit(s):
+    return check_digits.match(s) is not None
 
 def has_magic(s):
     '''Check string to see if it has any glob magic

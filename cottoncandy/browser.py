@@ -3,6 +3,7 @@
 import os
 
 from utils import (clean_object_name,
+                   has_start_digit,
                    has_magic,
                    has_real_magic,
                    has_trivial_magic,
@@ -18,6 +19,7 @@ from utils import (clean_object_name,
                    GzipInputStream,
                    generate_ndarray_chunks,
                    )
+
 
 
 
@@ -127,8 +129,12 @@ class S3Directory(S3FSLike):
         for sdir in subdirs:
             if sdir:
                 # modify name for tab-completion purposes
-                fl, ext = os.path.splitext(sdir)
-                kk = fl+'_'+ext[1:].upper() if ext else sdir
+                sdir_copy = sdir[:]
+                # clean numbers
+                sdir_copy = 'NUM_%s'%sdir_copy if has_start_digit(sdir) else sdir_copy
+                # clean extension
+                fl, ext = os.path.splitext(sdir_copy)
+                kk = fl+'_DOT_'+ext[1:] if ext else sdir_copy
                 self._subdirs[kk] = sdir
 
     def _ls(self):
