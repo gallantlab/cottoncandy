@@ -44,7 +44,7 @@ def get_fileobject_size(file_object):
     '''
     file_object.seek(0,2)
     nbytes = file_object.tell()
-    file_object.reset()
+    file_object.seek(0)
     return nbytes
 
 

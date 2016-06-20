@@ -309,7 +309,7 @@ class BasicInterface(InterfaceObject):
 
         # get size
         nbytes_total = get_fileobject_size(file_object)
-        file_object.reset()
+        file_object.seek(0)
 
         # check if our buffersize is sensible
         if nbytes_total < buffersize:
