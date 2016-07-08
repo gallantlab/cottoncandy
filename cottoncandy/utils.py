@@ -121,6 +121,7 @@ def clean_object_name(input_function):
     '''
     @wraps(input_function)
     def iremove_root(self, object_name, *args, **kwargs):
+        object_name = os.path.normpath(object_name)
         if object_name == '':
             pass
         elif object_name[0] == SEPARATOR:
