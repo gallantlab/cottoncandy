@@ -7,7 +7,7 @@ from .interfaces import InterfaceObject
 def get_interface(bucket_name,
                   ACCESS_KEY=False,
                   SECRET_KEY=False,
-                  endpoint_url=None,
+                  endpoint_url='https://s3.amazonaws.com',
                   verbose=True):
     '''Return an interface to S3.
 
