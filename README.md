@@ -3,7 +3,7 @@ sugar for s3
 
 This is a python scientific library for storing and accessing numpy array data on S3. This is achieved by reading arrays from memory and downloading arrays directly into memory. This means that you don't have to download your array directly to disk, and then load it from disk into your python session.
 
-This library relies havily on boto3 (https://github.com/boto/boto3) 
+This library relies heavily on boto3 (https://github.com/boto/boto3) 
 
 ```
 import numpy as np
