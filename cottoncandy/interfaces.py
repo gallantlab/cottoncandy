@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import cPickle
 import urllib
 import fnmatch
 from gzip import GzipFile
@@ -390,6 +391,34 @@ class BasicInterface(InterfaceObject):
         assert self.exists_object(object_name)
         obj = self.get_object(object_name)
         return json.loads(obj.get()['Body'].read())
+
+    @clean_object_name
+    def upload_pkl(self, object_name, pkl_object):
+        '''Upload an object using cPickle: ``cPickle.dumps``
+
+        Parameters
+        ----------
+        object_name : str
+        pkl_object : object
+        '''
+        obj = self.get_object(object_name)
+        return obj.put(Body=cPickle.dumps(pkl_object))
+
+    @clean_object_name
+    def download_pkl(self, object_name):
+        '''Download a cPickle object
+
+        Parameters
+        ----------
+        object_name : str
+
+        Returns
+        -------
+        pkl_object : pkl
+        '''
+        assert self.exists_object(object_name)
+        obj = self.get_object(object_name)
+        return cPickle.loads(obj.get()['Body'].read())
 
 
 class ArrayInterface(BasicInterface):
