@@ -285,7 +285,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def mpu_fileobject(self, object_name, file_object,
-                       buffersize=100*MB, **metadata):
+                       buffersize=100*MB, verbose=True, **metadata):
         '''Multi-part upload for a python file-object.
 
         This automatically creates a multipart upload of an object.
@@ -333,14 +333,16 @@ class BasicInterface(InterfaceObject):
         assert nbytes_total > buffersize
 
         mpu_info = dict(Parts=[])
-        print('MPU: %0.02fMB file in %i parts'%(nbytes_total/(2.**20), nparts))
+        if verbose:
+            print('MPU: %0.02fMB file in %i parts'%(nbytes_total/(2.**20), nparts))
 
         for chunk_idx in xrange(nparts):
             part_number = chunk_idx + 1
             if part_number == nparts:
                 buffersize += last_part_offset
             txt = (part_number, nparts, buffersize/(2.**20), nbytes_total/(2.**20))
-            print 'Uploading %i/%i: %0.02fMB of %0.02fMB'%txt
+            if verbose:
+                print 'Uploading %i/%i: %0.02fMB of %0.02fMB'%txt
 
             data_chunk = file_object.read(buffersize)
             response = client.upload_part(Bucket=self.bucket_name,
