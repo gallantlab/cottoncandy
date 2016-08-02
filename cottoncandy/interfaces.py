@@ -300,6 +300,8 @@ class BasicInterface(InterfaceObject):
         buffersize  : int
             Byte size of the individual parts to create.
             Defaults to 100MB
+        verbose     : bool
+            verbosity flag of whether to print mpu information to stdout
         **metadata  : optional
             Metadata to store along with MPU object
         '''
