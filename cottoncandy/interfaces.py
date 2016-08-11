@@ -398,19 +398,19 @@ class BasicInterface(InterfaceObject):
         return json.loads(obj.get()['Body'].read())
 
     @clean_object_name
-    def upload_pkl(self, object_name, pkl_object, acl='authenticated-read'):
+    def upload_pickle(self, object_name, data_object, acl='authenticated-read'):
         '''Upload an object using cPickle: ``cPickle.dumps``
 
         Parameters
         ----------
         object_name : str
-        pkl_object : object
+        data_object : object
         '''
         obj = self.get_object(object_name)
-        return obj.put(Body=cPickle.dumps(pkl_object), ACL=acl)
+        return obj.put(Body=cPickle.dumps(data_object), ACL=acl)
 
     @clean_object_name
-    def download_pkl(self, object_name):
+    def download_pickle(self, object_name):
         '''Download a cPickle object
 
         Parameters
@@ -419,7 +419,7 @@ class BasicInterface(InterfaceObject):
 
         Returns
         -------
-        pkl_object : pkl
+        data_object : object
         '''
         assert self.exists_object(object_name)
         obj = self.get_object(object_name)
