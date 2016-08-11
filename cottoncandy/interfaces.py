@@ -247,7 +247,8 @@ class BasicInterface(InterfaceObject):
         s3_object = self.get_object(object_name)
         return s3_object.get()['Body'].read()
 
-    def upload_from_file(self, flname, object_name=None):
+    def upload_from_file(self, flname, object_name=None,
+                         ExtraArgs=dict(ACL='authenticated-read')):
         '''Upload a file to S3.
 
         Parameters
@@ -267,7 +268,7 @@ class BasicInterface(InterfaceObject):
             object_name = os.path.abspath(flname)
         object_name = remove_root(object_name)
         s3_object = self.get_object(object_name)
-        return s3_object.upload_file(flname)
+        return s3_object.upload_file(flname, ExtraArgs=ExtraArgs)
 
     @clean_object_name
     def download_to_file(self, object_name, flname):
@@ -366,7 +367,7 @@ class BasicInterface(InterfaceObject):
         return mpu_response
 
     @clean_object_name
-    def upload_json(self, object_name, ddict, **metadata):
+    def upload_json(self, object_name, ddict, acl='authenticated-read', **metadata):
         '''Upload a dict as a JSON using ``json.dumps``
 
         Parameters
@@ -377,7 +378,7 @@ class BasicInterface(InterfaceObject):
         '''
         json_data = json.dumps(ddict)
         obj = self.get_object(object_name)
-        return obj.put(Body=json_data, Metadata=metadata)
+        return obj.put(Body=json_data, ACL=acl, Metadata=metadata)
 
     @clean_object_name
     def download_json(self, object_name):
@@ -397,7 +398,7 @@ class BasicInterface(InterfaceObject):
         return json.loads(obj.get()['Body'].read())
 
     @clean_object_name
-    def upload_pkl(self, object_name, pkl_object):
+    def upload_pkl(self, object_name, pkl_object, acl='authenticated-read'):
         '''Upload an object using cPickle: ``cPickle.dumps``
 
         Parameters
@@ -406,7 +407,7 @@ class BasicInterface(InterfaceObject):
         pkl_object : object
         '''
         obj = self.get_object(object_name)
-        return obj.put(Body=cPickle.dumps(pkl_object))
+        return obj.put(Body=cPickle.dumps(pkl_object), ACL=acl)
 
     @clean_object_name
     def download_pkl(self, object_name):
@@ -449,7 +450,7 @@ class ArrayInterface(BasicInterface):
         super(ArrayInterface, self).__init__(*args, **kwargs)
 
     @clean_object_name
-    def upload_npy_array(self, object_name, array, **metadata):
+    def upload_npy_array(self, object_name, array, acl='authenticated-read', **metadata):
         '''Upload a np.ndarray using ``np.save``
 
         This method creates a copy of the array in memory
@@ -474,7 +475,7 @@ class ArrayInterface(BasicInterface):
         np.save(arr_strio, array)
         arr_strio.reset()
         try:
-            response = self.get_object(object_name).put(Body=arr_strio.read(), Metadata=metadata)
+            response = self.get_object(object_name).put(Body=arr_strio.read(), ACL=acl, Metadata=metadata)
         except OverflowError:
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
         return response

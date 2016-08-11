@@ -5,6 +5,7 @@ import re
 import zlib
 import string
 import urllib
+import itertools
 from dateutil.tz import tzlocal
 from functools import wraps
 
