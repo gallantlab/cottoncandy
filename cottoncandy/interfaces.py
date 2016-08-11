@@ -497,7 +497,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, gzip=True, acl='public-read', **metadata):
+    def upload_raw_array(self, object_name, array, gzip=True, acl='authenticated-read', **metadata):
         '''Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -511,7 +511,7 @@ class ArrayInterface(BasicInterface):
             Whether to gzip the array
         acl : str
             "access control list", specifies permissions for s3 data.
-            default is 'public-read' (only owner can write/delete, all else can read)
+            default is "authenticated-read" (authenticated users can read)
         metadata : dict, optional
 
         Notes
@@ -591,7 +591,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def dict2cloud(self, object_name, array_dict, acl='public-read', **metadata):
+    def dict2cloud(self, object_name, array_dict, acl='authenticated-read', **metadata):
         '''Upload an arbitrary depth dictionary containing arrays
 
         Parameters
