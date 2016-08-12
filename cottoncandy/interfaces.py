@@ -6,6 +6,7 @@ import fnmatch
 from gzip import GzipFile
 from dateutil.tz import tzlocal
 from cStringIO import StringIO
+import logging
 
 import boto3
 import botocore
@@ -80,8 +81,13 @@ class BasicInterface(InterfaceObject):
         self.set_bucket(bucket_name)
 
         if verbose:
+            logging.getLogger('boto3').setLevel(logging.INFO)
+            logging.getLogger('botocore').setLevel(logging.INFO)
             print('Available buckets:')
             self.show_buckets()
+        else:
+            logging.getLogger('boto3').setLevel(logging.WARNING)
+            logging.getLogger('botocore').setLevel(logging.WARNING)
 
     def __repr__(self):
         details = (__package__, self.bucket_name, self.url)
