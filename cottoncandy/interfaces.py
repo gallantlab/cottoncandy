@@ -592,7 +592,8 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def dict2cloud(self, object_name, array_dict, acl='authenticated-read', **metadata):
+    def dict2cloud(self, object_name, array_dict, acl='authenticated-read',
+                   verbose=True, **metadata):
         '''Upload an arbitrary depth dictionary containing arrays
 
         Parameters
@@ -601,6 +602,8 @@ class ArrayInterface(BasicInterface):
         array_dict  : dict
             An arbitrary depth dictionary of arrays. This can be
             conceptualized as implementing an HDF-like group
+        verbose : bool
+            Whether to print object_name after completion
         '''
         for k,v in array_dict.iteritems():
             name = SEPARATOR.join([object_name, k])
@@ -611,10 +614,12 @@ class ArrayInterface(BasicInterface):
                 _ = self.upload_raw_array(name, v, acl=acl, **metadata)
             else: # try converting to array
                 _ = self.upload_raw_array(name, np.asarray(v), acl=acl)
-        print('uploaded arrays in "%s"'%object_name)
+
+        if verbose:
+            print('uploaded arrays in "%s"'%object_name)
 
     @clean_object_name
-    def cloud2dict(self, object_root, **metadata):
+    def cloud2dict(self, object_root, verbose=True, **metadata):
         '''Download all the arrays of the object branch and return a dictionary.
         This is the complement to ``dict2cloud``
 
@@ -622,6 +627,8 @@ class ArrayInterface(BasicInterface):
         ----------
         object_root : str
             The branch to create the dictionary from
+        verbose : bool
+            Whether to print object_root after completion
 
         Returns
         -------
@@ -646,7 +653,10 @@ class ArrayInterface(BasicInterface):
                 datadict[subdir] = arr
             else:
                 datadict[subdir] = self.cloud2dict(path)
-        print('downloaded arrays in "%s"'%object_root)
+
+        if verbose:
+            print('downloaded arrays in "%s"'%object_root)
+
         return datadict
 
     @clean_object_name
