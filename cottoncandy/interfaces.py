@@ -78,7 +78,11 @@ class BasicInterface(InterfaceObject):
         self.connection = self.connect(ACCESS_KEY=ACCESS_KEY,
                                        SECRET_KEY=SECRET_KEY,
                                        url=url)
-        self.set_bucket(bucket_name)
+        if self.exists_bucket(bucket_name):
+            self.set_bucket(bucket_name)
+        else:
+            print('Bucket "%s" does not exist'%bucket_name)
+            self.bucket_name = None
 
         if verbose:
             print('Available buckets:')
@@ -112,7 +116,7 @@ class BasicInterface(InterfaceObject):
         ----------
         object_name : str
             The object name
-            '''
+        '''
         bucket_name = self._get_bucket_name(bucket_name)
         ob = self.connection.Object(key=object_name, bucket_name=bucket_name)
 
@@ -140,9 +144,10 @@ class BasicInterface(InterfaceObject):
             exists = True
         return exists
 
-    def create_bucket(self, bucket_name):
+    def create_bucket(self, bucket_name, acl='authenticated-read'):
         '''Create a new bucket'''
         self.connection.create_bucket(Bucket=bucket_name)
+        self.get_bucket(bucket_name).set_acl(acl)
         self.set_bucket(bucket_name)
 
     def set_bucket(self, bucket_name):
@@ -227,6 +232,11 @@ class BasicInterface(InterfaceObject):
             print('Loads of objects in "%s". Increasing page_size by 100x...'%self.bucket_name)
             object_list = self.get_bucket_objects(limit=limit, page_size=page_size*100)
             print_objects(object_list)
+
+    @clean_object_name
+    def upload_object(self, object_name, body, acl='authenticated-read', **metadata):
+        obj = self.get_object(object_name)
+        return obj.put(Body=body, ACL=acl, Metadata=metadata)
 
     @clean_object_name
     def download_object(self, object_name):
@@ -424,6 +434,10 @@ class BasicInterface(InterfaceObject):
         assert self.exists_object(object_name)
         obj = self.get_object(object_name)
         return cPickle.loads(obj.get()['Body'].read())
+
+
+
+
 
 
 class ArrayInterface(BasicInterface):
@@ -785,8 +799,7 @@ class FileSystemInterface(BasicInterface):
         '''
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
-    @clean_object_name
-    def lsdir(self, prefix, limit=10**3):
+    def lsdir(self, prefix='/', limit=10**3):
         '''List the contents of a directory
         '''
         if has_real_magic(prefix):
