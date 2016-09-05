@@ -1064,7 +1064,19 @@ class FileSystemInterface(BasicInterface):
               "nothing found under '%s"
         print(msg%object_name)
 
-
+    def get_owner(self, object_name):
+        assert self.exists_object(object_name)
+        ob = self.get_object(object_name)
+        try:
+            acl = ob.Acl()
+            info = acl.owner
+        except botocore.exceptions.ClientError as e:
+            if 's3cmd-attrs' in ob.metadata:
+                info = ob.metadata['s3cmd-attrs'].split('/')
+                info = dict(map(lambda x: x.split(':'), info))
+            else:
+                raise e
+        print info
 
 class DefaultInterface(FileSystemInterface,
                        ArrayInterface,
