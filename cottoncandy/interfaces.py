@@ -1064,7 +1064,7 @@ class FileSystemInterface(BasicInterface):
               "nothing found under '%s"
         print(msg%object_name)
 
-    def get_owner(self, object_name):
+    def get_object_owner(self, object_name):
         assert self.exists_object(object_name)
         ob = self.get_object(object_name)
         try:
