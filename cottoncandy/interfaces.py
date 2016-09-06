@@ -538,7 +538,16 @@ class ArrayInterface(BasicInterface):
             # avoid zlib issues
             gzip = False
 
-        order = 'F' if array.flags.f_contiguous else 'C'
+        if array.flags.f_contiguous:
+            order = 'F'
+        elif array.flags.c_contiguous:
+            order = 'C'
+        else:
+            print ('array is a slice along a non-contiguous axis. copying the array'
+                   'before saving (will use extra memory)')
+            order = 'C' if array.base.c_contiguous else 'F'
+            array = np.array(array, order=order)
+
         meta = dict(dtype=array.dtype.str,
                     shape=','.join(map(str, array.shape)),
                     gzip=str(gzip),
