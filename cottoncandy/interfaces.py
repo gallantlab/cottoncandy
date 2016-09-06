@@ -545,7 +545,7 @@ class ArrayInterface(BasicInterface):
         else:
             print ('array is a slice along a non-contiguous axis. copying the array'
                    'before saving (will use extra memory)')
-            order = 'C' if array.base.flags.c_contiguous else 'F'
+            order = 'F' if array.base.flags.f_contiguous else 'C'
             array = np.array(array, order=order)
 
         meta = dict(dtype=array.dtype.str,
