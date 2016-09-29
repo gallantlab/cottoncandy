@@ -13,7 +13,11 @@ import botocore
 from botocore.utils import fix_s3_host
 
 import numpy as np
-from scipy.sparse import coo_matrix, csr_matrix, csc_matrix
+from scipy.sparse import (coo_matrix, 
+                          csr_matrix, 
+                          csc_matrix,
+                          bsr_matrix,
+                          dia_matrix)
         
 from utils import (clean_object_name,
                    has_magic,
@@ -800,23 +804,33 @@ class ArrayInterface(BasicInterface):
         object_name : str
             The name of the object to be stored. An extension corresponding to
             the sparse array type will be appended if not already present.
-        arr : scipy.sparse array
-            A COO or CSR scipy.sparse array to be saved. If another type of
-            sparse array is provided, it will be converted to .csr and saved
+        arr : scipy.sparse.spmatrix
+            A scipy.sparse array to be saved. If type is DOK or LIL,
+            it will be converted to .csr before saving
         """
-        arr_type = type(arr)
-        if arr_type==csr_matrix:
+        if isinstance(arr, csr_matrix):
             attrs = ['data', 'indices', 'indptr', 'shape']
             ext = '.csr'
-        elif arr_type==coo_matrix:
+        elif isinstance(arr, coo_matrix):
             attrs = ['row', 'col', 'data', 'shape']
             ext = '.coo'
-        else: # convert to csr and save
+        elif isinstance(arr, csc_matrix):
+            attrs = ['data', 'indices', 'indptr', 'shape']
+            ext = '.csc'
+        elif isinstance(arr, bsr_matrix):
+            attrs = ['data', 'indices', 'indptr', 'shape']
+            ext = '.bsr'
+        elif isinstance(arr, dia_matrix):
+            attrs = ['data', 'offsets', 'shape']
+            ext = '.dia'
+        else: # dok and lil: convert to csr and save
+            # TODO: warn user here that matrix type will be changed?
             arr = arr.tocsr()
             attrs = ['data', 'indices', 'indptr', 'shape']
             ext = '.csr'
 
         if not object_name.endswith(ext):
+            # TODO: warn user here that object name will be changed?
             object_name += ext
 
         # make dict with all the necessary fields for this type of sparse array
@@ -831,25 +845,34 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
             The object name to be retrieved. Should end with the extension 
-            corresponding to the sparse array type (.coo or .csr). If no
+            corresponding to the sparse array type. If no
             extension is provided, will default to .csr
 
         Returns
         -------
-        arr : scipy.sparse array
+        arr : scipy.sparse.spmatrix
             The array stored at the location given by object_name
         """
         _, ext = os.path.splitext(object_name)
-        if ext=='':
+        if ext == '': # assume csr if no extension is given
             ext = '.csr'
             object_name += ext
 
         d = self.cloud2dict(object_name)
-        if ext=='.csr':
+        if ext == '.csr':
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
                              shape=d['shape'])
-        elif ext=='.coo':
-            arr = coo_matrix((d['data'], (d['row'], d['col'])), shape=d['shape'])
+        elif ext == '.coo':
+            arr = coo_matrix((d['data'], (d['row'], d['col'])), 
+                             shape=d['shape'])
+        elif ext == '.csc':
+            arr = csc_matrix((d['data'], d['indices'], d['indptr']),
+                             shape=d['shape'])
+        elif ext == '.bsr':
+            arr = bsr_matrix((d['data'], d['indices'], d['indptr']),
+                             shape=d['shape'])
+        elif ext == '.dia':
+            arr = dia_matrix((d['data'], d['offsets']), shape=d['shape'])
 
         return arr        
     
