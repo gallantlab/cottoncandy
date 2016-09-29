@@ -13,7 +13,8 @@ import botocore
 from botocore.utils import fix_s3_host
 
 import numpy as np
-
+from scipy.sparse import coo_matrix, csr_matrix, csc_matrix
+        
 from utils import (clean_object_name,
                    has_magic,
                    has_real_magic,
@@ -790,7 +791,68 @@ class ArrayInterface(BasicInterface):
 
         return da.Array(dask, dask_name, chunks, shape=shape, dtype=dtype)
 
+    @clean_object_name
+    def upload_sparse_array(self, object_name, arr):
+        """Uploads a scipy.sparse array as a folder of array objects
+        
+        Parameters
+        ----------
+        object_name : str
+            The name of the object to be stored. An extension corresponding to
+            the sparse array type will be appended if not already present.
+        arr : scipy.sparse array
+            A COO or CSR scipy.sparse array to be saved. If another type of
+            sparse array is provided, it will be converted to .csr and saved
+        """
+        arr_type = type(arr)
+        if arr_type==csr_matrix:
+            attrs = ['data', 'indices', 'indptr', 'shape']
+            ext = '.csr'
+        elif arr_type==coo_matrix:
+            attrs = ['row', 'col', 'data', 'shape']
+            ext = '.coo'
+        else: # convert to csr and save
+            arr = arr.tocsr()
+            attrs = ['data', 'indices', 'indptr', 'shape']
+            ext = '.csr'
 
+        if not object_name.endswith(ext):
+            object_name += ext
+
+        # make dict with all the necessary fields for this type of sparse array
+        d = {attr:getattr(arr, attr) for attr in attrs}
+        self.dict2cloud(object_name, d)
+
+    @clean_object_name
+    def download_sparse_array(self, object_name):
+        """Downloads a scipy.sparse array
+
+        Parameters
+        ----------
+        object_name : str
+            The object name to be retrieved. Should end with the extension 
+            corresponding to the sparse array type (.coo or .csr). If no
+            extension is provided, will default to .csr
+
+        Returns
+        -------
+        arr : scipy.sparse array
+            The array stored at the location given by object_name
+        """
+        _, ext = os.path.splitext(object_name)
+        if ext=='':
+            ext = '.csr'
+            object_name += ext
+
+        d = self.cloud2dict(object_name)
+        if ext=='.csr':
+            arr = csr_matrix((d['data'], d['indices'], d['indptr']),
+                             shape=d['shape'])
+        elif ext=='.coo':
+            arr = coo_matrix((d['data'], (d['row'], d['col'])), shape=d['shape'])
+
+        return arr        
+    
 class FileSystemInterface(BasicInterface):
     '''Emulate some file system functionality.
     '''
