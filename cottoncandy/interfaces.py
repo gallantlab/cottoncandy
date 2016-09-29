@@ -808,24 +808,24 @@ class ArrayInterface(BasicInterface):
             it will be converted to csr before saving
         """
         if isinstance(arr, csr_matrix):
-            attrs = ['data', 'indices', 'indptr', 'shape']
+            attrs = ['data', 'indices', 'indptr']
             arrtype = 'csr'
         elif isinstance(arr, coo_matrix):
-            attrs = ['row', 'col', 'data', 'shape']
+            attrs = ['row', 'col', 'data']
             arrtype = 'coo'
         elif isinstance(arr, csc_matrix):
-            attrs = ['data', 'indices', 'indptr', 'shape']
+            attrs = ['data', 'indices', 'indptr']
             arrtype = 'csc'
         elif isinstance(arr, bsr_matrix):
-            attrs = ['data', 'indices', 'indptr', 'shape']
+            attrs = ['data', 'indices', 'indptr']
             arrtype = 'bsr'
         elif isinstance(arr, dia_matrix):
-            attrs = ['data', 'offsets', 'shape']
+            attrs = ['data', 'offsets']
             arrtype = 'dia'
         else: # dok and lil: convert to csr and save
             # TODO: warn user here that matrix type will be changed?
             arr = arr.tocsr()
-            attrs = ['data', 'indices', 'indptr', 'shape']
+            attrs = ['data', 'indices', 'indptr']
             arrtype = 'csr'
 
         # Upload parts
@@ -833,7 +833,7 @@ class ArrayInterface(BasicInterface):
             self.upload_raw_array(SEPARATOR.join([object_name, attr]), getattr(arr, attr))
 
         # Upload metadata
-        metadata = dict(type=arrtype, attrs=attrs)
+        metadata = dict(type=arrtype, attrs=attrs, shape=arr.shape)
         return self.upload_json(SEPARATOR.join([object_name, 'metadata.json']), metadata)
 
     @clean_object_name
@@ -852,26 +852,28 @@ class ArrayInterface(BasicInterface):
         """
         # Get metadata
         metadata = self.download_json(SEPARATOR.join([object_name, 'metadata.json']))
-        # Get type
+        # Get type, shape
         arrtype = metadata['type']
+        shape = metadata['shape']
         # Get data
-        d = [self.download_raw_array(SEPARATOR.join([object_name, attr]))
-             for attr in metadata['attrs']]
+        d = dict()
+        for attr in metadata['attrs']:
+            d[attr] = self.download_raw_array(SEPARATOR.join([object_name, attr]))
 
         if arrtype == 'csr':
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
-                             shape=d['shape'])
+                             shape=shape)
         elif arrtype == 'coo':
             arr = coo_matrix((d['data'], (d['row'], d['col'])), 
-                             shape=d['shape'])
+                             shape=shape)
         elif arrtype == 'csc':
             arr = csc_matrix((d['data'], d['indices'], d['indptr']),
-                             shape=d['shape'])
+                             shape=shape)
         elif arrtype == 'bsr':
             arr = bsr_matrix((d['data'], d['indices'], d['indptr']),
-                             shape=d['shape'])
+                             shape=shape)
         elif arrtype == 'dia':
-            arr = dia_matrix((d['data'], d['offsets']), shape=d['shape'])
+            arr = dia_matrix((d['data'], d['offsets']), shape=shape)
 
         return arr        
     
