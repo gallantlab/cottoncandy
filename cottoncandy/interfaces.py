@@ -802,40 +802,39 @@ class ArrayInterface(BasicInterface):
         Parameters
         ----------
         object_name : str
-            The name of the object to be stored. An extension corresponding to
-            the sparse array type will be appended if not already present.
+            The name of the object to be stored.
         arr : scipy.sparse.spmatrix
             A scipy.sparse array to be saved. If type is DOK or LIL,
-            it will be converted to .csr before saving
+            it will be converted to csr before saving
         """
         if isinstance(arr, csr_matrix):
             attrs = ['data', 'indices', 'indptr', 'shape']
-            ext = '.csr'
+            arrtype = 'csr'
         elif isinstance(arr, coo_matrix):
             attrs = ['row', 'col', 'data', 'shape']
-            ext = '.coo'
+            arrtype = 'coo'
         elif isinstance(arr, csc_matrix):
             attrs = ['data', 'indices', 'indptr', 'shape']
-            ext = '.csc'
+            arrtype = 'csc'
         elif isinstance(arr, bsr_matrix):
             attrs = ['data', 'indices', 'indptr', 'shape']
-            ext = '.bsr'
+            arrtype = 'bsr'
         elif isinstance(arr, dia_matrix):
             attrs = ['data', 'offsets', 'shape']
-            ext = '.dia'
+            arrtype = 'dia'
         else: # dok and lil: convert to csr and save
             # TODO: warn user here that matrix type will be changed?
             arr = arr.tocsr()
             attrs = ['data', 'indices', 'indptr', 'shape']
-            ext = '.csr'
+            arrtype = 'csr'
 
-        if not object_name.endswith(ext):
-            # TODO: warn user here that object name will be changed?
-            object_name += ext
+        # Upload parts
+        for attr in attrs:
+            self.upload_raw_array(SEPARATOR.join([object_name, attr]), getattr(arr, attr))
 
-        # make dict with all the necessary fields for this type of sparse array
-        d = {attr:getattr(arr, attr) for attr in attrs}
-        self.dict2cloud(object_name, d)
+        # Upload metadata
+        metadata = dict(type=arrtype, attrs=attrs)
+        return self.upload_json(SEPARATOR.join([object_name, 'metadata.json']), metadata)
 
     @clean_object_name
     def download_sparse_array(self, object_name):
@@ -844,34 +843,34 @@ class ArrayInterface(BasicInterface):
         Parameters
         ----------
         object_name : str
-            The object name to be retrieved. Should end with the extension 
-            corresponding to the sparse array type. If no
-            extension is provided, will default to .csr
+            The object name for the sparse array to be retrieved.
 
         Returns
         -------
         arr : scipy.sparse.spmatrix
             The array stored at the location given by object_name
         """
-        _, ext = os.path.splitext(object_name)
-        if ext == '': # assume csr if no extension is given
-            ext = '.csr'
-            object_name += ext
+        # Get metadata
+        metadata = self.download_json(SEPARATOR.join([object_name, 'metadata.json']))
+        # Get type
+        arrtype = metadata['type']
+        # Get data
+        d = [self.download_raw_array(SEPARATOR.join([object_name, attr]))
+             for attr in metadata['attrs']]
 
-        d = self.cloud2dict(object_name)
-        if ext == '.csr':
+        if arrtype == 'csr':
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
                              shape=d['shape'])
-        elif ext == '.coo':
+        elif arrtype == 'coo':
             arr = coo_matrix((d['data'], (d['row'], d['col'])), 
                              shape=d['shape'])
-        elif ext == '.csc':
+        elif arrtype == 'csc':
             arr = csc_matrix((d['data'], d['indices'], d['indptr']),
                              shape=d['shape'])
-        elif ext == '.bsr':
+        elif arrtype == 'bsr':
             arr = bsr_matrix((d['data'], d['indices'], d['indptr']),
                              shape=d['shape'])
-        elif ext == '.dia':
+        elif arrtype == 'dia':
             arr = dia_matrix((d['data'], d['offsets']), shape=d['shape'])
 
         return arr        
