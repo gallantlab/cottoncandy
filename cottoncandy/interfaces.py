@@ -13,7 +13,12 @@ import botocore
 from botocore.utils import fix_s3_host
 
 import numpy as np
-
+from scipy.sparse import (coo_matrix, 
+                          csr_matrix, 
+                          csc_matrix,
+                          bsr_matrix,
+                          dia_matrix)
+        
 from utils import (clean_object_name,
                    has_magic,
                    has_real_magic,
@@ -790,7 +795,88 @@ class ArrayInterface(BasicInterface):
 
         return da.Array(dask, dask_name, chunks, shape=shape, dtype=dtype)
 
+    @clean_object_name
+    def upload_sparse_array(self, object_name, arr):
+        """Uploads a scipy.sparse array as a folder of array objects
+        
+        Parameters
+        ----------
+        object_name : str
+            The name of the object to be stored.
+        arr : scipy.sparse.spmatrix
+            A scipy.sparse array to be saved. If type is DOK or LIL,
+            it will be converted to csr before saving
+        """
+        if isinstance(arr, csr_matrix):
+            attrs = ['data', 'indices', 'indptr']
+            arrtype = 'csr'
+        elif isinstance(arr, coo_matrix):
+            attrs = ['row', 'col', 'data']
+            arrtype = 'coo'
+        elif isinstance(arr, csc_matrix):
+            attrs = ['data', 'indices', 'indptr']
+            arrtype = 'csc'
+        elif isinstance(arr, bsr_matrix):
+            attrs = ['data', 'indices', 'indptr']
+            arrtype = 'bsr'
+        elif isinstance(arr, dia_matrix):
+            attrs = ['data', 'offsets']
+            arrtype = 'dia'
+        else: # dok and lil: convert to csr and save
+            # TODO: warn user here that matrix type will be changed?
+            arr = arr.tocsr()
+            attrs = ['data', 'indices', 'indptr']
+            arrtype = 'csr'
 
+        # Upload parts
+        for attr in attrs:
+            self.upload_raw_array(SEPARATOR.join([object_name, attr]), getattr(arr, attr))
+
+        # Upload metadata
+        metadata = dict(type=arrtype, attrs=attrs, shape=arr.shape)
+        return self.upload_json(SEPARATOR.join([object_name, 'metadata.json']), metadata)
+
+    @clean_object_name
+    def download_sparse_array(self, object_name):
+        """Downloads a scipy.sparse array
+
+        Parameters
+        ----------
+        object_name : str
+            The object name for the sparse array to be retrieved.
+
+        Returns
+        -------
+        arr : scipy.sparse.spmatrix
+            The array stored at the location given by object_name
+        """
+        # Get metadata
+        metadata = self.download_json(SEPARATOR.join([object_name, 'metadata.json']))
+        # Get type, shape
+        arrtype = metadata['type']
+        shape = metadata['shape']
+        # Get data
+        d = dict()
+        for attr in metadata['attrs']:
+            d[attr] = self.download_raw_array(SEPARATOR.join([object_name, attr]))
+
+        if arrtype == 'csr':
+            arr = csr_matrix((d['data'], d['indices'], d['indptr']),
+                             shape=shape)
+        elif arrtype == 'coo':
+            arr = coo_matrix((d['data'], (d['row'], d['col'])), 
+                             shape=shape)
+        elif arrtype == 'csc':
+            arr = csc_matrix((d['data'], d['indices'], d['indptr']),
+                             shape=shape)
+        elif arrtype == 'bsr':
+            arr = bsr_matrix((d['data'], d['indices'], d['indptr']),
+                             shape=shape)
+        elif arrtype == 'dia':
+            arr = dia_matrix((d['data'], d['offsets']), shape=shape)
+
+        return arr        
+    
 class FileSystemInterface(BasicInterface):
     '''Emulate some file system functionality.
     '''
