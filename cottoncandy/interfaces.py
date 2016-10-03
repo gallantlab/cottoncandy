@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import json
 import cPickle
@@ -211,6 +212,29 @@ class BasicInterface(InterfaceObject):
 
         response = request.all()
         return response
+
+    def get_bucket_size(self, limit=10000000, page_size=10000000):
+        '''
+        Count the size of all objects in the current bucket, and return.
+
+        Note: Because paging does not work properly, if there are more than
+        limit,page_size number of objects in the bucket, this function will
+        underestimate the total size. Check the printed number of objects for
+        suspicious round numbers.
+        TODO(anunez): Remove this note when the bug is fixed.
+        '''
+        # We do this to make sure that we are in a valid bucket.
+        self.get_bucket()
+
+        total_bytes = 0
+        num_objects = 0
+        for page in self.get_bucket_objects(limit=limit,
+                                            page_size=page_size).pages():
+            for obj in page:
+                total_bytes += obj.size
+                num_objects += 1
+        print str(total_bytes) + " bytes over " + str(num_objects) + " objects."
+        return total_bytes
 
     def show_buckets(self):
         '''Show available buckets'''
