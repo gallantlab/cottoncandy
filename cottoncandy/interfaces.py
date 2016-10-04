@@ -214,15 +214,15 @@ class BasicInterface(InterfaceObject):
 
     def get_bucket_size(self, limit=10000000, page_size=10000000):
         '''Counts the size of all objects in the current bucket.
-	
-	Returns
-	-------
+
+        Returns
+        -------
 	int 
-	    The byte count of all objects in the bucket.
+            The byte count of all objects in the bucket.
 
         Notes
         -----
-	Because paging does not work properly, if there are more than
+        Because paging does not work properly, if there are more than
         limit,page_size number of objects in the bucket, this function will
         underestimate the total size. Check the printed number of objects for
         suspicious round numbers.
