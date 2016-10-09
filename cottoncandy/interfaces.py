@@ -13,12 +13,12 @@ import botocore
 from botocore.utils import fix_s3_host
 
 import numpy as np
-from scipy.sparse import (coo_matrix, 
-                          csr_matrix, 
+from scipy.sparse import (coo_matrix,
+                          csr_matrix,
                           csc_matrix,
                           bsr_matrix,
                           dia_matrix)
-        
+
 from utils import (clean_object_name,
                    has_magic,
                    has_real_magic,
@@ -32,6 +32,7 @@ from utils import (clean_object_name,
                    read_buffered,
                    GzipInputStream,
                    generate_ndarray_chunks,
+                   bytes2human,
                    )
 
 import browser
@@ -212,12 +213,19 @@ class BasicInterface(InterfaceObject):
         response = request.all()
         return response
 
-    def get_bucket_size(self, limit=10000000, page_size=10000000):
+    def get_bucket_size(self, limit=10**6, page_size=10**6):
         '''Counts the size of all objects in the current bucket.
+
+        Parameters
+        ----------
+        limit : int, 1000
+            Maximum number of items to return
+        page_size : int, 1000
+            The page size for pagination
 
         Returns
         -------
-	int 
+        total_bytes : int
             The byte count of all objects in the bucket.
 
         Notes
@@ -228,16 +236,15 @@ class BasicInterface(InterfaceObject):
         suspicious round numbers.
         TODO(anunez): Remove this note when the bug is fixed.
         '''
-        # We do this to make sure that we are in a valid bucket.
-        assert exists_bucket(self.bucket_name)
+        assert self.exists_bucket(self.bucket_name)
+        obs = self.get_bucket_objects(limit=limit, page_size=page_size)
+        object_sizes = [t.size for t in obs]
+        total_bytes = sum(object_sizes)
+        num_objects = len(object_sizes)
+        del object_sizes
 
-        total_bytes = 0
-        num_objects = 0
-        for obj in self.get_bucket_objects(limit=limit, page_size=page_size):
-            total_bytes += obj.size
-            num_objects += 1
-        print(str(total_bytes) + " bytes over " + str(num_objects) 
-              + " objects.")
+        txt = "%i bytes (%s) over %i objects"
+        print(txt%(total_bytes,bytes2human(total_bytes),num_objects))
         return total_bytes
 
     def show_buckets(self):
@@ -826,7 +833,7 @@ class ArrayInterface(BasicInterface):
     @clean_object_name
     def upload_sparse_array(self, object_name, arr):
         """Uploads a scipy.sparse array as a folder of array objects
-        
+
         Parameters
         ----------
         object_name : str
@@ -892,7 +899,7 @@ class ArrayInterface(BasicInterface):
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
                              shape=shape)
         elif arrtype == 'coo':
-            arr = coo_matrix((d['data'], (d['row'], d['col'])), 
+            arr = coo_matrix((d['data'], (d['row'], d['col'])),
                              shape=shape)
         elif arrtype == 'csc':
             arr = csc_matrix((d['data'], d['indices'], d['indptr']),
@@ -903,8 +910,8 @@ class ArrayInterface(BasicInterface):
         elif arrtype == 'dia':
             arr = dia_matrix((d['data'], d['offsets']), shape=shape)
 
-        return arr        
-    
+        return arr
+
 class FileSystemInterface(BasicInterface):
     '''Emulate some file system functionality.
     '''
