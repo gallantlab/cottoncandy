@@ -34,21 +34,16 @@ from utils import (clean_object_name,
                    GzipInputStream,
                    generate_ndarray_chunks,
                    bytes2human,
+                   MB,
+                   MIN_MPU_SIZE,
+                   MAX_PUT_SIZE,
+                   MAX_MPU_SIZE,
+                   MAX_MPU_PARTS,
+                   SEPARATOR
                    )
 
 import browser
 # from . import browser
-
-
-# S3 AWS
-#---------
-MB = 2**20
-MIN_MPU_SIZE = 5*MB                # 5MB
-MAX_PUT_SIZE = 5000*MB             # 5GB
-MAX_MPU_SIZE = 5*MB*MB             # 5TB
-MAX_MPU_PARTS = 10000              # 10,000
-SEPARATOR = '/'
-
 
 
 #------------------
