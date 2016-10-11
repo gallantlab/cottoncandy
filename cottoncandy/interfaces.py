@@ -99,6 +99,22 @@ class BasicInterface(InterfaceObject):
         details = (__package__, self.bucket_name, self.url)
         return '%s.interface <bucket:%s on %s>' % details
 
+    @staticmethod
+    def pathjoin(a, *p):
+        """Join two or more pathname components, inserting SEPARATOR as needed.
+        If any component is an absolute path, all previous path components
+        will be discarded.  An empty last part will result in a path that
+        ends with a separator."""
+        path = a
+        for b in p:
+            if b.startswith(SEPARATOR):
+                path = b
+            elif path == '' or path.endswith(SEPARATOR):
+                path +=  b
+            else:
+                path += SEPARATOR + b
+        return path
+
     def connect(self, ACCESS_KEY=False, SECRET_KEY=False, url=None):
         '''Connect to S3 using boto'''
         self.url = url
@@ -666,7 +682,7 @@ class ArrayInterface(BasicInterface):
             Whether to print object_name after completion
         '''
         for k,v in array_dict.iteritems():
-            name = SEPARATOR.join([object_name, k])
+            name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
                 _ = self.dict2cloud(name, v, acl=acl, **metadata)
@@ -702,7 +718,7 @@ class ArrayInterface(BasicInterface):
         subdirs = ob._ls()
 
         for subdir in subdirs:
-            path = os.path.join(object_root, subdir)
+            path = self.pathjoin(object_root, subdir)
             if self.exists_object(path):
                 # TODO: allow non-array things
                 try:
@@ -782,7 +798,7 @@ class ArrayInterface(BasicInterface):
             txt = (idx+1, total_upload/MB, arr.nbytes/np.float(MB))
             print 'uploading %i: %0.02fMB/%0.02fMB'%txt
 
-            part_name = SEPARATOR.join([object_name, 'pt%04i'%idx])
+            part_name = self.pathjoin(object_name, 'pt%04i'%idx)
             metadata['dask'].append((chunk_coord, part_name))
             metadata['chunk_sizes'].append(chunk_arr.shape)
             self.upload_raw_array(part_name, chunk_arr)
@@ -797,7 +813,7 @@ class ArrayInterface(BasicInterface):
 
         chunks = [[value for k,value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
-        return self.upload_json(SEPARATOR.join([object_name, 'metadata.json']), metadata)
+        return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata)
 
     @clean_object_name
     def download_dask_array(self, object_name, dask_name='array'):
@@ -821,7 +837,7 @@ class ArrayInterface(BasicInterface):
         """
         from dask import array as da
 
-        metadata = self.download_json(SEPARATOR.join([object_name, 'metadata.json']))
+        metadata = self.download_json(self.pathjoin(object_name, 'metadata.json'))
         chunks = metadata['chunks']
         shape = metadata['shape']
         dtype = np.dtype(metadata['dtype'])
@@ -866,11 +882,11 @@ class ArrayInterface(BasicInterface):
 
         # Upload parts
         for attr in attrs:
-            self.upload_raw_array(SEPARATOR.join([object_name, attr]), getattr(arr, attr))
+            self.upload_raw_array(self.pathjoin(object_name, attr), getattr(arr, attr))
 
         # Upload metadata
         metadata = dict(type=arrtype, attrs=attrs, shape=arr.shape)
-        return self.upload_json(SEPARATOR.join([object_name, 'metadata.json']), metadata)
+        return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata)
 
     @clean_object_name
     def download_sparse_array(self, object_name):
@@ -887,14 +903,14 @@ class ArrayInterface(BasicInterface):
             The array stored at the location given by object_name
         """
         # Get metadata
-        metadata = self.download_json(SEPARATOR.join([object_name, 'metadata.json']))
+        metadata = self.download_json(self.pathjoin(object_name, 'metadata.json'))
         # Get type, shape
         arrtype = metadata['type']
         shape = metadata['shape']
         # Get data
         d = dict()
         for attr in metadata['attrs']:
-            d[attr] = self.download_raw_array(SEPARATOR.join([object_name, attr]))
+            d[attr] = self.download_raw_array(self.pathjoin(object_name, attr))
 
         if arrtype == 'csr':
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
@@ -1120,7 +1136,7 @@ class FileSystemInterface(BasicInterface):
         if self.exists_object(ob_new.key, bucket_name=dest_bucket):
             assert overwrite is True
 
-        fpath = os.path.join(source_bucket, source_name)
+        fpath = self.pathjoin(source_bucket, source_name)
         ob_new.copy_from(CopySource=fpath)
         return ob_new
 
