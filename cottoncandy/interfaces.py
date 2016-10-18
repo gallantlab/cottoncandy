@@ -43,7 +43,6 @@ from utils import (clean_object_name,
                    )
 
 import browser
-# from . import browser
 
 
 #------------------
@@ -595,9 +594,9 @@ class ArrayInterface(BasicInterface):
             # avoid zlib issues
             gzip = False
 
-        order = 'C' if array.flags.carray else 'F'
-        if not array.flags.contiguous:
-            print ('array is a slice along a non-contiguous axis. copying the array'
+        order = 'F' if array.flags.f_contiguous else 'C'
+        if not array.flags['%s_CONTIGUOUS'%order]:
+            print ('array is a slice along a non-contiguous axis. copying the array '
                    'before saving (will use extra memory)')
             array = np.array(array, order=order)
 
