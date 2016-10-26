@@ -7,6 +7,7 @@ import fnmatch
 from gzip import GzipFile
 from dateutil.tz import tzlocal
 from cStringIO import StringIO
+import logging
 
 import boto3
 import botocore
@@ -32,21 +33,16 @@ from utils import (clean_object_name,
                    read_buffered,
                    GzipInputStream,
                    generate_ndarray_chunks,
+                   bytes2human,
+                   MB,
+                   MIN_MPU_SIZE,
+                   MAX_PUT_SIZE,
+                   MAX_MPU_SIZE,
+                   MAX_MPU_PARTS,
+                   SEPARATOR
                    )
 
 import browser
-# from . import browser
-
-
-# S3 AWS
-#---------
-MB = 2**20
-MIN_MPU_SIZE = 5*MB                # 5MB
-MAX_PUT_SIZE = 5000*MB             # 5GB
-MAX_MPU_SIZE = 5*MB*MB             # 5TB
-MAX_MPU_PARTS = 10000              # 10,000
-SEPARATOR = '/'
-
 
 
 #------------------
@@ -90,12 +86,33 @@ class BasicInterface(InterfaceObject):
             self.bucket_name = None
 
         if verbose:
+            logging.getLogger('boto3').setLevel(logging.INFO)
+            logging.getLogger('botocore').setLevel(logging.INFO)
             print('Available buckets:')
             self.show_buckets()
+        else:
+            logging.getLogger('boto3').setLevel(logging.WARNING)
+            logging.getLogger('botocore').setLevel(logging.WARNING)
 
     def __repr__(self):
         details = (__package__, self.bucket_name, self.url)
         return '%s.interface <bucket:%s on %s>' % details
+
+    @staticmethod
+    def pathjoin(a, *p):
+        """Join two or more pathname components, inserting SEPARATOR as needed.
+        If any component is an absolute path, all previous path components
+        will be discarded.  An empty last part will result in a path that
+        ends with a separator."""
+        path = a
+        for b in p:
+            if b.startswith(SEPARATOR):
+                path = b
+            elif path == '' or path.endswith(SEPARATOR):
+                path +=  b
+            else:
+                path += SEPARATOR + b
+        return path
 
     def connect(self, ACCESS_KEY=False, SECRET_KEY=False, url=None):
         '''Connect to S3 using boto'''
@@ -212,27 +229,38 @@ class BasicInterface(InterfaceObject):
         response = request.all()
         return response
 
-    def get_bucket_size(self, limit=10000000, page_size=10000000):
-        '''
-        Count the size of all objects in the current bucket, and return.
+    def get_bucket_size(self, limit=10**6, page_size=10**6):
+        '''Counts the size of all objects in the current bucket.
 
-        Note: Because paging does not work properly, if there are more than
+        Parameters
+        ----------
+        limit : int, 1000
+            Maximum number of items to return
+        page_size : int, 1000
+            The page size for pagination
+
+        Returns
+        -------
+        total_bytes : int
+            The byte count of all objects in the bucket.
+
+        Notes
+        -----
+        Because paging does not work properly, if there are more than
         limit,page_size number of objects in the bucket, this function will
         underestimate the total size. Check the printed number of objects for
         suspicious round numbers.
         TODO(anunez): Remove this note when the bug is fixed.
         '''
-        # We do this to make sure that we are in a valid bucket.
-        self.get_bucket()
+        assert self.exists_bucket(self.bucket_name)
+        obs = self.get_bucket_objects(limit=limit, page_size=page_size)
+        object_sizes = [t.size for t in obs]
+        total_bytes = sum(object_sizes)
+        num_objects = len(object_sizes)
+        del object_sizes
 
-        total_bytes = 0
-        num_objects = 0
-        for page in self.get_bucket_objects(limit=limit,
-                                            page_size=page_size).pages():
-            for obj in page:
-                total_bytes += obj.size
-                num_objects += 1
-        print str(total_bytes) + " bytes over " + str(num_objects) + " objects."
+        txt = "%i bytes (%s) over %i objects"
+        print(txt%(total_bytes,bytes2human(total_bytes),num_objects))
         return total_bytes
 
     def show_buckets(self):
@@ -566,9 +594,9 @@ class ArrayInterface(BasicInterface):
             # avoid zlib issues
             gzip = False
 
-        order = 'C' if array.flags.carray else 'F'
-        if not array.flags.contiguous:
-            print ('array is a slice along a non-contiguous axis. copying the array'
+        order = 'F' if array.flags.f_contiguous else 'C'
+        if not array.flags['%s_CONTIGUOUS'%order]:
+            print ('array is a slice along a non-contiguous axis. copying the array '
                    'before saving (will use extra memory)')
             array = np.array(array, order=order)
 
@@ -653,7 +681,7 @@ class ArrayInterface(BasicInterface):
             Whether to print object_name after completion
         '''
         for k,v in array_dict.iteritems():
-            name = SEPARATOR.join([object_name, k])
+            name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
                 _ = self.dict2cloud(name, v, acl=acl, **metadata)
@@ -689,7 +717,7 @@ class ArrayInterface(BasicInterface):
         subdirs = ob._ls()
 
         for subdir in subdirs:
-            path = os.path.join(object_root, subdir)
+            path = self.pathjoin(object_root, subdir)
             if self.exists_object(path):
                 # TODO: allow non-array things
                 try:
@@ -769,7 +797,7 @@ class ArrayInterface(BasicInterface):
             txt = (idx+1, total_upload/MB, arr.nbytes/np.float(MB))
             print 'uploading %i: %0.02fMB/%0.02fMB'%txt
 
-            part_name = SEPARATOR.join([object_name, 'pt%04i'%idx])
+            part_name = self.pathjoin(object_name, 'pt%04i'%idx)
             metadata['dask'].append((chunk_coord, part_name))
             metadata['chunk_sizes'].append(chunk_arr.shape)
             self.upload_raw_array(part_name, chunk_arr)
@@ -784,7 +812,7 @@ class ArrayInterface(BasicInterface):
 
         chunks = [[value for k,value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
-        return self.upload_json(SEPARATOR.join([object_name, 'metadata.json']), metadata)
+        return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata)
 
     @clean_object_name
     def download_dask_array(self, object_name, dask_name='array'):
@@ -808,7 +836,7 @@ class ArrayInterface(BasicInterface):
         """
         from dask import array as da
 
-        metadata = self.download_json(SEPARATOR.join([object_name, 'metadata.json']))
+        metadata = self.download_json(self.pathjoin(object_name, 'metadata.json'))
         chunks = metadata['chunks']
         shape = metadata['shape']
         dtype = np.dtype(metadata['dtype'])
@@ -853,11 +881,11 @@ class ArrayInterface(BasicInterface):
 
         # Upload parts
         for attr in attrs:
-            self.upload_raw_array(SEPARATOR.join([object_name, attr]), getattr(arr, attr))
+            self.upload_raw_array(self.pathjoin(object_name, attr), getattr(arr, attr))
 
         # Upload metadata
         metadata = dict(type=arrtype, attrs=attrs, shape=arr.shape)
-        return self.upload_json(SEPARATOR.join([object_name, 'metadata.json']), metadata)
+        return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata)
 
     @clean_object_name
     def download_sparse_array(self, object_name):
@@ -874,14 +902,14 @@ class ArrayInterface(BasicInterface):
             The array stored at the location given by object_name
         """
         # Get metadata
-        metadata = self.download_json(SEPARATOR.join([object_name, 'metadata.json']))
+        metadata = self.download_json(self.pathjoin(object_name, 'metadata.json'))
         # Get type, shape
         arrtype = metadata['type']
         shape = metadata['shape']
         # Get data
         d = dict()
         for attr in metadata['attrs']:
-            d[attr] = self.download_raw_array(SEPARATOR.join([object_name, attr]))
+            d[attr] = self.download_raw_array(self.pathjoin(object_name, attr))
 
         if arrtype == 'csr':
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
@@ -1107,7 +1135,7 @@ class FileSystemInterface(BasicInterface):
         if self.exists_object(ob_new.key, bucket_name=dest_bucket):
             assert overwrite is True
 
-        fpath = os.path.join(source_bucket, source_name)
+        fpath = self.pathjoin(source_bucket, source_name)
         ob_new.copy_from(CopySource=fpath)
         return ob_new
 

@@ -33,6 +33,40 @@ SEPARATOR = '/'
 # misc functions
 ##############################
 
+def bytes2human(nbytes):
+    '''Return string representation of bytes.
+
+    Parameters
+    ----------
+    nbytes : int
+        Number of bytes
+
+    Returns
+    -------
+    human_bytes : str
+        Human readable byte size (e.g. "10.00MB", "1.24GB", etc.).
+
+    '''
+    if nbytes == 0:
+        return '0.00B'
+    mapper = {0 : 'B',
+              10 : 'KB',
+              20 : 'MB',
+              30 : 'GB',
+              40 : 'TB',
+              50 : 'PB',
+              60 : 'EB',
+              70 : 'ZB',
+              }
+
+    exps = sorted(mapper.keys())
+    exp_coeff = np.log2(nbytes)
+    exp_closest = int((exps[np.abs(exps - exp_coeff).argmin()]))
+    if np.log10(nbytes/2.**exp_closest) < 0:
+        exp_closest -= 10
+    return '%0.02f%s'%(nbytes/2.**exp_closest, mapper[exp_closest])
+
+
 def get_object_size(boto_s3_object):
     '''Return the size of the S3 object in MB
     '''
