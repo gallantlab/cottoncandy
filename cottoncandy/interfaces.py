@@ -1,5 +1,4 @@
 import os
-import sys
 import re
 import json
 import cPickle
@@ -14,12 +13,12 @@ import botocore
 from botocore.utils import fix_s3_host
 
 import numpy as np
-from scipy.sparse import (coo_matrix, 
-                          csr_matrix, 
+from scipy.sparse import (coo_matrix,
+                          csr_matrix,
                           csc_matrix,
                           bsr_matrix,
                           dia_matrix)
-        
+
 from utils import (clean_object_name,
                    has_magic,
                    has_real_magic,
@@ -822,7 +821,7 @@ class ArrayInterface(BasicInterface):
     @clean_object_name
     def upload_sparse_array(self, object_name, arr):
         """Uploads a scipy.sparse array as a folder of array objects
-        
+
         Parameters
         ----------
         object_name : str
@@ -888,7 +887,7 @@ class ArrayInterface(BasicInterface):
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
                              shape=shape)
         elif arrtype == 'coo':
-            arr = coo_matrix((d['data'], (d['row'], d['col'])), 
+            arr = coo_matrix((d['data'], (d['row'], d['col'])),
                              shape=shape)
         elif arrtype == 'csc':
             arr = csc_matrix((d['data'], d['indices'], d['indptr']),
@@ -899,8 +898,8 @@ class ArrayInterface(BasicInterface):
         elif arrtype == 'dia':
             arr = dia_matrix((d['data'], d['offsets']), shape=shape)
 
-        return arr        
-    
+        return arr
+
 class FileSystemInterface(BasicInterface):
     '''Emulate some file system functionality.
     '''
