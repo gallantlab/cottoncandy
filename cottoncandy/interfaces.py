@@ -58,6 +58,7 @@ class BasicInterface(InterfaceObject):
     '''
     def __init__(self, bucket_name,
                  ACCESS_KEY,SECRET_KEY,url,
+                 force_bucket_creation=False,
                  verbose=True):
         '''
         Parameters
@@ -73,7 +74,7 @@ class BasicInterface(InterfaceObject):
 
         Returns
         -------
-        ccinterface  : ccio
+        cci  : ccio
             Cottoncandy interface object
         '''
         self.connection = self.connect(ACCESS_KEY=ACCESS_KEY,
@@ -82,8 +83,15 @@ class BasicInterface(InterfaceObject):
         if self.exists_bucket(bucket_name):
             self.set_bucket(bucket_name)
         else:
-            print('Bucket "%s" does not exist'%bucket_name)
-            self.bucket_name = None
+            print('* Bucket "%s" does not exist'%bucket_name)
+            if force_bucket_creation:
+                print('* Creating "%s" bucket...\n'%bucket_name)
+                self.create_bucket(bucket_name)
+            else:
+                print('* cottoncandy instantiated without bucket...\n'\
+                      '* Use with caution!\n' \
+                      '* Many features will not work!!!\n')
+                self.bucket_name = None
 
         if verbose:
             logging.getLogger('boto3').setLevel(logging.INFO)
@@ -514,7 +522,7 @@ class ArrayInterface(BasicInterface):
 
         Returns
         -------
-        ccinterface : ccio
+        cci : ccio
             Cottoncandy interface object
         '''
         super(ArrayInterface, self).__init__(*args, **kwargs)
@@ -946,7 +954,7 @@ class FileSystemInterface(BasicInterface):
 
         Returns
         -------
-        ccinterface : ccio
+        cci : ccio
             Cottoncandy interface object
         '''
         super(FileSystemInterface, self).__init__(*args, **kwargs)
@@ -966,7 +974,8 @@ class FileSystemInterface(BasicInterface):
         if has_real_magic(path):
             raise ValueError('Use ``ls()`` when using search patterns: "%s"'%path)
 
-        path = remove_root(path)
+        if (path != '') and (path != '/'):
+            path = remove_root(path)
         path = remove_trivial_magic(path)
         path = mk_aws_path(path)
 

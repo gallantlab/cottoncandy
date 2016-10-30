@@ -8,6 +8,7 @@ def get_interface(bucket_name,
                   ACCESS_KEY=False,
                   SECRET_KEY=False,
                   endpoint_url='https://s3.amazonaws.com',
+                  force_bucket_creation=False,
                   verbose=True):
     '''Return an interface to S3.
 
@@ -37,6 +38,7 @@ def get_interface(bucket_name,
                                  ACCESS_KEY,
                                  SECRET_KEY,
                                  endpoint_url,
+                                 force_bucket_creation,
                                  verbose=verbose)
     return interface
 
@@ -109,6 +111,7 @@ def get_browser(bucket_name,
                                  ACCESS_KEY,
                                  SECRET_KEY,
                                  endpoint_url,
+                                 force_bucket_creation=False,
                                  verbose=False)
 
     return S3Directory('/', interface=interface)
