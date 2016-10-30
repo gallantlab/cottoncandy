@@ -761,11 +761,11 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         arr  : np.ndarray
-        axis : int, None
+        axis : int or None (default: -1)
             The axis along which to slice the array. If None is given,
             the array is chunked into ideal isotropic voxels.
             ``axis=None`` is WIP and atm works fine for near isotropic matrices
-        buffersize : scalar
+        buffersize : scalar (default: 100MB)
             Byte size of the desired array chunks
 
         Returns
@@ -951,18 +951,28 @@ class FileSystemInterface(BasicInterface):
         '''
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
-    def lsdir(self, prefix='/', limit=10**3):
-        '''List the contents of a directory
-        '''
-        if has_real_magic(prefix):
-            raise ValueError('Use ``ls()`` when using search patterns: "%s"'%prefix)
+    def lsdir(self, path='/', limit=10**3):
+        '''List the contents of a "directory"
 
-        prefix = remove_trivial_magic(prefix)
-        prefix = mk_aws_path(prefix)
+        Parameters
+        ----------
+        path : str (default: "/")
+
+        Returns
+        -------
+        matches : list
+            The children of the path.
+        '''
+        if has_real_magic(path):
+            raise ValueError('Use ``ls()`` when using search patterns: "%s"'%path)
+
+        path = remove_root(path)
+        path = remove_trivial_magic(path)
+        path = mk_aws_path(path)
 
         response = self.get_bucket().meta.client.list_objects(Bucket=self.bucket_name,
                                                               Delimiter=SEPARATOR,
-                                                              Prefix=prefix,
+                                                              Prefix=path,
                                                               MaxKeys=limit)
         object_names = []
         if 'CommonPrefixes' in response:
@@ -977,6 +987,24 @@ class FileSystemInterface(BasicInterface):
     @clean_object_name
     def ls(self, pattern, page_size=10**3, limit=10**3, verbose=False):
         '''File-system like search for S3 objects
+
+        Parameters
+        ----------
+        pattern : str
+            A ls-style command line like query
+
+        page_size : int (default: 1,000)
+        limit : int (default: 1,000)
+
+        Returns
+        -------
+        object_names : list
+            Object names that match the search pattern
+
+        Notes
+        -----
+        Increase ``page_size`` and ``limit`` if you have a lot of objects
+        otherwise, the search might not return all matching objects in store.
         '''
         pattern = remove_trivial_magic(pattern)
         pattern = os.path.normpath(pattern)
