@@ -26,7 +26,7 @@ from utils import (clean_object_name,
 # globals
 ##############################
 
-HDFEXT = ['.hdf', '.h5', '.hf5', '.hdf5', '.h5py']
+HDFEXT = ['.hdf', '.h5', '.hf5', '.hdf5', '.h5py', '.grp', '.arr', '.dar']
 NPYEXT = ['.npy']
 JSONEXT = ['.json']
 
