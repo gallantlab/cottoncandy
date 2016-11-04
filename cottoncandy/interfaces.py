@@ -761,7 +761,7 @@ class ArrayInterface(BasicInterface):
         return S3Directory(object_root, interface=self)
 
     @clean_object_name
-    def upload_dask_array(self, object_name, arr, axis=-1, buffersize=100*MB):
+    def upload_dask_array(self, object_name, arr, axis=-1, buffersize=100*MB, **metakwargs):
         '''Upload an array in chunks and store the metadata to reconstruct
         the complete matrix with ``dask``.
 
@@ -820,7 +820,7 @@ class ArrayInterface(BasicInterface):
 
         chunks = [[value for k,value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
-        return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata)
+        return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
 
     @clean_object_name
     def download_dask_array(self, object_name, dask_name='array'):
