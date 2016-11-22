@@ -201,8 +201,9 @@ class BasicInterface(InterfaceObject):
             Maximum number of items to return
         page_size : int, 1000
             The page size for pagination
-        filter : str
-            Only return objects matching this string.
+        filter : dict
+            A dictionary with key 'Prefix', specifying a prefix
+            string.  Only return objects matching this string.
             Defaults to '/', all objects.
         kwargs : optional
             Dictionary of {method:value} for ``bucket.objects``
