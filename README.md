@@ -1,5 +1,6 @@
 # cottoncandy
 sugar for s3
+http://gallantlab.github.io/cottoncandy/
 
 This is a python scientific library for storing and accessing numpy array data on S3. This is achieved by reading arrays from memory and downloading arrays directly into memory. This means that you don't have to download your array directly to disk, and then load it from disk into your python session.
 
