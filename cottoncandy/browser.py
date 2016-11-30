@@ -67,7 +67,7 @@ class S3FSLike(BrowserObject):
 class S3Directory(S3FSLike):
     """Get an object that allows you to tab-complete your
     way through your objects.
-    One also has access to ``_ls()`` and ``_glob()`` methods.
+    One also has access to ``_ls()`` and ``_fullpath()`` methods.
     """
     @clean_object_name
     def __init__(self, path, interface):
@@ -86,39 +86,50 @@ class S3Directory(S3FSLike):
 
         Examples
         --------
-        >>> browser = cloud.get_browser('anunez_raid')
-        >>> browser.auto.k<TAB-COMPLETION>
-        browser.auto.k1
-        browser.auto.k8
+        >>> import cottoncandy as cc
+        >>> browser = cc.get_browser('my_bucket_name')
+        >>> browser.s<TAB>
+        browser.sweet_project
+        >>> browser.sweet_project
+        cottoncandy-path <bucket:my_bucket_name> sweet_project
 
-        >>> browser.auto.k8
-        <directory-like-object @anunez_raid bucket: auto/k8>
+        >>> browser.sweet_project.sub<TAB>
+        browser.sweet_project.sub01_awesome_analysis_DOT_grp
+        browser.sweet_project.sub02_awesome_analysis_DOT_grp
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp
+        <cottoncandy-group <bucket:my_bucket_name> (sub01_awesome_analysis.grp: 3 keys)>
 
-        >>> browser.auto.k8.anunez.proj.deepnet.caffenet_<TAB-COMPLETION>
-        browser.auto.k8.anunez.proj.deepnet.caffenet_ANfs_performance_HDF
-        browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF
+        We can also explore the contents of the ``grp`` object
 
-        >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF
-        <h5py-like-group @anunez_raid bucket: caffenet_BGfs_performance.hdf (6 keys)>
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.<TAB>
+        browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01
+        browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model02
+        browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model03
 
-        >>> # We can also explore the contents of the 'HDF' file
-        >>> browser.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.<TAB-COMPLETION>
-        browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc6
-        browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc7
-        browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8
+        Let's look at one
 
-        >>> # let's look at one
-        >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8
-        <h5py-like-dataset @anunez_raid bucket: caffenet_conv3 [shape=(73221)]>
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01
+        <cottoncandy-dataset <bucket:my_bucket_name [1.00MB:shape=(10000)]>
 
-        >>> # we can download the data as an array
-        >>> arr = browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8.load()
+        We can download the data
+
+        >>> arr = browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01.load()
         >>> arr.shape
-        (73221,)
+        (10000,)
 
-        >>> # we can also download the object. useful when no class for object exists
-        >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8()
-        s3.Object(bucket_name='anunez_raid', key='auto/k8/anunez/proj/deepnet/caffenet_BGfs_performance.hdf/caffenet_fc8')
+        We can also ask for the object name in the bucket
+
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp._fullpath
+        'sweet_project/sub01_awesome_analysis.grp/result_model01'
+
+        We can also download the object. Useful when dealing with other object types
+
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01()
+        s3.Object(bucket_name='my_bucket_name', key='sweet_project/sub01_awesome_analysis.grp/result_model01')
+
+
+
+
         """
         super(S3Directory, self).__init__(path, interface=interface)
 
