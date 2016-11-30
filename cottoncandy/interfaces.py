@@ -547,7 +547,7 @@ class ArrayInterface(BasicInterface):
 
         See Also
         --------
-        The ``upload_raw_array`` method is more efficient
+        :func:`upload_raw_array` which is more efficient
         '''
         # TODO: check array.dtype.hasobject
         arr_strio = StringIO()
