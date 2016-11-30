@@ -832,8 +832,8 @@ class ArrayInterface(BasicInterface):
 
         Examples
         --------
-        >>> s3_response = fog.upload_dask_array('test_dim', arr, axis=-1)
-        >>> dask_object = fog.download_dask_array('test_dim')
+        >>> s3_response = cci.upload_dask_array('test_dim', arr, axis=-1)
+        >>> dask_object = cci.download_dask_array('test_dim')
         >>> dask_object
         dask.array<array, shape=(100, 600, 1000), dtype=float64, chunksize=(100, 600, 100)>
         >>> dask_slice = dask_object[..., :200]
@@ -1067,16 +1067,16 @@ class FileSystemInterface(BasicInterface):
 
         Example
         -------
-        >>> myinterface.glob('/path/to/*/file01*.hdf/image_data')
-        ['/path/to/my/file01a.hdf/image_data',
-         '/path/to/my/file01b.hdf/image_data',
-         '/path/to/your/file01a.hdf/image_data',
-         '/path/to/your/file01b.hdf/image_data']
-        >>> items = myinterface.glob('/path/to/my/file02*.hdf/*')
-        ['/path/to/my/file02a.hdf/image_data',
-         '/path/to/my/file02a.hdf/text_data',
-         '/path/to/my/file02b.hdf/image_data',
-         '/path/to/my/file02b.hdf/text_data',]
+        >>> cci.glob('/path/to/*/file01*.grp/image_data')
+        ['/path/to/my/file01a.grp/image_data',
+         '/path/to/my/file01b.grp/image_data',
+         '/path/to/your/file01a.grp/image_data',
+         '/path/to/your/file01b.grp/image_data']
+        >>> cci.glob('/path/to/my/file02*.grp/*')
+        ['/path/to/my/file02a.grp/image_data',
+         '/path/to/my/file02a.grp/text_data',
+         '/path/to/my/file02b.grp/image_data',
+         '/path/to/my/file02b.grp/text_data',]
 
         Extended Summary
         ----------------
