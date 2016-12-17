@@ -32,9 +32,7 @@ def get_keys():
     resulta = get_key_from_s3fs()
     resultb = get_key_from_environ()
     result = resultb if (resulta is None) else resulta
-    assert result is not None
-    access_key, secret_key = result
-    return access_key, secret_key
+    return result
 
 
 cwd = os.path.split(os.path.abspath(__file__))[0]
@@ -51,7 +49,11 @@ if len(config.read(usercfg)) == 0:
     ak = config.get("login", "access_key")
     sk = config.get("login", "secret_key")
     if (ak == 'auto') and (sk == 'auto'):
-        ak, sk = get_keys()
+        result = get_keys()
+        if result is not None:
+            ak, sk = result
+        else:
+            ak = sk = 'KEYSNOTFOUND'
         config.set("login", "access_key", ak)
         config.set("login", "secret_key", sk)
 

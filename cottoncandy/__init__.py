@@ -12,11 +12,11 @@ ACCESS_KEY = options.config.get('login', 'access_key')
 SECRET_KEY = options.config.get('login', 'secret_key')
 ENDPOINT_URL = options.config.get('login', 'endpoint_url')
 
-bucket_name = options.config.get('basic', 'default_bucket')
+default_bucket = options.config.get('basic', 'default_bucket')
 force_bucket_creation = options.config.get('basic', 'force_bucket_creation')
 force_bucket_creation = string2bool(force_bucket_creation)
 
-def get_interface(bucket_name,
+def get_interface(bucket_name=default_bucket,
                   ACCESS_KEY=ACCESS_KEY,
                   SECRET_KEY=SECRET_KEY,
                   endpoint_url=ENDPOINT_URL,
@@ -55,7 +55,7 @@ def get_interface(bucket_name,
     return interface
 
 
-def get_browser(bucket_name,
+def get_browser(bucket_name=default_bucket,
                 ACCESS_KEY=ACCESS_KEY,
                 SECRET_KEY=SECRET_KEY,
                 endpoint_url=ENDPOINT_URL):
