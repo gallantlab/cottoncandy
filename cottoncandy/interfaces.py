@@ -39,7 +39,8 @@ from utils import (clean_object_name,
                    MAX_PUT_SIZE,
                    MAX_MPU_SIZE,
                    MAX_MPU_PARTS,
-                   SEPARATOR
+                   SEPARATOR,
+                   DEFAULT_ACL,
                    )
 
 import browser
@@ -174,7 +175,7 @@ class BasicInterface(InterfaceObject):
             exists = True
         return exists
 
-    def create_bucket(self, bucket_name, acl='authenticated-read'):
+    def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
         '''Create a new bucket'''
         self.connection.create_bucket(Bucket=bucket_name)
         self.get_bucket(bucket_name).set_acl(acl)
@@ -299,7 +300,7 @@ class BasicInterface(InterfaceObject):
             print_objects(object_list)
 
     @clean_object_name
-    def upload_object(self, object_name, body, acl='authenticated-read', **metadata):
+    def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
         obj = self.get_object(object_name)
         return obj.put(Body=body, ACL=acl, Metadata=metadata)
 
@@ -323,7 +324,7 @@ class BasicInterface(InterfaceObject):
         return s3_object.get()['Body'].read()
 
     def upload_from_file(self, flname, object_name=None,
-                         ExtraArgs=dict(ACL='authenticated-read')):
+                         ExtraArgs=dict(ACL=DEFAULT_ACL)):
         '''Upload a file to S3.
 
         Parameters
@@ -442,7 +443,7 @@ class BasicInterface(InterfaceObject):
         return mpu_response
 
     @clean_object_name
-    def upload_json(self, object_name, ddict, acl='authenticated-read', **metadata):
+    def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, **metadata):
         '''Upload a dict as a JSON using ``json.dumps``
 
         Parameters
@@ -473,7 +474,7 @@ class BasicInterface(InterfaceObject):
         return json.loads(obj.get()['Body'].read())
 
     @clean_object_name
-    def upload_pickle(self, object_name, data_object, acl='authenticated-read'):
+    def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL):
         '''Upload an object using cPickle: ``cPickle.dumps``
 
         Parameters
@@ -529,7 +530,7 @@ class ArrayInterface(BasicInterface):
         super(ArrayInterface, self).__init__(*args, **kwargs)
 
     @clean_object_name
-    def upload_npy_array(self, object_name, array, acl='authenticated-read', **metadata):
+    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL, **metadata):
         '''Upload a np.ndarray using ``np.save``
 
         This method creates a copy of the array in memory
@@ -577,7 +578,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, gzip=True, acl='authenticated-read', **metadata):
+    def upload_raw_array(self, object_name, array, gzip=True, acl=DEFAULT_ACL, **metadata):
         '''Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -676,7 +677,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def dict2cloud(self, object_name, array_dict, acl='authenticated-read',
+    def dict2cloud(self, object_name, array_dict, acl=DEFAULT_ACL,
                    verbose=True, **metadata):
         '''Upload an arbitrary depth dictionary containing arrays
 

@@ -11,6 +11,8 @@ from functools import wraps
 
 import numpy as np
 
+from . import options
+
 ##############################
 # Globals
 ##############################
@@ -20,13 +22,14 @@ import numpy as np
 # S3 AWS
 #---------
 MB = 2**20
-MIN_MPU_SIZE = 5*MB                # 5MB
-MAX_PUT_SIZE = 5000*MB             # 5GB
-MAX_MPU_SIZE = 5*MB*MB             # 5TB
-MAX_MPU_PARTS = 10000              # 10,000
+MIN_MPU_SIZE = int(options.config.get('upload_settings', 'min_mpu_size'))*MB # 5MB
+MAX_PUT_SIZE = int(options.config.get('upload_settings', 'max_put_size'))*MB # 5GB
+MAX_MPU_SIZE = int(options.config.get('upload_settings', 'max_mpu_size_TB'))*MB*MB # 5TB
+MAX_MPU_PARTS = int(options.config.get('upload_settings', 'max_mpu_parts')) # 10,000
 
+SEPARATOR = options.config.get('basic', 'path_separator')
 
-SEPARATOR = '/'
+DEFAULT_ACL = options.config.get('basic', 'default_object_permissions')
 
 
 ##############################
