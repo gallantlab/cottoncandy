@@ -33,6 +33,16 @@ SEPARATOR = '/'
 # misc functions
 ##############################
 
+def string2bool(mstring):
+    '''
+    '''
+    val = False
+    if mstring in ['True','true', 'tru', 't',
+                   'y','yes', '1']:
+        val = True
+    return val
+
+
 def bytes2human(nbytes):
     '''Return string representation of bytes.
 
