@@ -3,14 +3,24 @@ __all__ = []
 
 from .browser import BrowserObject
 from .interfaces import InterfaceObject
+from .utils import string2bool
 
 from . import options
 
+
+ACCESS_KEY = options.config.get('login', 'access_key')
+SECRET_KEY = options.config.get('login', 'secret_key')
+ENDPOINT_URL = options.config.get('login', 'endpoint_url')
+
+bucket_name = options.config.get('basic', 'default_bucket')
+force_bucket_creation = options.config.get('basic', 'force_bucket_creation')
+force_bucket_creation = string2bool(force_bucket_creation)
+
 def get_interface(bucket_name,
-                  ACCESS_KEY=False,
-                  SECRET_KEY=False,
-                  endpoint_url='https://s3.amazonaws.com',
-                  force_bucket_creation=False,
+                  ACCESS_KEY=ACCESS_KEY,
+                  SECRET_KEY=SECRET_KEY,
+                  endpoint_url=ENDPOINT_URL,
+                  force_bucket_creation=force_bucket_creation,
                   verbose=True):
     '''Return an interface to S3.
 
@@ -46,9 +56,9 @@ def get_interface(bucket_name,
 
 
 def get_browser(bucket_name,
-                ACCESS_KEY=False,
-                SECRET_KEY=False,
-                endpoint_url=None):
+                ACCESS_KEY=ACCESS_KEY,
+                SECRET_KEY=SECRET_KEY,
+                endpoint_url=ENDPOINT_URL):
     """Get an object that allows you to tab-complete your
     way through your objects
 
