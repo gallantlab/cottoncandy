@@ -4,6 +4,8 @@ __all__ = []
 from .browser import BrowserObject
 from .interfaces import InterfaceObject
 
+from . import options
+
 def get_interface(bucket_name,
                   ACCESS_KEY=False,
                   SECRET_KEY=False,
