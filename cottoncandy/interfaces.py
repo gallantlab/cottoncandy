@@ -39,6 +39,9 @@ from utils import (clean_object_name,
                    MAX_PUT_SIZE,
                    MAX_MPU_SIZE,
                    MAX_MPU_PARTS,
+                   MPU_THRESHOLD,
+                   MPU_CHUNKSIZE,
+                   DASK_CHUNKSIZE,
                    SEPARATOR,
                    DEFAULT_ACL,
                    )
@@ -362,7 +365,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def mpu_fileobject(self, object_name, file_object,
-                       buffersize=100*MB, verbose=True, **metadata):
+                       buffersize=MPU_CHUNKSIZE, verbose=True, **metadata):
         '''Multi-part upload for a python file-object.
 
         This automatically creates a multipart upload of an object.
@@ -631,7 +634,7 @@ class ArrayInterface(BasicInterface):
             data_nbytes = array.nbytes
             fl = StringIO(array.data)
 
-        if data_nbytes > 100*MB:
+        if data_nbytes > MPU_THRESHOLD:
             response = self.mpu_fileobject(object_name, fl, **meta)
         else:
             response = self.get_object(object_name).put(Body=fl, ACL=acl, Metadata=meta)
@@ -763,7 +766,7 @@ class ArrayInterface(BasicInterface):
         return S3Directory(object_root, interface=self)
 
     @clean_object_name
-    def upload_dask_array(self, object_name, arr, axis=-1, buffersize=100*MB, **metakwargs):
+    def upload_dask_array(self, object_name, arr, axis=-1, buffersize=DASK_CHUNKSIZE, **metakwargs):
         '''Upload an array in chunks and store the metadata to reconstruct
         the complete matrix with ``dask``.
 

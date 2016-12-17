@@ -26,6 +26,9 @@ MIN_MPU_SIZE = int(options.config.get('upload_settings', 'min_mpu_size'))*MB # 5
 MAX_PUT_SIZE = int(options.config.get('upload_settings', 'max_put_size'))*MB # 5GB
 MAX_MPU_SIZE = int(options.config.get('upload_settings', 'max_mpu_size_TB'))*MB*MB # 5TB
 MAX_MPU_PARTS = int(options.config.get('upload_settings', 'max_mpu_parts')) # 10,000
+MPU_THRESHOLD = int(options.config.get('upload_settings', 'mpu_use_threshold'))*MB
+MPU_CHUNKSIZE = int(options.config.get('upload_settings', 'mpu_chunksize'))*MB
+DASK_CHUNKSIZE = int(options.config.get('upload_settings', 'dask_chunksize'))*MB
 
 SEPARATOR = options.config.get('basic', 'path_separator')
 
