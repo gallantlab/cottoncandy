@@ -83,6 +83,7 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Welcome to cottoncandy!</a><ul>
 <li><a class="reference internal" href="#what-is-cottoncandy">What is cottoncandy?</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#getting-started">Getting started</a><ul>
 <li><a class="reference internal" href="#storing-numpy-arrays">Storing numpy arrays</a></li>
 <li><a class="reference internal" href="#storing-dask-arrays">Storing dask arrays</a></li>
@@ -145,9 +146,20 @@
 <p>A python scientific library for storing and accessing numpy array data on S3. This is achieved by reading arrays from memory and downloading arrays directly into memory. This means that you don&#8217;t have to download your array to disk, and then load it from disk into your python session.</p>
 <p>This library relies heavily on boto3 (<a class="reference external" href="https://github.com/boto/boto3">https://github.com/boto/boto3</a>)</p>
 </div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Clone the repo from GitHub and do the usual python install</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/gallantlab/cottoncandy.git
+cd cottoncandy
+sudo python setup.py install
+</pre></div>
+</div>
+<p>A configuration file will be saved under <code class="docutils literal"><span class="pre">~/.config/cottoncandy/options.cfg</span></code>. Upon installation cottoncandy will try to find your AWS keys and store them in this file. See the <a class="reference external" href="https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg">default file</a> for more configuration options.</p>
+<p>Object and bucket permissions are set to <code class="docutils literal"><span class="pre">authenticated-read</span></code> by default. If you wish to keep all your objects private, modify the configuration file and set <code class="docutils literal"><span class="pre">default_acl</span> <span class="pre">=</span> <span class="pre">private</span></code>. See <a class="reference external" href="http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html">AWS ACL overview</a> for more information on S3 permissions.</p>
+</div>
 <div class="section" id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<p>Setup the connection:</p>
+<p>Setup the connection (endpoint, access and secret keys can be specified in the configuration file instead):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cottoncandy</span> <span class="kn">as</span> <span class="nn">cc</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cci</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">get_interface</span><span class="p">(</span><span class="s1">&#39;my_bucket&#39;</span><span class="p">,</span>
 <span class="go">                           ACCESS_KEY=&#39;FAKEACCESSKEYTEXT&#39;,</span>
@@ -246,7 +258,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Release:</th><td class="field-body">0.01a</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">November 30, 2016</td>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">December 21, 2016</td>
 </tr>
 </tbody>
 </table>

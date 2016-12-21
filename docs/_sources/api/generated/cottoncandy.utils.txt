@@ -87,5 +87,8 @@ Functions
 .. autofunction:: cottoncandy.utils.remove_trivial_magic
 
 
+.. autofunction:: cottoncandy.utils.string2bool
+
+
 .. autofunction:: cottoncandy.utils.unquote_names
 
