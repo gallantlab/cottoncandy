@@ -1,12 +1,26 @@
 import os
 import re
 import json
-import cPickle
-import urllib
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
+try:
+    from urllib import unquote
+except ImportError:
+    from urllib.parse import unquote
+
 import fnmatch
 from gzip import GzipFile
 from dateutil.tz import tzlocal
-from cStringIO import StringIO
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 import logging
 
 import boto3
@@ -20,33 +34,33 @@ from scipy.sparse import (coo_matrix,
                           bsr_matrix,
                           dia_matrix)
 
-from utils import (clean_object_name,
-                   has_magic,
-                   has_real_magic,
-                   remove_trivial_magic,
-                   remove_root,
-                   mk_aws_path,
-                   objects2names,
-                   unquote_names,
-                   print_objects,
-                   get_fileobject_size,
-                   read_buffered,
-                   GzipInputStream,
-                   generate_ndarray_chunks,
-                   bytes2human,
-                   MB,
-                   MIN_MPU_SIZE,
-                   MAX_PUT_SIZE,
-                   MAX_MPU_SIZE,
-                   MAX_MPU_PARTS,
-                   MPU_THRESHOLD,
-                   MPU_CHUNKSIZE,
-                   DASK_CHUNKSIZE,
-                   SEPARATOR,
-                   DEFAULT_ACL,
-                   )
+from cottoncandy.utils import (clean_object_name,
+                               has_magic,
+                               has_real_magic,
+                               remove_trivial_magic,
+                               remove_root,
+                               mk_aws_path,
+                               objects2names,
+                               unquote_names,
+                               print_objects,
+                               get_fileobject_size,
+                               read_buffered,
+                               GzipInputStream,
+                               generate_ndarray_chunks,
+                               bytes2human,
+                               MB,
+                               MIN_MPU_SIZE,
+                               MAX_PUT_SIZE,
+                               MAX_MPU_SIZE,
+                               MAX_MPU_PARTS,
+                               MPU_THRESHOLD,
+                               MPU_CHUNKSIZE,
+                               DASK_CHUNKSIZE,
+                               SEPARATOR,
+                               DEFAULT_ACL,
+                               )
 
-import browser
+import cottoncandy.browser
 
 
 #------------------
@@ -280,10 +294,10 @@ class BasicInterface(InterfaceObject):
         '''Show available buckets'''
         all_buckets = list(self.connection.buckets.all())
         timeformat = lambda x: x.creation_date.astimezone(tzlocal()).strftime
-        info = ['{0: <40} {1}'.format(urllib.unquote(t.name),
+        info = ['{0: <40} {1}'.format(unquote(t.name),
                                       timeformat(t)('%Y/%m/%d (%H:%M:%S)'))\
                 for t in all_buckets]
-        print '\n'.join(info)
+        print('\n'.join(info))
 
     @clean_object_name
     def get_object(self, object_name, bucket_name=None):
@@ -424,7 +438,7 @@ class BasicInterface(InterfaceObject):
                 buffersize += last_part_offset
             txt = (part_number, nparts, buffersize/(2.**20), nbytes_total/(2.**20))
             if verbose:
-                print 'Uploading %i/%i: %0.02fMB of %0.02fMB'%txt
+                print('Uploading %i/%i: %0.02fMB of %0.02fMB'%txt)
 
             data_chunk = file_object.read(buffersize)
             response = client.upload_part(Bucket=self.bucket_name,
@@ -478,7 +492,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL):
-        '''Upload an object using cPickle: ``cPickle.dumps``
+        '''Upload an object using pickle: ``pickle.dumps``
 
         Parameters
         ----------
@@ -486,11 +500,11 @@ class BasicInterface(InterfaceObject):
         data_object : object
         '''
         obj = self.get_object(object_name)
-        return obj.put(Body=cPickle.dumps(data_object), ACL=acl)
+        return obj.put(Body=pickle.dumps(data_object), ACL=acl)
 
     @clean_object_name
     def download_pickle(self, object_name):
-        '''Download a cPickle object
+        '''Download a pickle object
 
         Parameters
         ----------
@@ -502,7 +516,7 @@ class BasicInterface(InterfaceObject):
         '''
         assert self.exists_object(object_name)
         obj = self.get_object(object_name)
-        return cPickle.loads(obj.get()['Body'].read())
+        return pickle.loads(obj.get()['Body'].read())
 
 
 
@@ -735,7 +749,7 @@ class ArrayInterface(BasicInterface):
                 # TODO: allow non-array things
                 try:
                     arr = self.download_raw_array(path)
-                except KeyError, e:
+                except KeyError as e:
                     print('could not download "%s: missing %s from metadata"'%(path, e))
                     arr = None
                 datadict[subdir] = arr
@@ -808,7 +822,7 @@ class ArrayInterface(BasicInterface):
             chunk_arr = chunk_arr.copy()
             total_upload += chunk_arr.nbytes
             txt = (idx+1, total_upload/MB, arr.nbytes/np.float(MB))
-            print 'uploading %i: %0.02fMB/%0.02fMB'%txt
+            print('uploading %i: %0.02fMB/%0.02fMB'%txt)
 
             part_name = self.pathjoin(object_name, 'pt%04i'%idx)
             metadata['dask'].append((chunk_coord, part_name))
@@ -1115,7 +1129,7 @@ class FileSystemInterface(BasicInterface):
                                               page_size=page_size,
                                               limit=limit)
 
-        mapper = {urllib.unquote(obj.key):obj for obj in object_list}
+        mapper = {unquote(obj.key):obj for obj in object_list}
         object_names = mapper.keys()
 
         matches = fnmatch.filter(object_names, pattern)\
@@ -1260,7 +1274,8 @@ class FileSystemInterface(BasicInterface):
                 info = dict(map(lambda x: x.split(':'), info))
             else:
                 raise e
-        print info
+        print(info)
+
 
 class DefaultInterface(FileSystemInterface,
                        ArrayInterface,

@@ -2,23 +2,23 @@
 '''
 import os
 
-from utils import (clean_object_name,
-                   has_start_digit,
-                   has_magic,
-                   has_real_magic,
-                   has_trivial_magic,
-                   remove_trivial_magic,
-                   remove_root,
-                   mk_aws_path,
-                   objects2names,
-                   unquote_names,
-                   print_objects,
-                   get_fileobject_size,
-                   get_object_size,
-                   read_buffered,
-                   GzipInputStream,
-                   generate_ndarray_chunks,
-                   )
+from cottoncandy.utils import (clean_object_name,
+                               has_start_digit,
+                               has_magic,
+                               has_real_magic,
+                               has_trivial_magic,
+                               remove_trivial_magic,
+                               remove_root,
+                               mk_aws_path,
+                               objects2names,
+                               unquote_names,
+                               print_objects,
+                               get_fileobject_size,
+                               get_object_size,
+                               read_buffered,
+                               GzipInputStream,
+                               generate_ndarray_chunks,
+                               )
 
 
 
