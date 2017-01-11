@@ -737,7 +737,7 @@ class ArrayInterface(BasicInterface):
         datadict  : dict
             An arbitrary depth dictionary.
         '''
-        from .browser import S3Directory
+        from cottoncandy.browser import S3Directory
         ob = S3Directory(object_root, interface=self)
 
         datadict = {}
@@ -776,7 +776,7 @@ class ArrayInterface(BasicInterface):
             This can be conceptualized as implementing an h5py/pytables
             object with ``load()`` and ``keys()`` methods.
         '''
-        from .browser import S3Directory
+        from cottoncandy.browser import S3Directory
         return S3Directory(object_root, interface=self)
 
     @clean_object_name
@@ -1159,7 +1159,7 @@ class FileSystemInterface(BasicInterface):
 
         See documentation for ``cottoncandy.get_browser``
         '''
-        return browser.S3Directory('', interface=self)
+        return cottoncandy.browser.S3Directory('', interface=self)
 
     def cp(self, source_name, dest_name,
            source_bucket=None, dest_bucket=None, overwrite=False):
