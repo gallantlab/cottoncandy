@@ -33,7 +33,7 @@ DASK_CHUNKSIZE = int(options.config.get('upload_settings', 'dask_chunksize'))*MB
 SEPARATOR = options.config.get('basic', 'path_separator')
 
 DEFAULT_ACL = options.config.get('basic', 'default_acl')
-
+MANDATORY_BUCKET_PREFIX = options.config.get('basic', 'mandatory_bucket_prefix')
 
 ##############################
 # misc functions

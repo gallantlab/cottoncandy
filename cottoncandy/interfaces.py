@@ -58,6 +58,7 @@ from cottoncandy.utils import (clean_object_name,
                                DASK_CHUNKSIZE,
                                SEPARATOR,
                                DEFAULT_ACL,
+                               MANDATORY_BUCKET_PREFIX,
                                )
 
 import cottoncandy.browser
@@ -194,9 +195,13 @@ class BasicInterface(InterfaceObject):
 
     def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
         '''Create a new bucket'''
-        self.connection.create_bucket(Bucket=bucket_name)
-        self.get_bucket(bucket_name).set_acl(acl)
+        if MANDATORY_BUCKET_PREFIX:
+            tt = len(MANDATORY_BUCKET_PREFIX)
+            assert bucket_name[:tt] == MANDATORY_BUCKET_PREFIX
+
+        self.connection.create_bucket(Bucket=bucket_name, ACL=acl)
         self.set_bucket(bucket_name)
+
 
     def set_bucket(self, bucket_name):
         '''Bucket to use'''
