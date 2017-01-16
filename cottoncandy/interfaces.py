@@ -202,7 +202,6 @@ class BasicInterface(InterfaceObject):
         self.connection.create_bucket(Bucket=bucket_name, ACL=acl)
         self.set_bucket(bucket_name)
 
-
     def set_bucket(self, bucket_name):
         '''Bucket to use'''
         if not self.exists_bucket(bucket_name):
