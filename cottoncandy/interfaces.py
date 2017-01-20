@@ -437,7 +437,7 @@ class BasicInterface(InterfaceObject):
         if verbose:
             print('MPU: %0.02fMB file in %i parts'%(nbytes_total/(2.**20), nparts))
 
-        for chunk_idx in xrange(nparts):
+        for chunk_idx in range(nparts):
             part_number = chunk_idx + 1
             if part_number == nparts:
                 buffersize += last_part_offset
@@ -836,7 +836,7 @@ class ArrayInterface(BasicInterface):
 
         # convert to dask convention (sorry)
         details = [t[0] for t in metadata['dask']]
-        dimension_sizes = [dict() for idx in xrange(arr.ndim)]
+        dimension_sizes = [dict() for idx in range(arr.ndim)]
         for dim, chunks in enumerate(zip(*details)):
             for sample_idx, chunk_idx in enumerate(chunks):
                 if chunk_idx not in dimension_sizes[dim]:
