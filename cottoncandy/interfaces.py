@@ -48,6 +48,7 @@ from cottoncandy.utils import (clean_object_name,
                                GzipInputStream,
                                generate_ndarray_chunks,
                                bytes2human,
+                               string2bool,
                                MB,
                                MIN_MPU_SIZE,
                                MAX_PUT_SIZE,
@@ -59,6 +60,7 @@ from cottoncandy.utils import (clean_object_name,
                                SEPARATOR,
                                DEFAULT_ACL,
                                MANDATORY_BUCKET_PREFIX,
+                               ISBOTO_VERBOSE,
                                )
 
 import cottoncandy.browser
@@ -113,13 +115,13 @@ class BasicInterface(InterfaceObject):
                 self.bucket_name = None
 
         if verbose:
-            logging.getLogger('boto3').setLevel(logging.INFO)
-            logging.getLogger('botocore').setLevel(logging.INFO)
             print('Available buckets:')
             self.show_buckets()
-        else:
+
+        if string2bool(ISBOTO_VERBOSE) is False:
             logging.getLogger('boto3').setLevel(logging.WARNING)
             logging.getLogger('botocore').setLevel(logging.WARNING)
+
 
     def __repr__(self):
         details = (__package__, self.bucket_name, self.url)
