@@ -21,7 +21,8 @@ def get_interface(bucket_name=default_bucket,
                   SECRET_KEY=SECRET_KEY,
                   endpoint_url=ENDPOINT_URL,
                   force_bucket_creation=force_bucket_creation,
-                  verbose=True):
+                  verbose=True,
+				  backend = 's3'):
     '''Return an interface to S3.
 
     Parameters
@@ -34,6 +35,8 @@ def get_interface(bucket_name=default_bucket,
         The S3 secret key
     url : str
         The URL for the S3 gateway
+    backend : 's3'|'gdrive'
+    	What backend to hook on to
 
     Returns
     -------
@@ -51,7 +54,8 @@ def get_interface(bucket_name=default_bucket,
                                  SECRET_KEY,
                                  endpoint_url,
                                  force_bucket_creation,
-                                 verbose=verbose)
+                                 verbose=verbose,
+								 backend = backend)
     return interface
 
 
