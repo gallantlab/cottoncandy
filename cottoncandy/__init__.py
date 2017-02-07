@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import os
 __all__ = []
 
 from .browser import BrowserObject
@@ -22,7 +23,7 @@ def get_interface(bucket_name=default_bucket,
                   endpoint_url=ENDPOINT_URL,
                   force_bucket_creation=force_bucket_creation,
                   verbose=True,
-				  backend = 's3'):
+                  backend = 's3'):
     '''Return an interface to S3.
 
     Parameters
@@ -36,7 +37,7 @@ def get_interface(bucket_name=default_bucket,
     url : str
         The URL for the S3 gateway
     backend : 's3'|'gdrive'
-    	What backend to hook on to
+        What backend to hook on to
 
     Returns
     -------
@@ -49,13 +50,17 @@ def get_interface(bucket_name=default_bucket,
         from .utils import get_keys
         ACCESS_KEY, SECRET_KEY = get_keys()
 
+    if backend == 'gdrive':
+        ACCESS_KEY = os.path.join(options.userdir, options.config.get('gdrive', 'secrets'))
+        SECRET_KEY = os.path.join(options.userdir, options.config.get('gdrive', 'credentials'))
+
     interface = DefaultInterface(bucket_name,
                                  ACCESS_KEY,
                                  SECRET_KEY,
                                  endpoint_url,
                                  force_bucket_creation,
                                  verbose=verbose,
-								 backend = backend)
+                                 backend = backend)
     return interface
 
 

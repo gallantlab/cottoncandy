@@ -758,3 +758,19 @@ class GDriveClient(CCBackEnd):
 		if ipython is None:
 			return
 		ipython.set_hook('complete_command', self.completer, re_key = r'(?:.*\=)?(.+?)(\.(ls|cd|Download|rm|DownloadRawArray|DownloadStream|mv|rename|CheckFileExists|CheckIDExists))\([\'"].*')
+
+	#### For more informative errors
+	def CheckBucketExists(self):
+		raise NotS3Error
+
+	def CreateBucket(self):
+		raise NotS3Error
+
+	def SetBucket(self):
+		raise NotS3Error
+
+	def GetBucket(self):
+		raise NotS3Error
+
+	def _get_bucket_name(self, b):
+		raise NotS3Error

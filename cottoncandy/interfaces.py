@@ -1,5 +1,3 @@
-import os
-import re
 import json
 
 try:
@@ -14,7 +12,6 @@ except ImportError:
 
 import fnmatch
 from gzip import GzipFile
-from dateutil.tz import tzlocal
 
 try:
     from cStringIO import StringIO
@@ -23,10 +20,6 @@ except ImportError:
 
 import logging
 
-import boto3
-import botocore
-from botocore.utils import fix_s3_host
-
 import numpy as np
 from scipy.sparse import (coo_matrix,
                           csr_matrix,
@@ -34,39 +27,11 @@ from scipy.sparse import (coo_matrix,
                           bsr_matrix,
                           dia_matrix)
 
-from cottoncandy.utils import (clean_object_name,
-                               has_magic,
-                               has_real_magic,
-                               remove_trivial_magic,
-                               remove_root,
-                               mk_aws_path,
-                               objects2names,
-                               unquote_names,
-                               print_objects,
-                               get_fileobject_size,
-                               read_buffered,
-                               GzipInputStream,
-                               generate_ndarray_chunks,
-                               bytes2human,
-                               string2bool,
-                               MB,
-                               MIN_MPU_SIZE,
-                               MAX_PUT_SIZE,
-                               MAX_MPU_SIZE,
-                               MAX_MPU_PARTS,
-                               MPU_THRESHOLD,
-                               MPU_CHUNKSIZE,
-                               DASK_CHUNKSIZE,
-                               SEPARATOR,
-                               DEFAULT_ACL,
-                               MANDATORY_BUCKET_PREFIX,
-                               ISBOTO_VERBOSE,
-                               )
-
 import cottoncandy.browser
 
 from S3Client import *
 from GDriveClient import *
+from utils import *
 
 
 # ------------------
@@ -82,7 +47,7 @@ class BasicInterface(InterfaceObject):
     """
 
     def __init__(self, bucket_name,
-                 ACCESS_KEY, SECRET_KEY, url,
+                 ACCESS_KEY, SECRET_KEY, url = None,
                  force_bucket_creation = False,
                  verbose = True, backend = 's3'):
         """
