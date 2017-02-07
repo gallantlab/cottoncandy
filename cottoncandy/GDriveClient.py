@@ -275,6 +275,15 @@ class GDriveClient(CCBackEnd):
 		"""
 
 		# TODO: renaming in mv
+		originDir = re.match('.*/', file)
+		destDir = re.match('.*/', destination)
+		if originDir is destDir:
+			print('renaming using move is not supported yet. use the .rename method')
+			return False
+		if originDir.group(0) == destDir.group(0):
+			print('renaming using move is not supported yet. use the .rename method')
+			return False
+
 		return self.UpdateMetadata(file, {'parents': [{'id': self.GetIDByName(destination)}]})
 
 	def rename(self, file, newName):
@@ -320,7 +329,7 @@ class GDriveClient(CCBackEnd):
 			f = self.drive.CreateFile({'id': fileID})
 			f.FetchMetadata()
 			if f.metadata['mimeType'] == 'application/vnd.google-apps.folder' and not recursive:
-				print('Is folder and recursive delete is selected')
+				print('Is folder and recursive delete is not selected')
 				return False
 			if delete:
 				f.Delete()
@@ -705,6 +714,12 @@ class GDriveClient(CCBackEnd):
 			print(e.__str__())
 			return False
 
+	@property
+	def size(self):
+		files = self.drive.ListFile({'q': "trashed=false"}).GetList()
+		sizes = [f.metadata['size'] for f in files]
+		return sum(sizes)
+
 	def completer(self, context, event):
 		"""
 		IPython autocompleter calculations.
@@ -729,7 +744,7 @@ class GDriveClient(CCBackEnd):
 			if directory is not None:
 				if not self.cd(directory):  # if the directory doesn't actually exist, return empty list
 					return []
-			items = self.ListItems(True)
+			items = self.ListObjects(True)
 			if directory is not None:
 				self.currentDirectoryObj = curDirObj
 				self.RebuildPWD()
@@ -739,7 +754,7 @@ class GDriveClient(CCBackEnd):
 			# print(out)
 			return out
 		else:
-			items = self.ListItems(True)
+			items = self.ListObjects(True)
 
 			if path is None:
 				return items
@@ -770,6 +785,15 @@ class GDriveClient(CCBackEnd):
 		raise NotS3Error
 
 	def GetBucket(self):
+		raise NotS3Error
+
+	def ShowBuckets(self):
+		raise NotS3Error
+
+	def GetS3Object(self, o, b):
+		raise NotS3Error
+
+	def GetBucketSize(self):
 		raise NotS3Error
 
 	def _get_bucket_name(self, b):

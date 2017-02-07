@@ -90,7 +90,7 @@ class CCBackEnd(object):
 
 		Returns
 		-------
-
+		CloudStream object
 		"""
 		raise AbstractMethod
 
@@ -155,6 +155,10 @@ class CCBackEnd(object):
 		-------
 
 		"""
+		raise AbstractMethod
+
+	@property
+	def size(self):
 		raise AbstractMethod
 
 class CloudStream(object):

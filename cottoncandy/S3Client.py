@@ -88,17 +88,17 @@ class S3Client(CCBackEnd):
 		return bucket_name
 
 	@clean_object_name
-	def CheckFileExists(self, object_name, bucket_name = None):
+	def CheckFileExists(self, fileName, bucket_name = None):
 		"""Check whether object exists in bucket
 
 		Parameters
 		----------
-		object_name : str
+		fileName : str
 			The object name
 		bucket_name
 		"""
 		bucket_name = self.GetBucketName(bucket_name)
-		ob = self.connection.Object(key = object_name, bucket_name = bucket_name)
+		ob = self.connection.Object(key = fileName, bucket_name = bucket_name)
 
 		try:
 			ob.load()
@@ -152,7 +152,7 @@ class S3Client(CCBackEnd):
 			assert bucket_name[:tt] == MANDATORY_BUCKET_PREFIX
 
 		self.connection.CreateBucket(Bucket = bucket_name, ACL = acl)
-		self.set_bucket(bucket_name)
+		self.SetBucket(bucket_name)
 
 	def SetBucket(self, bucket_name):
 		"""
@@ -229,6 +229,10 @@ class S3Client(CCBackEnd):
 		response = request.all()
 		return response
 
+	@property
+	def size(self):
+		return self.GetBucketSize()
+
 	def GetBucketSize(self, limit = 10 ** 6, page_size = 10 ** 6):
 		"""
 		Counts the size of all objects in the current bucket.
@@ -254,7 +258,7 @@ class S3Client(CCBackEnd):
 		TODO(anunez): Remove this note when the bug is fixed.
 		"""
 		assert self.CheckBucketExists(self.bucket_name)
-		obs = self.get_bucket_objects(limit = limit, page_size = page_size)
+		obs = self.ListObjects(limit = limit, page_size = page_size)
 		object_sizes = [t.size for t in obs]
 		total_bytes = sum(object_sizes)
 		num_objects = len(object_sizes)
@@ -280,13 +284,13 @@ class S3Client(CCBackEnd):
 		print('\n'.join(info))
 
 	@clean_object_name
-	def GetS3Object(self, object_name, bucket_name = None):
+	def GetS3Object(self, fileName, bucket_name = None):
 		"""
 		Get a boto3 object. Create it if it doesn't exist
 
 		Parameters
 		----------
-		object_name
+		fileName
 		bucket_name
 
 		Returns
@@ -294,7 +298,7 @@ class S3Client(CCBackEnd):
 
 		"""
 		bucket_name = self.GetBucketName(bucket_name)
-		return self.connection.Object(bucket_name = bucket_name, key = object_name)
+		return self.connection.Object(bucket_name = bucket_name, key = fileName)
 
 	def show_objects(self, limit = 1000, page_size = 1000):
 		"""
@@ -317,13 +321,13 @@ class S3Client(CCBackEnd):
 			object_list = self.ListObjects(limit = limit, page_size = page_size * 100)
 			print_objects(object_list)
 
-	def UploadStream(self, body, object_name, metadata, acl = DEFAULT_ACL):
+	def UploadStream(self, body, fileName, metadata, acl = DEFAULT_ACL):
 		"""
 		Uploads a stream
 
 		Parameters
 		----------
-		object_name
+		fileName
 		body : stream
 		acl
 		metadata
@@ -332,36 +336,36 @@ class S3Client(CCBackEnd):
 		-------
 
 		"""
-		obj = self.GetS3Object(object_name)
+		obj = self.GetS3Object(fileName)
 		return obj.put(Body = body, ACL = acl, Metadata = metadata)
 
-	def DownloadStream(self, object_name):
+	def DownloadStream(self, fileName):
 		"""
 		Download object raw data.
 		This simply calls the object body ``read()`` method.
 
 		Parameters
 		---------
-		object_name : str
+		fileName : str
 
 		Returns
 		-------
 		stream
 			file-like stream of object data
 		"""
-		if not self.CheckFileExists(object_name):
-			raise IOError('Object "%s" does not exist' % object_name)
-		s3_object = self.GetS3Object(object_name)
+		if not self.CheckFileExists(fileName):
+			raise IOError('Object "%s" does not exist' % fileName)
+		s3_object = self.GetS3Object(fileName)
 		return CloudStream(s3_object.get()['Body'], s3_object.metadata)
 
-	def UploadFile(self, fileName, object_name = None, acl = DEFAULT_ACL):
+	def UploadFile(self, fileName, cloudFileName = None, acl = DEFAULT_ACL):
 		"""Upload a file to S3.
 
 		Parameters
 		----------
 		fileName : str
 			Absolute path of file to upload
-		object_name : str, None
+		cloudFileName : str, None
 			Name of uploaded object. If None, use
 			the full file name as the object name.
 		acl: ???
@@ -372,26 +376,26 @@ class S3Client(CCBackEnd):
 		response : boto3 response
 		"""
 		assert os.path.exists(fileName)
-		if object_name is None:
-			object_name = os.path.abspath(fileName)
-		object_name = remove_root(object_name)
-		s3_object = self.GetS3Object(object_name)
+		if fileName is None:
+			fileName = os.path.abspath(fileName)
+		fileName = remove_root(fileName)
+		s3_object = self.GetS3Object(cloudFileName)
 		return s3_object.upload_file(fileName, ExtraArgs = dict(ACL = acl))
 
-	def DownloadFile(self, object_name, fileName):
+	def DownloadFile(self, fileName, localFileName):
 		"""Download S3 object to a file
 
 		Parameters
 		----------
-		object_name : str
 		fileName : str
+		localFileName : str
 			Absolute path where the data will be downloaded on disk
 		"""
-		assert self.CheckFileExists(object_name)  # make sure object exists
-		s3_object = self.GetS3Object(object_name)
-		return s3_object.download_file(fileName)
+		assert self.CheckFileExists(fileName)  # make sure object exists
+		s3_object = self.GetS3Object(fileName)
+		return s3_object.download_file(localFileName)
 
-	def UploadMultiPart(self, object_name, file_object,
+	def UploadMultiPart(self, fileName, file_object,
 					   buffersize = MPU_CHUNKSIZE, verbose = True, **metadata):
 		"""Multi-part upload for a python file-object.
 
@@ -401,7 +405,7 @@ class S3Client(CCBackEnd):
 
 		Parameters
 		----------
-		object_name : str
+		fileName : str
 		file_object :
 			file-like python object (e.g. StringIO, file, etc)
 		buffersize  : int
@@ -414,7 +418,7 @@ class S3Client(CCBackEnd):
 		"""
 		client = self.connection.meta.client
 		mpu = client.create_multipart_upload(Bucket = self.bucket_name,
-											 Key = object_name,
+											 Key = fileName,
 											 Metadata = metadata)
 
 		# get size
@@ -455,7 +459,7 @@ class S3Client(CCBackEnd):
 
 			data_chunk = file_object.read(buffersize)
 			response = client.upload_part(Bucket = self.bucket_name,
-										  Key = object_name,
+										  Key = fileName,
 										  UploadId = mpu['UploadId'],
 										  PartNumber = part_number,
 										  Body = data_chunk)
@@ -467,7 +471,28 @@ class S3Client(CCBackEnd):
 
 		# finalize
 		mpu_response = client.complete_multipart_upload(Bucket = self.bucket_name,
-														Key = object_name,
+														Key = fileName,
 														UploadId = mpu['UploadId'],
 														MultipartUpload = mpu_info)
 		return mpu_response
+
+	def Copy(self, source, destination, sourceBucket, destinationBucket, overwrite):
+		source_bucket = self.GetBucketName(sourceBucket)
+		dest_bucket = source_bucket if (destinationBucket is None) else destinationBucket
+		dest_bucket = self.GetBucketName(dest_bucket)
+
+		assert self.CheckFileExists(source, bucket_name = source_bucket)
+		ob_new = self.GetS3Object(destination, bucket_name = dest_bucket)
+
+		if self.CheckFileExists(ob_new.key, bucket_name = dest_bucket):
+			assert overwrite is True
+
+		fpath = PathJoin(source_bucket, source)
+		ob_new.copy_from(CopySource = fpath)
+		return ob_new
+
+	def Move(self, source, destination, sourceBucket, destinationBucket, overwrite):
+		new_ob = self.Copy(source, destination, sourceBucket, destinationBucket, overwrite)
+		old_ob = self.GetS3Object(source, bucket_name = sourceBucket)
+		old_ob.delete()
+		return new_ob

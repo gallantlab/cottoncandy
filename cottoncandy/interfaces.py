@@ -103,15 +103,7 @@ class BasicInterface(InterfaceObject):
         If any component is an absolute path, all previous path components
         will be discarded.  An empty last part will result in a path that
         ends with a separator."""
-        path = a
-        for b in p:
-            if b.startswith(SEPARATOR):
-                path = b
-            elif path == '' or path.endswith(SEPARATOR):
-                path += b
-            else:
-                path += SEPARATOR + b
-        return path
+        return PathJoin(a, *p)
 
     def _get_bucket_name(self, bucket_name):
         return self.interface._get_bucket_name(bucket_name)
@@ -201,7 +193,7 @@ class BasicInterface(InterfaceObject):
         TODO(anunez): Remove this note when the bug is fixed.
         """
         # TODO: gdrive?
-        return self.interface.GetBucketSize()
+        return self.interface.size
 
     def show_buckets(self):
         """Show available buckets"""
@@ -211,7 +203,7 @@ class BasicInterface(InterfaceObject):
     def get_object(self, object_name, bucket_name = None):
         """Get a boto3 object. Create it if it doesn't exist"""
         # TODO: should this be here? this is an s3-specific action
-        # NOTE: keeping this in case outside code is still using this.
+        # NOTE: keeping this in case outside code is using this.
         return self.interface.GetS3Object()
 
     def show_objects(self, limit = 1000, page_size = 1000):
@@ -1019,19 +1011,7 @@ class FileSystemInterface(BasicInterface):
             Whether to overwrite the `dest_name` object if it already exists
         """
         # TODO: support directories
-        source_bucket = self._get_bucket_name(source_bucket)
-        dest_bucket = source_bucket if (dest_bucket is None) else dest_bucket
-        dest_bucket = self._get_bucket_name(dest_bucket)
-
-        assert self.exists_object(source_name, bucket_name = source_bucket)
-        ob_new = self.get_object(dest_name, bucket_name = dest_bucket)
-
-        if self.exists_object(ob_new.key, bucket_name = dest_bucket):
-            assert overwrite is True
-
-        fpath = self.pathjoin(source_bucket, source_name)
-        ob_new.copy_from(CopySource = fpath)
-        return ob_new
+        return self.interface.Copy(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
     def mv(self, source_name, dest_name,
            source_bucket = None, dest_bucket = None, overwrite = False):
@@ -1053,15 +1033,9 @@ class FileSystemInterface(BasicInterface):
             Whether to overwrite the `dest_name` object if it already exists.
         """
         # TODO: Support directories
-        new_ob = self.cp(source_name, dest_name,
-                         source_bucket = source_bucket,
-                         dest_bucket = dest_bucket,
-                         overwrite = overwrite)
-        old_ob = self.get_object(source_name, bucket_name = source_bucket)
-        old_ob.delete()
-        return new_ob
+        return self.interface.Move(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
-    def rm(self, object_name, recursive = False, delete = False):
+    def rm(self, object_name, recursive = False, delete = True):
         """Delete an object, or a subtree ('path/to/stuff').
 
         Parameters
@@ -1069,9 +1043,11 @@ class FileSystemInterface(BasicInterface):
         object_name : str
             The name of the object to delete. It can also
             be a subtree
-        recursive : str
+        recursive : bool
             When deleting a subtree, set ``recursive=True``. This is
             similar in behavior to 'rm -r /path/to/directory'.
+        delete : bool
+        	When in google drive, actually delete the file or only trash it?
 
         Example
         -------
@@ -1083,6 +1059,11 @@ class FileSystemInterface(BasicInterface):
         >>> cci.rm('data/experiment', recursive=True)
         deleting 15 objects...
         """
+
+        if isinstance(self.interface, GDriveClient):
+            return self.interface.Delete(object_name, recursive, delete)
+
+
         if self.exists_object(object_name):
             return self.get_object(object_name).delete()
 

@@ -41,6 +41,17 @@ ISBOTO_VERBOSE = options.config.get('login', 'verbose_boto')
 # misc functions
 ##############################
 
+def PathJoin(a, *p):
+    path = a
+    for b in p:
+        if b.startswith(SEPARATOR):
+            path = b
+        elif path == '' or path.endswith(SEPARATOR):
+            path += b
+        else:
+            path += SEPARATOR + b
+    return path
+
 def string2bool(mstring):
     '''
     '''
