@@ -5,7 +5,7 @@ from pydrive.files import GoogleDriveFile, FileNotUploadedError, ApiRequestError
 from base64 import b64decode, b64encode
 
 from Encryption import RSAAESEncryption
-from CCBackEnd import *
+from ICottoncandyBackend import *
 import sys
 import re
 import xmltodict
@@ -30,7 +30,7 @@ class NotS3Error(RuntimeError):
 	"""This is not an S3 backend"""
 
 
-class GDriveClient(CCBackEnd):
+class GDriveClient(ICottoncandyBackend):
 	"""
 	Google Drive client based on PyDrive, which is based on google apis.
 	To use, you need to enable gdrive APIs and make an OAuth2 id
@@ -157,6 +157,19 @@ class GDriveClient(CCBackEnd):
 		"""
 		print(self.dir)
 		return None
+
+	def ListDirectory(self, path, limit):
+		if path is not None:
+			path = re.sub('^\./', '', path)
+		curDirObj = self.currentDirectoryObj
+		if path is not None and len(path) > 0:
+			if not self.cd(path):
+				return
+		list = self.ListObjects(namesOnly = True)
+		if path is not None:
+			self.currentDirectoryObj = curDirObj
+			self.RebuildPWD()
+		return list
 
 	def ls(self, directory = None):
 		"""
@@ -308,6 +321,7 @@ class GDriveClient(CCBackEnd):
 		@param copyName: 		str, name of copy
 		@return:
 		"""
+		# TODO: directory copying and deep/shallowness
 		original = self.GetFileByName(originalName)
 		self.UploadStream(copyName, original.content)
 		copyID = self.GetIDByName(copyName)

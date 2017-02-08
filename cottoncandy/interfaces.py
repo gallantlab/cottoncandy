@@ -32,10 +32,11 @@ import cottoncandy.browser
 from S3Client import *
 from GDriveClient import *
 from utils import *
+from warnings import warn
 
 
 # ------------------
-# S3 Interfaces
+# Cloud Interfaces
 # ------------------
 
 class InterfaceObject(object):
@@ -81,7 +82,6 @@ class BasicInterface(InterfaceObject):
         else:
             raise ValueError('Bad backend')
 
-
         if verbose:
             if backend == 's3':
                 print('Available buckets:')
@@ -115,7 +115,6 @@ class BasicInterface(InterfaceObject):
         else:
             print('Google drive has no concept of buckets')
             return None
-
 
     @clean_object_name
     def exists_object(self, object_name, bucket_name = None):
@@ -166,7 +165,21 @@ class BasicInterface(InterfaceObject):
         If you get a 'PaginationError', this means you have
         a lot of items on your bucket and should increase ``page_size``
         """
-        # TODO: gdrive?
+        warn('Deprecated. Use get_objects() instead', DeprecationWarning)
+        return self.interface.ListObjects(**kwargs)
+
+    def get_objects(self, **kwargs):
+        """
+        Like get_bucket_objects, but more aptly named to the generic interface
+        Parameters
+        ----------
+        self
+        kwargs
+
+        Returns
+        -------
+
+        """
         return self.interface.ListObjects(**kwargs)
 
     def get_bucket_size(self, limit = 10 ** 6, page_size = 10 ** 6):
@@ -192,7 +205,20 @@ class BasicInterface(InterfaceObject):
         suspicious round numbers.
         TODO(anunez): Remove this note when the bug is fixed.
         """
-        # TODO: gdrive?
+        warn('Deprecated, use get_size() instead', DeprecationWarning)
+        return self.interface.size
+
+    def get_size(self):
+        """
+        Gets the total size of the current container of objects. Generic naming.
+        Parameters
+        ----------
+        self
+
+        Returns
+        -------
+
+        """
         return self.interface.size
 
     def show_buckets(self):
@@ -204,11 +230,24 @@ class BasicInterface(InterfaceObject):
         """Get a boto3 object. Create it if it doesn't exist"""
         # TODO: should this be here? this is an s3-specific action
         # NOTE: keeping this in case outside code is using this.
-        return self.interface.GetS3Object()
+        return self.interface.GetS3Object(object_name, bucket_name)
 
     def show_objects(self, limit = 1000, page_size = 1000):
         """Print objects in the current bucket"""
-        self.interface.ListObjects()
+        if isinstance(self.interface, S3Client):
+            object_list = self.interface.ListObjects(limit, page_size)
+            try:
+                print_objects(object_list)
+            except botocore.exceptions.PaginationError:
+                print('Loads of objects in "%s". Increasing page_size by 100x...' % self.bucket_name)
+                object_list = self.interface.ListObjects(limit = limit, page_size = page_size * 100)
+                print_objects(object_list)
+        else:
+            driveFiles = self.interface.drive.ListFile({'q': "trashed=false"}).GetList()
+            object_list = [df['title'] for df in driveFiles]
+            for obj in object_list:
+                # TODO: also print last modified date and whatever else to match s3
+                print(obj)
 
     @clean_object_name
     def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
@@ -294,7 +333,6 @@ class BasicInterface(InterfaceObject):
         ddict : dict to upload
         metadata : dict, optional
         """
-        # TODO: abstract away
         json_data = json.dumps(ddict)
         return self.interface.UploadStream(json_data, object_name, metadata, acl)
 
@@ -311,7 +349,6 @@ class BasicInterface(InterfaceObject):
         json_data : dict
             Dictionary representation of JSON file
         """
-        # TODO: abstract away
         assert self.exists_object(object_name)
         obj = self.interface.DownloadStream(object_name)
         return json.loads(obj.content.read())
@@ -325,7 +362,6 @@ class BasicInterface(InterfaceObject):
         object_name : str
         data_object : object
         """
-        # TODO: abstract away
         return self.interface.UploadStream(pickle.dumps(data_object), object_name, None, acl)
 
     @clean_object_name
@@ -340,7 +376,6 @@ class BasicInterface(InterfaceObject):
         -------
         data_object : object
         """
-        # TODO: abstract away
         assert self.exists_object(object_name)
         obj = self.interface.DownloadStream(object_name)
         return pickle.loads(obj.content.read())
@@ -392,12 +427,11 @@ class ArrayInterface(BasicInterface):
         :func:`upload_raw_array` which is more efficient
         """
         # TODO: check array.dtype.hasobject
-        # TODO: abstract away
         arr_strio = StringIO()
         np.save(arr_strio, array)
         arr_strio.reset()
         try:
-            response = self.interface.UploadStream(arr_strio.read(), object_name, metadata, acl)
+            response = self.interface.UploadStream(arr_strio, object_name, metadata, acl)
         except OverflowError:
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
         return response
@@ -416,7 +450,7 @@ class ArrayInterface(BasicInterface):
         """
         # TODO: abstract away
         assert self.exists_object(object_name)
-        array = np.load(StringIO(self.interface.DownloadStream(object_name).content).read())
+        array = np.load(StringIO(self.interface.DownloadStream(object_name).content.read()).read())
         return array
 
     @clean_object_name
@@ -499,7 +533,6 @@ class ArrayInterface(BasicInterface):
         The object must have metadata containing: shape, dtype and a gzip
         boolean flag. This is all automatically handled by ``upload_raw_array``.
         """
-        # TODO: abstract away
         assert self.exists_object(object_name)
         arrayStream = self.interface.DownloadStream(object_name)
 
@@ -809,38 +842,7 @@ class FileSystemInterface(BasicInterface):
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
     def lsdir(self, path = '/', limit = 10 ** 3):
-        """List the contents of a "directory"
-
-        Parameters
-        ----------
-        path : str (default: "/")
-
-        Returns
-        -------
-        matches : list
-            The children of the path.
-        """
-        if has_real_magic(path):
-            raise ValueError('Use ``ls()`` when using search patterns: "%s"' % path)
-
-        if (path != '') and (path != '/'):
-            path = remove_root(path)
-        path = remove_trivial_magic(path)
-        path = mk_aws_path(path)
-
-        response = self.get_bucket().meta.client.list_objects(Bucket = self.bucket_name,
-                                                              Delimiter = SEPARATOR,
-                                                              Prefix = path,
-                                                              MaxKeys = limit)
-        object_names = []
-        if 'CommonPrefixes' in response:
-            # we got common paths
-            object_list = [t.values() for t in response['CommonPrefixes']]
-            object_names += reduce(lambda x, y: x + y, object_list)
-        if 'Contents' in response:
-            # we got objects on the leaf nodes
-            object_names += unquote_names([t['Key'] for t in response['Contents']])
-        return map(os.path.normpath, object_names)
+        return self.interface.ListDirectory(path, limit)
 
     @clean_object_name
     def ls(self, pattern, page_size = 10 ** 3, limit = 10 ** 3, verbose = False):
@@ -877,7 +879,7 @@ class FileSystemInterface(BasicInterface):
         if not has_real_magic(pattern):
             object_names = self.lsdir(prefix, limit = limit)
         else:
-            object_list = self.get_bucket_objects(filter = dict(Prefix = prefix),
+            object_list = self.get_objects(filter = dict(Prefix = prefix),
                                                   page_size = page_size,
                                                   limit = limit)
             object_names = objects2names(object_list)
@@ -956,7 +958,7 @@ class FileSystemInterface(BasicInterface):
         page_size = kwargs.get('page_size', 1000000)
         limit = kwargs.get('limit', None)
 
-        object_list = self.get_bucket_objects(filter = dict(Prefix = prefix),
+        object_list = self.get_objects(filter = dict(Prefix = prefix),
                                               page_size = page_size,
                                               limit = limit)
 
@@ -1047,7 +1049,7 @@ class FileSystemInterface(BasicInterface):
             When deleting a subtree, set ``recursive=True``. This is
             similar in behavior to 'rm -r /path/to/directory'.
         delete : bool
-        	When in google drive, actually delete the file or only trash it?
+            When in google drive, actually delete the file or only trash it?
 
         Example
         -------
@@ -1063,7 +1065,7 @@ class FileSystemInterface(BasicInterface):
         if isinstance(self.interface, GDriveClient):
             return self.interface.Delete(object_name, recursive, delete)
 
-
+        # not moving this to the basic S3Client because it depends on glob
         if self.exists_object(object_name):
             return self.get_object(object_name).delete()
 

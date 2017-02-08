@@ -7,12 +7,14 @@ class AbstractMethod(RuntimeError):
 	This method is abstract
 	"""
 
-class CCBackEnd(object):
+class ICottoncandyBackend(object):
 	"""
 	Interface for cottoncandy backends
 	"""
 	def __init__(self):
 		pass
+
+	## Basic File IO
 
 	def CheckFileExists(self, fileName, bucketName):
 		"""
@@ -101,6 +103,21 @@ class CCBackEnd(object):
 		----------
 		cloudName
 		fileName
+
+		Returns
+		-------
+
+		"""
+		raise AbstractMethod
+
+	## Basic File management
+
+	def ListDirectory(self, path, limit):
+		"""
+
+		Parameters
+		----------
+		path
 
 		Returns
 		-------

@@ -4,7 +4,7 @@ import botocore
 
 from botocore.utils import fix_s3_host
 from cottoncandy.utils import *
-from CCBackEnd import *
+from ICottoncandyBackend import *
 
 try:
 	from urllib import unquote
@@ -16,7 +16,7 @@ except ImportError:
 	import pickle
 
 
-class S3Client(CCBackEnd):
+class S3Client(ICottoncandyBackend):
 	"""
 	S3 client interface refactored out of cotton candy interfaces to allow for switching between
 	S3 and Google Drive
@@ -300,27 +300,6 @@ class S3Client(CCBackEnd):
 		bucket_name = self.GetBucketName(bucket_name)
 		return self.connection.Object(bucket_name = bucket_name, key = fileName)
 
-	def show_objects(self, limit = 1000, page_size = 1000):
-		"""
-		Print objects in the current bucket
-
-		Parameters
-		----------
-		limit
-		page_size
-
-		Returns
-		-------
-
-		"""
-		object_list = self.ListObjects(limit = limit, page_size = page_size)
-		try:
-			print_objects(object_list)
-		except botocore.exceptions.PaginationError:
-			print('Loads of objects in "%s". Increasing page_size by 100x...' % self.bucket_name)
-			object_list = self.ListObjects(limit = limit, page_size = page_size * 100)
-			print_objects(object_list)
-
 	def UploadStream(self, body, fileName, metadata, acl = DEFAULT_ACL):
 		"""
 		Uploads a stream
@@ -496,3 +475,37 @@ class S3Client(CCBackEnd):
 		old_ob = self.GetS3Object(source, bucket_name = sourceBucket)
 		old_ob.delete()
 		return new_ob
+
+	def ListDirectory(self, path, limit):
+		"""List the contents of a "directory"
+
+		Parameters
+		----------
+		path : str (default: "/")
+
+		Returns
+		-------
+		matches : list
+			The children of the path.
+		"""
+		if has_real_magic(path):
+			raise ValueError('Use ``ls()`` when using search patterns: "%s"' % path)
+
+		if (path != '') and (path != '/'):
+			path = remove_root(path)
+		path = remove_trivial_magic(path)
+		path = mk_aws_path(path)
+
+		response = self.GetBucket().meta.client.list_objects(Bucket = self.bucket_name,
+															  Delimiter = SEPARATOR,
+															  Prefix = path,
+															  MaxKeys = limit)
+		object_names = []
+		if 'CommonPrefixes' in response:
+			# we got common paths
+			object_list = [t.values() for t in response['CommonPrefixes']]
+			object_names += reduce(lambda x, y: x + y, object_list)
+		if 'Contents' in response:
+			# we got objects on the leaf nodes
+			object_names += unquote_names([t['Key'] for t in response['Contents']])
+		return map(os.path.normpath, object_names)
