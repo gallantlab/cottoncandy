@@ -33,6 +33,7 @@ from S3Client import *
 from GDriveClient import *
 from utils import *
 from warnings import warn
+from Encryption import *
 
 
 # ------------------
@@ -267,7 +268,21 @@ class BasicInterface(InterfaceObject):
         byte_data : str
             Object byte contents
         """
-        return self.interface.DownloadStream(object_name).content.read()
+        return self.download_stream(object_name).content.read()
+
+    def download_stream(self, object_name):
+        """
+        Returns the CloudStream object for an object
+        Parameters
+        ----------
+        self
+        object_name
+
+        Returns
+        -------
+        CloudStream object
+        """
+        return self.interface.DownloadStream(object_name)
 
     def upload_from_file(self, flname, object_name = None,
                          ExtraArgs = dict(ACL = DEFAULT_ACL)):
@@ -334,7 +349,7 @@ class BasicInterface(InterfaceObject):
         metadata : dict, optional
         """
         json_data = json.dumps(ddict)
-        return self.interface.UploadStream(json_data, object_name, metadata, acl)
+        return self.upload_object(object_name, json_data, acl, metadata)
 
     @clean_object_name
     def download_json(self, object_name):
@@ -350,8 +365,8 @@ class BasicInterface(InterfaceObject):
             Dictionary representation of JSON file
         """
         assert self.exists_object(object_name)
-        obj = self.interface.DownloadStream(object_name)
-        return json.loads(obj.content.read())
+        obj = self.download_object(object_name)
+        return json.loads(obj)
 
     @clean_object_name
     def upload_pickle(self, object_name, data_object, acl = DEFAULT_ACL):
@@ -362,7 +377,7 @@ class BasicInterface(InterfaceObject):
         object_name : str
         data_object : object
         """
-        return self.interface.UploadStream(pickle.dumps(data_object), object_name, None, acl)
+        return self.upload_object(object_name, pickle.dumps(data_object), acl, None)
 
     @clean_object_name
     def download_pickle(self, object_name):
@@ -377,8 +392,8 @@ class BasicInterface(InterfaceObject):
         data_object : object
         """
         assert self.exists_object(object_name)
-        obj = self.interface.DownloadStream(object_name)
-        return pickle.loads(obj.content.read())
+        obj = self.download_object(object_name)
+        return pickle.loads(obj)
 
 
 class ArrayInterface(BasicInterface):
@@ -431,7 +446,7 @@ class ArrayInterface(BasicInterface):
         np.save(arr_strio, array)
         arr_strio.reset()
         try:
-            response = self.interface.UploadStream(arr_strio, object_name, metadata, acl)
+            response = self.upload_object(object_name, arr_strio, acl, **metadata)
         except OverflowError:
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
         return response
@@ -450,7 +465,7 @@ class ArrayInterface(BasicInterface):
         """
         # TODO: abstract away
         assert self.exists_object(object_name)
-        array = np.load(StringIO(self.interface.DownloadStream(object_name).content.read()).read())
+        array = np.load(StringIO(self.download_object(object_name)).read())
         return array
 
     @clean_object_name
@@ -508,9 +523,9 @@ class ArrayInterface(BasicInterface):
             fileStream = StringIO(array.data)
 
         if data_nbytes > MPU_THRESHOLD:
-            response = self.interface.UploadMultiPart(fileStream, object_name, meta)
+            response = self.mpu_fileobject(object_name, fileStream, **metadata)
         else:
-            response = self.interface.UploadStream(fileStream, object_name, meta)
+            response = self.upload_object(object_name, fileStream, DEFAULT_ACL, **metadata)
 
         return response
 
@@ -534,7 +549,7 @@ class ArrayInterface(BasicInterface):
         boolean flag. This is all automatically handled by ``upload_raw_array``.
         """
         assert self.exists_object(object_name)
-        arrayStream = self.interface.DownloadStream(object_name)
+        arrayStream = self.download_stream(object_name)
 
         shape = arrayStream.metadata['shape']
         shape = map(int, shape.split(',')) if shape else ()
@@ -1121,3 +1136,62 @@ class DefaultInterface(FileSystemInterface,
             The URL for the S3 gateway
         """
         super(DefaultInterface, self).__init__(*args, **kwargs)
+
+class EncryptedInterface(DefaultInterface):
+    """
+    Interface that transparently encrypts everything uploaded to the cloud
+    """
+    def __init__(self, bucket, access, secret, url, encryption = 'AES', encryptionKey = None, *args, **kwargs):
+        """
+
+        Parameters
+        ----------
+        bucket
+        access
+        secret
+        url
+        encryption : 'AES' | 'RSA'
+        args
+        kwargs
+        """
+        super(EncryptedInterface, self).__init__(bucket_name = bucket, ACCESS_KEY = access, SECRET_KEY = secret,
+                                                 url = url, *args, **kwargs)
+
+        if encryption not in ['AES', 'RSA']:
+            raise ValueError('Encryption type {} not recognised. Currently AES and RSA are available'.format(encryption))
+        self.encryption = encryption
+        if encryption == 'AES':
+            self.encryptor = AESEncryption(encryptionKey)
+        else:
+            self.encryptor = RSAAESEncryption(encryptionKey)
+
+    def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
+
+        if self.encryption == 'AES':
+            encryptedStream = self.encryptor.EncryptStream(body)
+            return self.interface.UploadStream(encryptedStream, object_name, None, acl)
+        else:
+            encryptedStream, encryptedKey = self.encryptor.EncryptStream(body)
+            return self.interface.UploadStream(encryptedStream, object_name, {'key': encryptedKey}, acl)
+
+    def download_stream(self, object_name):
+
+        stream = self.interface.DownloadStream(object_name)
+        if self.encryption == 'AES':
+            stream.content = self.encryptor.DecryptStream(stream.content)
+        else:
+            stream.content = self.encryptor.DecryptStream(stream.content, stream.metadata['key'])
+        return stream
+
+    def upload_from_file(self, localFileName, object_name = None, ExtraArgs = dict(ACL = DEFAULT_ACL)):
+
+        if not object_name:
+            object_name = localFileName
+        with open(localFileName) as f:
+            return self.upload_object(object_name, f, ExtraArgs['ACL'])
+
+    def download_to_file(self, object_name, fileName):
+
+        with open(fileName, 'wb') as localFile:
+            stream = self.download_stream(object_name)
+            localFile.write(stream.content.read())

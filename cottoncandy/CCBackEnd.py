@@ -7,7 +7,7 @@ class AbstractMethod(RuntimeError):
 	This method is abstract
 	"""
 
-class ICottoncandyBackend(object):
+class CCBackEnd(object):
 	"""
 	Interface for cottoncandy backends
 	"""

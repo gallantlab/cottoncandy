@@ -5,7 +5,7 @@ from pydrive.files import GoogleDriveFile, FileNotUploadedError, ApiRequestError
 from base64 import b64decode, b64encode
 
 from Encryption import RSAAESEncryption
-from ICottoncandyBackend import *
+from CCBackEnd import *
 import sys
 import re
 import xmltodict
@@ -30,7 +30,7 @@ class NotS3Error(RuntimeError):
 	"""This is not an S3 backend"""
 
 
-class GDriveClient(ICottoncandyBackend):
+class GDriveClient(CCBackEnd):
 	"""
 	Google Drive client based on PyDrive, which is based on google apis.
 	To use, you need to enable gdrive APIs and make an OAuth2 id
@@ -495,6 +495,8 @@ class GDriveClient(ICottoncandyBackend):
 
 		f.FetchMetadata()
 		properties = self.GetProperties(f.metadata['id'])
+		if 'key' in properties:
+			properties['key'] = self.GetKey(f.metadata['id'])
 
 		if f.content is None:
 			f.FetchContent()
@@ -637,6 +639,10 @@ class GDriveClient(ICottoncandyBackend):
 		@param visibility:	'PUBLIC'|'PRIVATE'
 		@return:
 		"""
+
+		if key == 'key':
+			return self.StoreKey(id, value)
+
 		body = {'key': key, 'value': value, visibility: visibility}
 		# print('Adding {}: {}'.format(key, value))
 

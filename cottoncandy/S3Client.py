@@ -4,7 +4,7 @@ import botocore
 
 from botocore.utils import fix_s3_host
 from cottoncandy.utils import *
-from ICottoncandyBackend import *
+from CCBackEnd import *
 
 try:
 	from urllib import unquote
@@ -16,7 +16,7 @@ except ImportError:
 	import pickle
 
 
-class S3Client(ICottoncandyBackend):
+class S3Client(CCBackEnd):
 	"""
 	S3 client interface refactored out of cotton candy interfaces to allow for switching between
 	S3 and Google Drive
