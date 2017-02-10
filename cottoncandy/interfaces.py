@@ -117,6 +117,8 @@ class BasicInterface(InterfaceObject):
         if verbose:
             print('Available buckets:')
             self.show_buckets()
+            print('Current bucket:')
+            print(self.bucket_name)
 
         if string2bool(ISBOTO_VERBOSE) is False:
             logging.getLogger('boto3').setLevel(logging.WARNING)
