@@ -77,6 +77,10 @@ def get_encrypted_interface(bucket_name=default_bucket,
                           backend = 's3', encryption = encryption, encryptionKey = encryptionKey):
     """
     Returns a cc interface that encrypts things
+    By default, encryption is 32 bit AES, single key for everything. The key is stored in base64
+    in your config file. You can also choose to use RSA-encrypted AES, in which each file gets a
+    different key, and the keys are encrypted using RSA and stored alongside each file.
+
     Parameters
     ----------
     bucket_name

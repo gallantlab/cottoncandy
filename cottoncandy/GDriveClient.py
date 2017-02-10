@@ -322,13 +322,18 @@ class GDriveClient(CCBackEnd):
 		@return:
 		"""
 		# TODO: directory copying and deep/shallowness
-		original = self.GetFileByName(originalName)
-		self.UploadStream(copyName, original.content)
-		copyID = self.GetIDByName(copyName)
-		if 'properties' in original.metadata.keys() and len(original.metadata['properties'].keys()) > 0:
-			for key in original.metadata['properties'].keys():
-				if not self.InsertProperty(copyID, key, original.metadata['properties'][key]):
-					print('Property copy for {} failed'.format(key))
+		try:
+			original = self.GetFileByName(originalName)
+			self.UploadStream(copyName, original.content)
+			copyID = self.GetIDByName(copyName)
+			if 'properties' in original.metadata.keys() and len(original.metadata['properties'].keys()) > 0:
+				for key in original.metadata['properties'].keys():
+					if not self.InsertProperty(copyID, key, original.metadata['properties'][key]):
+						print('Property copy for {} failed'.format(key))
+			return True
+		except Exception as e:
+			print (e.__str__())
+			return False
 
 	def Delete(self, fileName, recursive = False, delete = False):
 		"""
@@ -362,8 +367,8 @@ class GDriveClient(CCBackEnd):
 		Will automatically multi-part
 		@param fileName:			str, name of local file
 		@param cloudName:			str, name on drive for file
-		@param permissions:		None, for signature compatibility with S3
-		@return:
+		@param permissions:			None, for signature compatibility with S3
+		@return: bool, upload success
 		"""
 		if cloudName is None:
 			cloudName = fileName
@@ -472,12 +477,14 @@ class GDriveClient(CCBackEnd):
 			f = self.drive.CreateFile({'id': self.GetIDByName(driveFile)})
 		except FileNotFoundError:
 			print('File not found')
-			return
+			return False
 
 		f.FetchMetadata()
 		if localFile is None:
 			localFile = f.metadata['title']
 		f.GetContentFile(localFile)
+
+		return True
 
 	def DownloadStream(self, driveFile):
 		"""

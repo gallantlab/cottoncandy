@@ -17,7 +17,12 @@ arr_down = cci.download_raw_array('myarray')
 assert np.allclose(arr, arr_down)
 ```
 
-now with (limited) google drive support. requires a `client_secrets.json` file in your cottoncandy config folder.
+now with (limited) google drive support. requires a `client_secrets.json` file in your cottoncandy config folder and the pydrive package.
 ```
 cci = cc.get_interface(backend = 'gdrive')
+```
+
+and also transparent encryption of cloud files. requires the pycrypto package
+```
+cci = cc.get_encrypted_interface()
 ```

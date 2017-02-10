@@ -97,8 +97,11 @@ class BasicInterface(InterfaceObject):
             logging.getLogger('botocore').setLevel(logging.WARNING)
 
     def __repr__(self):
-        details = (__package__, self.bucket_name, self.url)
-        return '%s.interface <bucket:%s on %s>' % details
+        if isinstance(self.interface, S3Client):
+            details = (__package__, self.bucket_name, self.interface.url)
+            return '%s.interface <bucket:%s on %s>' % details
+        else:
+            return '{}.interface on Google Drive'.format(__package__)
 
     @staticmethod
     def pathjoin(a, *p):
@@ -252,25 +255,13 @@ class BasicInterface(InterfaceObject):
                 # TODO: also print last modified date and whatever else to match s3
                 print(obj)
 
+    # With the abstraction of the cloud interface, and the encrypting interface, all file I/O methods
+    # should be calling upload_object() and download_stream() instead of directly interfacing with the
+    # CCBackEnd object or the actual cloud APIs
+
     @clean_object_name
     def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
         self.interface.UploadStream(object_name, body, metadata, acl)
-
-    @clean_object_name
-    def download_object(self, object_name):
-        """Download object raw data.
-        This simply calls the object body ``read()`` method.
-
-        Parameters
-        ---------
-        object_name : str
-
-        Returns
-        -------
-        byte_data : str
-            Object byte contents
-        """
-        return self.download_stream(object_name).content.read()
 
     def download_stream(self, object_name):
         """
@@ -317,6 +308,22 @@ class BasicInterface(InterfaceObject):
         return self.interface.DownloadFile(object_name, fileName)
 
     @clean_object_name
+    def download_object(self, object_name):
+        """Download object raw data.
+        This simply calls the object body ``read()`` method.
+
+        Parameters
+        ---------
+        object_name : str
+
+        Returns
+        -------
+        byte_data : str
+            Object byte contents
+        """
+        return self.download_stream(object_name).content.read()
+
+    @clean_object_name
     def mpu_fileobject(self, object_name, file_object,
                        buffersize = MPU_CHUNKSIZE, verbose = True, **metadata):
         """Multi-part upload for a python file-object.
@@ -351,7 +358,7 @@ class BasicInterface(InterfaceObject):
         metadata : dict, optional
         """
         json_data = json.dumps(ddict)
-        return self.upload_object(object_name, json_data, acl, metadata)
+        return self.upload_object(object_name, StringIO(json_data), acl, **metadata)
 
     @clean_object_name
     def download_json(self, object_name):
@@ -379,7 +386,7 @@ class BasicInterface(InterfaceObject):
         object_name : str
         data_object : object
         """
-        return self.upload_object(object_name, pickle.dumps(data_object), acl, None)
+        return self.upload_object(object_name, StringIO(pickle.dumps(data_object)), acl)
 
     @clean_object_name
     def download_pickle(self, object_name):
@@ -465,7 +472,6 @@ class ArrayInterface(BasicInterface):
         -------
         array : np.ndarray
         """
-        # TODO: abstract away
         assert self.exists_object(object_name)
         array = np.load(StringIO(self.download_object(object_name)).read())
         return array
@@ -1154,7 +1160,7 @@ class EncryptedInterface(DefaultInterface):
         url
         encryption : 'AES' | 'RSA'
         encryptionKey : str
-        	if AES, key; if RSA, filename of .pem format key
+            if AES, key; if RSA, filename of .pem format key
         args
         kwargs
         """
@@ -1169,6 +1175,7 @@ class EncryptedInterface(DefaultInterface):
         else:
             self.encryptor = RSAAESEncryption(encryptionKey)
 
+    # File I/O methods that encrypt object streams before passing them to the backend
     def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
 
         if self.encryption == 'AES':
@@ -1176,7 +1183,8 @@ class EncryptedInterface(DefaultInterface):
             return self.interface.UploadStream(encryptedStream, object_name, metadata, acl)
         else:
             encryptedStream, encryptedKey = self.encryptor.EncryptStream(body)
-            return self.interface.UploadStream(encryptedStream, object_name, {'key': b64encode(encryptedKey)}, acl)
+            metadata['key'] = b64encode(encryptedKey)
+            return self.interface.UploadStream(encryptedStream, object_name, metadata, acl)
 
     def download_stream(self, object_name):
 
