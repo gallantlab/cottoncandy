@@ -204,6 +204,11 @@ class BasicInterface(InterfaceObject):
         self.connection.create_bucket(Bucket=bucket_name, ACL=acl)
         self.set_bucket(bucket_name)
 
+    def rm_bucket(self, bucket_name, acl=DEFAULT_ACL):
+        '''Remove an empty bucket'''
+        bucket = self.get_bucket()
+        bucket.delete()
+
     def set_bucket(self, bucket_name):
         '''Bucket to use'''
         if not self.exists_bucket(bucket_name):
