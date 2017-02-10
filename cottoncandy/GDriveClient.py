@@ -673,7 +673,7 @@ class GDriveClient(CCBackEnd):
 			print('Error: {}'.format(e.__str__()))
 			return None
 
-	def StoreKey(self, fileID, keyHash, chunkSize = 96):
+	def StoreKey(self, fileID, key64, chunkSize = 96):
 		"""
 		Stores a key to the custom properties of a file
 		@param fileID:		str, id of file to store key to
@@ -684,7 +684,6 @@ class GDriveClient(CCBackEnd):
 		if chunkSize > 114:
 			print('Chunk size set to 114 because of limitations of metadata size')
 			chunkSize = 114
-		key64 = b64encode(keyHash)
 		nChuncks = len(key64) / chunkSize + (len(key64) % chunkSize > 0)
 		self.InsertProperty(fileID, 'keyChunks', str(nChuncks))
 		self.InsertProperty(fileID, 'key', 'in chunks')
@@ -700,7 +699,7 @@ class GDriveClient(CCBackEnd):
 		"""
 		Gets the stored and chunked key
 		@param fileID:	str, id of file
-		@return: RSA encrypted key
+		@return: RSA encrypted key encoded in base 64
 		"""
 		key64 = ''
 		properties = self.GetProperties(fileID)
@@ -711,7 +710,7 @@ class GDriveClient(CCBackEnd):
 			nChunks = int(properties['keyChunks'])
 			for i in range(nChunks):
 				key64 += properties['keyChunk{}'.format(i)]
-			return b64decode(key64)
+			return key64
 
 	def UpdateMetadata(self, fileName, metadata):
 		"""

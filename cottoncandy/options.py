@@ -1,4 +1,6 @@
 import os
+from Crypto import Random
+from base64 import b64decode, b64encode
 try:
     import configparser
 except ImportError:
@@ -57,5 +59,21 @@ if len(config.read(usercfg)) == 0:
         config.set("login", "access_key", ak)
         config.set("login", "secret_key", sk)
 
+    aesKey = config.get('encryption', 'key')
+    if aesKey == 'auto':
+        newKey = Random.get_random_bytes(32)
+        aesKey = b64encode(newKey)
+        config.set("encryption", 'key', aesKey)
+
     with open(usercfg, 'w') as fp:
         config.write(fp)
+
+# add keys
+config.readfp(open(usercfg))
+aesKey = config.get('encryption', 'key')
+if aesKey == 'auto':
+    newKey = Random.get_random_bytes(32)
+    aesKey = b64encode(newKey)
+    config.set("encryption", 'key', aesKey)
+    with open(usercfg, 'w') as f:
+        config.write(f)

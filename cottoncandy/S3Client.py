@@ -1,6 +1,7 @@
 from __future__ import print_function
 import boto3
 import botocore
+from io import BytesIO
 
 from botocore.utils import fix_s3_host
 from cottoncandy.utils import *
@@ -335,7 +336,7 @@ class S3Client(CCBackEnd):
 		if not self.CheckFileExists(fileName):
 			raise IOError('Object "%s" does not exist' % fileName)
 		s3_object = self.GetS3Object(fileName)
-		return CloudStream(s3_object.get()['Body'], s3_object.metadata)
+		return CloudStream(BytesIO(s3_object.get()['Body'].read()), s3_object.metadata)
 
 	def UploadFile(self, fileName, cloudFileName = None, acl = DEFAULT_ACL):
 		"""Upload a file to S3.

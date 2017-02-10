@@ -25,14 +25,16 @@ class Encryption(object):
 	Abstract base class for a file encrypt/decrypt object
 	"""
 
-	def __init__(self, key = None):
+	def __init__(self, key = None, keyFile = None):
 		"""
 		Interface constructor
-		@param key:		stored encryption/decryption key, if None, generates a new key
+		@param key:		encryption/decryption key, if None, generates a new key
 		"""
 
 		if key is not None:
-			self.ReadKey(key)
+			self.key = key
+		elif keyFile is not None:
+			self.ReadKey(keyFile)
 		else:
 			self.GenerateKey()
 
@@ -107,7 +109,7 @@ class AESEncryption(Encryption):
 	[initialization vector][ binary ciphertext for file  ||   padding with spaces	 ][file size in bytes]
 	"""
 
-	def __init__(self, key = None, mode = CIPHER_BLOCK_CHAIN, chunkSize = DEFAULT_CHUNKSIZE, initVectSize = INIT_VECT_SIZE):
+	def __init__(self, key = None, keyFile = None, mode = CIPHER_BLOCK_CHAIN, chunkSize = DEFAULT_CHUNKSIZE, initVectSize = INIT_VECT_SIZE):
 		"""
 
 		@param key:				str, file for stored key
@@ -115,7 +117,7 @@ class AESEncryption(Encryption):
 		@param chunkSize:		int, size of each chunk to encrypt
 		@param initVectSize:	int, size of initialization vector
 		"""
-		super(AESEncryption, self).__init__(key)
+		super(AESEncryption, self).__init__(key, keyFile)
 		self.mode = mode
 		self.chunkSize = chunkSize
 		self.initVectSize = initVectSize
@@ -310,7 +312,7 @@ class RSAAESEncryption(AESEncryption):
 	the RSA private key is needed to decrypt the AES key.
 	"""
 
-	def __init__(self, key = None, mode = CIPHER_BLOCK_CHAIN, chunkSize = DEFAULT_CHUNKSIZE, initVectSize = INIT_VECT_SIZE, AESkeySize = 32):
+	def __init__(self, key = None, keyFile = None, mode = CIPHER_BLOCK_CHAIN, chunkSize = DEFAULT_CHUNKSIZE, initVectSize = INIT_VECT_SIZE, AESkeySize = 32):
 		"""
 
 		@param key:				str, key file for the RSA key
@@ -319,7 +321,7 @@ class RSAAESEncryption(AESEncryption):
 		@param initVectSize:	int, ini
 		@param AESkeySize: 		int, size of AES keys used for file encryption
 		"""
-		super(RSAAESEncryption, self).__init__(key, mode, chunkSize, initVectSize)
+		super(RSAAESEncryption, self).__init__(key, keyFile, mode, chunkSize, initVectSize)
 		if AESkeySize not in [16, 24, 32]:
 			raise ValueError('Bad AES key size')
 		self.AESkeySize = AESkeySize

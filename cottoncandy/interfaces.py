@@ -27,6 +27,8 @@ from scipy.sparse import (coo_matrix,
                           bsr_matrix,
                           dia_matrix)
 
+from base64 import b64encode, b64decode
+
 import cottoncandy.browser
 
 from S3Client import *
@@ -252,7 +254,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
-        self.interface.UploadStream(object_name, body, acl, **metadata)
+        self.interface.UploadStream(object_name, body, metadata, acl)
 
     @clean_object_name
     def download_object(self, object_name):
@@ -523,9 +525,9 @@ class ArrayInterface(BasicInterface):
             fileStream = StringIO(array.data)
 
         if data_nbytes > MPU_THRESHOLD:
-            response = self.mpu_fileobject(object_name, fileStream, **metadata)
+            response = self.mpu_fileobject(object_name, fileStream, metadata = meta)
         else:
-            response = self.upload_object(object_name, fileStream, DEFAULT_ACL, **metadata)
+            response = self.upload_object(object_name, fileStream, DEFAULT_ACL, **meta)
 
         return response
 
@@ -1151,6 +1153,8 @@ class EncryptedInterface(DefaultInterface):
         secret
         url
         encryption : 'AES' | 'RSA'
+        encryptionKey : str
+        	if AES, key; if RSA, filename of .pem format key
         args
         kwargs
         """
@@ -1169,10 +1173,10 @@ class EncryptedInterface(DefaultInterface):
 
         if self.encryption == 'AES':
             encryptedStream = self.encryptor.EncryptStream(body)
-            return self.interface.UploadStream(encryptedStream, object_name, None, acl)
+            return self.interface.UploadStream(encryptedStream, object_name, metadata, acl)
         else:
             encryptedStream, encryptedKey = self.encryptor.EncryptStream(body)
-            return self.interface.UploadStream(encryptedStream, object_name, {'key': encryptedKey}, acl)
+            return self.interface.UploadStream(encryptedStream, object_name, {'key': b64encode(encryptedKey)}, acl)
 
     def download_stream(self, object_name):
 
@@ -1180,7 +1184,7 @@ class EncryptedInterface(DefaultInterface):
         if self.encryption == 'AES':
             stream.content = self.encryptor.DecryptStream(stream.content)
         else:
-            stream.content = self.encryptor.DecryptStream(stream.content, stream.metadata['key'])
+            stream.content = self.encryptor.DecryptStream(stream.content, b64decode(stream.metadata['key']))
         return stream
 
     def upload_from_file(self, localFileName, object_name = None, ExtraArgs = dict(ACL = DEFAULT_ACL)):

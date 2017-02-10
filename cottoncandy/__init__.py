@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import os
+from base64 import b64decode
 __all__ = []
 
 from .browser import BrowserObject
@@ -16,6 +17,9 @@ ENDPOINT_URL = options.config.get('login', 'endpoint_url')
 default_bucket = options.config.get('basic', 'default_bucket')
 force_bucket_creation = options.config.get('basic', 'force_bucket_creation')
 force_bucket_creation = string2bool(force_bucket_creation)
+
+encryption = options.config.get('encryption', 'method')
+encryptionKey = b64decode(options.config.get('encryption', 'key'))
 
 def get_interface(bucket_name=default_bucket,
                   ACCESS_KEY=ACCESS_KEY,
@@ -61,6 +65,46 @@ def get_interface(bucket_name=default_bucket,
                                  force_bucket_creation,
                                  verbose=verbose,
                                  backend = backend)
+    return interface
+
+
+def get_encrypted_interface(bucket_name=default_bucket,
+                          ACCESS_KEY=ACCESS_KEY,
+                          SECRET_KEY=SECRET_KEY,
+                          endpoint_url=ENDPOINT_URL,
+                          force_bucket_creation=force_bucket_creation,
+                          verbose=True,
+                          backend = 's3', encryption = encryption, encryptionKey = encryptionKey):
+    """
+    Returns a cc interface that encrypts things
+    Parameters
+    ----------
+    bucket_name
+    ACCESS_KEY
+    SECRET_KEY
+    endpoint_url
+    force_bucket_creation
+    verbose
+    backend
+    encryption
+    encryptionKey
+
+    Returns
+    -------
+
+    """
+    from .interfaces import EncryptedInterface
+    if (ACCESS_KEY is False) and (SECRET_KEY is False):
+        from .utils import get_keys
+        ACCESS_KEY, SECRET_KEY = get_keys()
+
+    if backend == 'gdrive':
+        ACCESS_KEY = os.path.join(options.userdir, options.config.get('gdrive', 'secrets'))
+        SECRET_KEY = os.path.join(options.userdir, options.config.get('gdrive', 'credentials'))
+
+    interface = EncryptedInterface(bucket_name, ACCESS_KEY, SECRET_KEY, endpoint_url,
+                                   encryption, encryptionKey, force_bucket_creation = force_bucket_creation,
+                                   verbose = verbose, backend = backend)
     return interface
 
 
