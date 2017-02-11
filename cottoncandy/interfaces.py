@@ -117,6 +117,8 @@ class BasicInterface(InterfaceObject):
         if verbose:
             print('Available buckets:')
             self.show_buckets()
+            print('Current bucket:')
+            print(self.bucket_name)
 
         if string2bool(ISBOTO_VERBOSE) is False:
             logging.getLogger('boto3').setLevel(logging.WARNING)
@@ -203,6 +205,14 @@ class BasicInterface(InterfaceObject):
 
         self.connection.create_bucket(Bucket=bucket_name, ACL=acl)
         self.set_bucket(bucket_name)
+
+    def rm_bucket(self, bucket_name, acl=DEFAULT_ACL):
+        '''Remove an empty bucket. Throws an exception when bucket is not empty.'''
+        bucket = self.get_bucket()
+        try:
+            bucket.delete()
+        except botocore.exceptions.ClientError as e:
+            print("Bucket not empty. To delete, first empty the bucket.")
 
     def set_bucket(self, bucket_name):
         '''Bucket to use'''
