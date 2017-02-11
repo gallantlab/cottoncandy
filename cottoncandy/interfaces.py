@@ -206,7 +206,7 @@ class BasicInterface(InterfaceObject):
         self.connection.create_bucket(Bucket=bucket_name, ACL=acl)
         self.set_bucket(bucket_name)
 
-    def rm_bucket(self, bucket_name, acl=DEFAULT_ACL):
+    def rm_bucket(self, bucket_name):
         '''Remove an empty bucket. Throws an exception when bucket is not empty.'''
         bucket = self.get_bucket()
         try:
