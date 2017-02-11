@@ -207,9 +207,12 @@ class BasicInterface(InterfaceObject):
         self.set_bucket(bucket_name)
 
     def rm_bucket(self, bucket_name, acl=DEFAULT_ACL):
-        '''Remove an empty bucket'''
+        '''Remove an empty bucket. Throws an exception when bucket is not empty.'''
         bucket = self.get_bucket()
-        bucket.delete()
+        try:
+            bucket.delete()
+        except botocore.exceptions.ClientError as e:
+            print("Bucket not empty. To delete, first empty the bucket.")
 
     def set_bucket(self, bucket_name):
         '''Bucket to use'''
