@@ -205,6 +205,12 @@ class CCBackEnd(object):
 
 	@property
 	def size(self):
+		"""
+		Size of stored cloud items in bytes
+		Returns
+		-------
+		int
+		"""
 		raise AbstractMethod
 
 class CloudStream(object):

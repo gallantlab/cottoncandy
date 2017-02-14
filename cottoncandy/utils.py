@@ -211,11 +211,12 @@ check_digits = re.compile('[0-9]')
 def has_start_digit(s):
     return check_digits.match(s) is not None
 
+MAGIC_CHECK = re.compile('[*?[]')
+
 def has_magic(s):
     '''Check string to see if it has any glob magic
     '''
-    magic_check = re.compile('[*?[]')
-    return magic_check.search(s) is not None
+    return MAGIC_CHECK.search(s) is not None
 
 
 def has_trivial_magic(s):

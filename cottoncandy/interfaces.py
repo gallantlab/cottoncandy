@@ -969,21 +969,63 @@ class FileSystemInterface(BasicInterface):
         If more than 10^6 objects, provide ``page_size=10**7`` kwarg.
         """
         # determine if we're globbing
-        magic_check = re.compile('[*?[]')
 
-        def has_magic(s):
-            return magic_check.search(s) is not None
+        if isinstance(self.interface, S3Client):
+            return self.globS3(pattern, **kwargs)
+        else:
+            return self.globGDrive(pattern)
 
-        # find the common prefix
-        prefix = magic_check.split(pattern)[0] \
-            if has_magic(pattern) else pattern
+    def globGDrive(self, pattern):
+        """
+        Globbing on google drive
+        Parameters
+        ----------
+        pattern
+
+        Returns
+        -------
+
+        """
+        matches = []
+        if '/' not in pattern:	# end tree, list all objects
+            return self.interface.ListObjects(True)
+
+        nextFolderExp = r'^/?[^/]*/'
+        nextFolder = re.match(nextFolderExp, pattern).group(0)
+        pattern = re.sub(nextFolderExp, '', pattern)
+
+        if '*' not in nextFolder:	# no wildcard, simply cd into it
+            self.interface.cd(nextFolder)
+        else:						# find all wildcard matches and recursively glob them
+            files = self.interface.ListObjects()
+            for f in files:
+                matches.append(self.globGDrive())
+
+
+        return
+
+
+    def globS3(self, pattern, **kwargs):
+        """
+        Globbing on S3
+
+        Parameters
+        ----------
+        pattern
+        kwargs
+
+        Returns
+        -------
+
+        """
+        prefix = MAGIC_CHECK.split(pattern)[0] if has_magic(pattern) else pattern
 
         page_size = kwargs.get('page_size', 1000000)
         limit = kwargs.get('limit', None)
 
         object_list = self.get_objects(filter = dict(Prefix = prefix),
-                                              page_size = page_size,
-                                              limit = limit)
+                                       page_size = page_size,
+                                       limit = limit)
 
         mapper = {unquote(obj.key): obj for obj in object_list}
         object_names = mapper.keys()
@@ -999,6 +1041,43 @@ class FileSystemInterface(BasicInterface):
                 print_objects(objects_found)
             print('Found %i objects matching "%s"' % (len(objects_found), pattern))
         return matches
+
+    @clean_object_name
+    def download_directory(self, directory, diskName):
+        """
+        Download an entire directory
+
+        Parameters
+        ----------
+        self
+        directory : str
+            directory on s3 to download
+        diskName :
+            name of directory on disk to download to
+
+        Returns
+        -------
+
+        """
+        if has_real_magic(directory):
+            raise NotImplementedError('Wildcards not implemented')
+
+        if (directory != '') and (directory != '/'):
+            directory = remove_root(directory)
+        directory = remove_trivial_magic(directory)
+        directory = mk_aws_path(directory)
+
+        if not os.path.exists(diskName):
+            os.mkdir(diskName)
+
+        files = self.glob(directory + '*')
+        for f in files:
+            subpath = re.sub(directory, '', f)
+            path = os.path.join(diskName, subpath)
+            subfolder = re.match('.*\/', path).group(0)
+            if not os.path.exists(subfolder):
+                os.makedirs(subfolder)
+            self.download_to_file(f, os.path.join(diskName, subpath))
 
     @clean_object_name
     def search(self, pattern, **kwargs):
