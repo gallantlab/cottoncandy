@@ -180,6 +180,7 @@ def clean_object_name(input_function):
             pass
         elif object_name[0] == SEPARATOR:
             object_name = object_name[1:]
+
         return input_function(self, object_name, *args, **kwargs)
     return iremove_root
 
@@ -335,7 +336,7 @@ def read_buffered(frm, to, buffersize=64):
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize
         end = min(nbytes_total, (ci + 1) * buffersize)
-        to.data[start:end] = frm.read(buffersize)
+        to.data[start:end] = np.frombuffer(frm.read(buffersize))
 
 
 class GzipInputStream(object):
@@ -361,7 +362,7 @@ class GzipInputStream(object):
         self._file = fileobj
         self._zip = zlib.decompressobj(self.WINDOW_BUFFER_SIZE)
         self._offset = 0  # position in unzipped stream
-        self._data = ""
+        self._data = b''
 
     def __fill(self, num_bytes):
         """
@@ -410,7 +411,7 @@ class GzipInputStream(object):
             self._data = self._data[size:]
         else:
             data = self._data
-            self._data = ""
+            self._data = b''
         self._offset = self._offset + len(data)
         return data
 
