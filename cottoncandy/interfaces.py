@@ -677,7 +677,7 @@ class ArrayInterface(BasicInterface):
         return response
 
     @clean_object_name
-        def download_raw_array(self, object_name, buffersize=2**16, **kwargs):
+    def download_raw_array(self, object_name, buffersize=2**16, **kwargs):
         '''Download a binary np.ndarray and return an np.ndarray object
         This method downloads an array without any disk or memory overhead.
 
