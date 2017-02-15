@@ -261,7 +261,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
-        self.interface.UploadStream(object_name, body, metadata, acl)
+        self.interface.UploadStream(body, object_name, metadata, acl)
 
     def download_stream(self, object_name):
         """
@@ -1072,12 +1072,14 @@ class FileSystemInterface(BasicInterface):
 
         files = self.glob(directory + '*')
         for f in files:
+            if f[-1] == '/':
+                continue
             subpath = re.sub(directory, '', f)
             path = os.path.join(diskName, subpath)
             subfolder = re.match('.*\/', path).group(0)
             if not os.path.exists(subfolder):
                 os.makedirs(subfolder)
-            self.download_to_file(f, os.path.join(diskName, subpath))
+            self.download_to_file(f, path)
 
     @clean_object_name
     def search(self, pattern, **kwargs):
