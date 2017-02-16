@@ -208,6 +208,7 @@ class BasicInterface(InterfaceObject):
 
     def rm_bucket(self, bucket_name):
         '''Remove an empty bucket. Throws an exception when bucket is not empty.'''
+        self.set_bucket(bucket_name)
         bucket = self.get_bucket()
         try:
             bucket.delete()
