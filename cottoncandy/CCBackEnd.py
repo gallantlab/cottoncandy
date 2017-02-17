@@ -1,226 +1,234 @@
 
 class FileNotFoundError(RuntimeError):
-	"""File not found error"""
+    """File not found error"""
 
 class AbstractMethod(RuntimeError):
-	"""
-	This method is abstract
-	"""
+    """
+    This method is abstract
+    """
 
 class CCBackEnd(object):
-	"""
-	Interface for cottoncandy backends
-	"""
-	def __init__(self):
-		pass
+    """
+    Interface for cottoncandy backends
+    """
+    def __init__(self):
+        pass
 
-	## Basic File IO
+    ## Basic File IO
 
-	def CheckFileExists(self, fileName, bucketName):
-		"""
-		Checks whether a file exists on the cloud
+    def check_file_exists(self, fileName, bucketName):
+        """
+        Checks whether a file exists on the cloud
 
-		Parameters
-		----------
-		fileName : str
-			file on cloud
-		bucketName : str
-			(s3) bucket to check in
+        Parameters
+        ----------
+        fileName : str
+            file on cloud
+        bucketName : str
+            (s3) bucket to check in
 
-		Returns
-		-------
-		bool
-		"""
-		raise AbstractMethod
+        Returns
+        -------
+        bool
+        """
+        raise AbstractMethod
 
-	def UploadStream(self, stream, cloudName, metadata, permissions):
-		"""
-		Uploads a stream object with a .read() function
+    def upload_stream(self, stream, cloudName, metadata, permissions):
+        """
+        Uploads a stream object with a .read() function
 
-		Parameters
-		----------
-		stream : stream
-			streaming object
-		cloudName : str
-			name to use on cloud
-		metadata : dict
-			custom metadata for this file
-		permissions : str?
-			permissions for this file
+        Parameters
+        ----------
+        stream : stream
+            streaming object
+        cloudName : str
+            name to use on cloud
+        metadata : dict
+            custom metadata for this file
+        permissions : str?
+            permissions for this file
 
-		Returns
-		-------
-		bool, upload success
-		"""
-		raise AbstractMethod
+        Returns
+        -------
+        bool, upload success
+        """
+        raise AbstractMethod
 
-	def UploadFile(self, fileName, cloudName, permissions):
-		"""
-		Uploads a file from disk
+    def upload_file(self, fileName, cloudName, permissions):
+        """
+        Uploads a file from disk
 
-		Parameters
-		----------
-		fileName : str
-			name of file to upload
-		cloudName : str
-			name to use on the cloud
-		permissions : str?
-			permissions for this file
+        Parameters
+        ----------
+        fileName : str
+            name of file to upload
+        cloudName : str
+            name to use on the cloud
+        permissions : str?
+            permissions for this file
 
-		Returns
-		-------
-		bool, upload success
-		"""
-		raise AbstractMethod
+        Returns
+        -------
+        bool, upload success
+        """
+        raise AbstractMethod
 
-	def UploadMultiPart(self, stream, cloudName, metadata, permissions):
-		"""
-		Multi-part upload for large stream objects
+    def upload_multipart(self, stream, cloudName, metadata, permissions):
+        """
+        Multi-part upload for large stream objects
 
-		Parameters
-		----------
-		stream : stream
-			streaming object
-		cloudName : str
-			name to use on cloud
-		metadata : dict
-			custom metadata
-		permissions : str?
-			permissions for this file
+        Parameters
+        ----------
+        stream : stream
+            streaming object
+        cloudName : str
+            name to use on cloud
+        metadata : dict
+            custom metadata
+        permissions : str?
+            permissions for this file
 
-		Returns
-		-------
-		bool, upload success
-		"""
-		raise AbstractMethod
+        Returns
+        -------
+        bool, upload success
+        """
+        raise AbstractMethod
 
-	def DownloadStream(self, cloudName):
-		"""
-		Downloads a object to an in-memory stream
+    def download_stream(self, cloudName):
+        """
+        Downloads a object to an in-memory stream
 
-		Parameters
-		----------
-		cloudName : str
-			name of object to download
+        Parameters
+        ----------
+        cloudName : str
+            name of object to download
 
-		Returns
-		-------
-		CloudStream object
-		"""
-		raise AbstractMethod
+        Returns
+        -------
+        CloudStream object
+        """
+        raise AbstractMethod
 
-	def DownloadFile(self, cloudName, fileName):
-		"""
-		Downloads an object directly to disk
+    def download_to_file(self, cloudName, fileName):
+        """
+        Downloads an object directly to disk
 
-		Parameters
-		----------
-		cloudName : str
-			name of object to download
-		fileName : str
-			name on disk to use
+        Parameters
+        ----------
+        cloudName : str
+            name of object to download
+        fileName : str
+            name on disk to use
 
-		Returns
-		-------
-		bool, download success
-		"""
-		raise AbstractMethod
+        Returns
+        -------
+        bool, download success
+        """
+        raise AbstractMethod
 
-	## Basic File management
+    ## Basic File management
 
-	def ListDirectory(self, path, limit):
-		"""
-		Lists the content of a directory
+    def list_directory(self, path, limit):
+        """
+        Lists the content of a directory
 
-		Parameters
-		----------
-		path : str
-			path on the cloud to get contents for
+        Parameters
+        ----------
+        path : str
+            path on the cloud to get contents for
 
-		Returns
-		-------
+        Returns
+        -------
 
-		"""
-		raise AbstractMethod
+        """
+        raise AbstractMethod
 
-	def Copy(self, source, destination, sourceBucket, destinationBucket, overwrite):
-		"""
-		Copys an object
+    def list_objects(self):
+        """
+        Gets all objects contained by backend
+        Returns
+        -------
 
-		Parameters
-		----------
-		source : str
-			origin path
-		destination : str
-			destination path
-		sourceBucket : str
-			(s3) origin bucket
-		destinationBucket : str
-			(s3) destination bucket
-		overwrite : bool
-			overwrite if destination exists?
+        """
 
-		Returns
-		-------
-		bool, copy success
-		"""
-		raise AbstractMethod
+    def copy(self, source, destination, sourceBucket, destinationBucket, overwrite):
+        """
+        Copys an object
 
-	def Move(self, source, destination, sourceBucket, destinationBucket, overwrite):
-		"""
-		Moves an object
+        Parameters
+        ----------
+        source : str
+            origin path
+        destination : str
+            destination path
+        sourceBucket : str
+            (s3) origin bucket
+        destinationBucket : str
+            (s3) destination bucket
+        overwrite : bool
+            overwrite if destination exists?
 
-		Parameters
-		----------
-		source
-		destination
-		sourceBucket
-		destinationBucket
-		overwrite
+        Returns
+        -------
+        bool, copy success
+        """
+        raise AbstractMethod
 
-		Returns
-		-------
+    def move(self, source, destination, sourceBucket, destinationBucket, overwrite):
+        """
+        Moves an object
 
-		"""
-		raise AbstractMethod
+        Parameters
+        ----------
+        source
+        destination
+        sourceBucket
+        destinationBucket
+        overwrite
 
-	def Delete(self, fileName, recursive = False, delete = False):
-		"""
-		Deletes an object
+        Returns
+        -------
 
-		Parameters
-		----------
-		fileName : str
-			name of cloud object to delete
-		recursive : bool
-			recursively delete directory?
-		delete : bool
-			(gdrive) hard delete the file(s)?
+        """
+        raise AbstractMethod
 
-		Returns
-		-------
+    def delete(self, fileName, recursive = False, delete = False):
+        """
+        Deletes an object
 
-		"""
-		raise AbstractMethod
+        Parameters
+        ----------
+        fileName : str
+            name of cloud object to delete
+        recursive : bool
+            recursively delete directory?
+        delete : bool
+            (gdrive) hard delete the file(s)?
 
-	@property
-	def size(self):
-		"""
-		Size of stored cloud items in bytes
-		Returns
-		-------
-		int
-		"""
-		raise AbstractMethod
+        Returns
+        -------
+
+        """
+        raise AbstractMethod
+
+    @property
+    def size(self):
+        """
+        Size of stored cloud items in bytes
+        Returns
+        -------
+        int
+        """
+        raise AbstractMethod
 
 class CloudStream(object):
-	"""
-	A simple unified representation of an object downloaded from the cloud.
-	 .content is a streaming object with a .read() function
-	 .metadata is a dictionary of the custom metadata of this object
+    """
+    A simple unified representation of an object downloaded from the cloud.
+     .content is a streaming object with a .read() function
+     .metadata is a dictionary of the custom metadata of this object
 
-	TODO: unified metadata
-	"""
-	def __init__(self, stream, metadata):
-		self.content = stream
-		self.metadata = metadata
+    TODO: unified metadata
+    """
+    def __init__(self, stream, metadata):
+        self.content = stream
+        self.metadata = metadata

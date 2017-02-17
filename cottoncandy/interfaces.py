@@ -131,7 +131,7 @@ class BasicInterface(InterfaceObject):
         object_name : str
             The object name
         """
-        return self.interface.CheckFileExists(object_name, bucket_name)
+        return self.interface.check_file_exists(object_name, bucket_name)
 
     def exists_bucket(self, bucket_name):
         """Check whether the bucket exists"""
@@ -172,7 +172,7 @@ class BasicInterface(InterfaceObject):
         a lot of items on your bucket and should increase ``page_size``
         """
         warn('Deprecated. Use get_objects() instead', DeprecationWarning)
-        return self.interface.ListObjects(**kwargs)
+        return self.interface.list_objects(**kwargs)
 
     def get_objects(self, **kwargs):
         """
@@ -186,7 +186,7 @@ class BasicInterface(InterfaceObject):
         -------
 
         """
-        return self.interface.ListObjects(**kwargs)
+        return self.interface.list_objects(**kwargs)
 
     def get_bucket_size(self, limit = 10 ** 6, page_size = 10 ** 6):
         """Counts the size of all objects in the current bucket.
@@ -241,12 +241,12 @@ class BasicInterface(InterfaceObject):
     def show_objects(self, limit = 1000, page_size = 1000):
         """Print objects in the current bucket"""
         if isinstance(self.interface, S3Client):
-            object_list = self.interface.ListObjects(limit, page_size)
+            object_list = self.interface.list_objects(limit, page_size)
             try:
                 print_objects(object_list)
             except botocore.exceptions.PaginationError:
                 print('Loads of objects in "%s". Increasing page_size by 100x...' % self.bucket_name)
-                object_list = self.interface.ListObjects(limit = limit, page_size = page_size * 100)
+                object_list = self.interface.list_objects(limit = limit, page_size = page_size * 100)
                 print_objects(object_list)
         else:
             driveFiles = self.interface.drive.ListFile({'q': "trashed=false"}).GetList()
@@ -261,7 +261,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
-        self.interface.UploadStream(body, object_name, metadata, acl)
+        self.interface.upload_stream(body, object_name, metadata, acl)
 
     def download_stream(self, object_name):
         """
@@ -275,7 +275,7 @@ class BasicInterface(InterfaceObject):
         -------
         CloudStream object
         """
-        return self.interface.DownloadStream(object_name)
+        return self.interface.download_stream(object_name)
 
     def upload_from_file(self, flname, object_name = None,
                          ExtraArgs = dict(ACL = DEFAULT_ACL)):
@@ -293,7 +293,7 @@ class BasicInterface(InterfaceObject):
         -------
         response : boto3 response
         """
-        return self.interface.UploadFile(flname, object_name, ExtraArgs['ACL'])
+        return self.interface.upload_file(flname, object_name, ExtraArgs['ACL'])
 
     @clean_object_name
     def download_to_file(self, object_name, fileName):
@@ -305,7 +305,7 @@ class BasicInterface(InterfaceObject):
         fileName : str
             Absolute path where the data will be downloaded on disk
         """
-        return self.interface.DownloadFile(object_name, fileName)
+        return self.interface.download_to_file(object_name, fileName)
 
     @clean_object_name
     def download_object(self, object_name):
@@ -345,7 +345,7 @@ class BasicInterface(InterfaceObject):
         **metadata  : optional
             Metadata to store along with MPU object
         """
-        return self.interface.UploadMultiPart(file_object, object_name, metadata)
+        return self.interface.upload_multipart(file_object, object_name, metadata)
 
     @clean_object_name
     def upload_json(self, object_name, ddict, acl = DEFAULT_ACL, **metadata):
@@ -865,7 +865,7 @@ class FileSystemInterface(BasicInterface):
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
     def lsdir(self, path = '/', limit = 10 ** 3):
-        return self.interface.ListDirectory(path, limit)
+        return self.interface.list_directory(path, limit)
 
     @clean_object_name
     def ls(self, pattern, page_size = 10 ** 3, limit = 10 ** 3, verbose = False):
@@ -988,7 +988,7 @@ class FileSystemInterface(BasicInterface):
         """
         matches = []
         if '/' not in pattern:	# end tree, list all objects
-            return self.interface.ListObjects(True)
+            return self.interface.list_objects(True)
 
         nextFolderExp = r'^/?[^/]*/'
         nextFolder = re.match(nextFolderExp, pattern).group(0)
@@ -997,10 +997,11 @@ class FileSystemInterface(BasicInterface):
         if '*' not in nextFolder:	# no wildcard, simply cd into it
             self.interface.cd(nextFolder)
         else:						# find all wildcard matches and recursively glob them
-            files = self.interface.ListObjects()
+            files = self.interface.list_objects()
             for f in files:
                 matches.append(self.globGDrive())
 
+        # TODO: finish this
 
         return
 
@@ -1117,7 +1118,7 @@ class FileSystemInterface(BasicInterface):
             Whether to overwrite the `dest_name` object if it already exists
         """
         # TODO: support directories
-        return self.interface.Copy(source_name, dest_name, source_bucket, dest_bucket, overwrite)
+        return self.interface.copy(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
     def mv(self, source_name, dest_name,
            source_bucket = None, dest_bucket = None, overwrite = False):
@@ -1139,7 +1140,7 @@ class FileSystemInterface(BasicInterface):
             Whether to overwrite the `dest_name` object if it already exists.
         """
         # TODO: Support directories
-        return self.interface.Move(source_name, dest_name, source_bucket, dest_bucket, overwrite)
+        return self.interface.move(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
     def rm(self, object_name, recursive = False, delete = True):
         """Delete an object, or a subtree ('path/to/stuff').
@@ -1167,7 +1168,7 @@ class FileSystemInterface(BasicInterface):
         """
 
         if isinstance(self.interface, GDriveClient):
-            return self.interface.Delete(object_name, recursive, delete)
+            return self.interface.delete(object_name, recursive, delete)
 
         # not moving this to the basic S3Client because it depends on glob
         if self.exists_object(object_name):
@@ -1261,26 +1262,26 @@ class EncryptedInterface(DefaultInterface):
 
         if self.encryption == 'AES':
             encryptedStream = self.encryptor.EncryptStream(body)
-            return self.interface.UploadStream(encryptedStream, object_name, metadata, acl)
+            return self.interface.upload_stream(encryptedStream, object_name, metadata, acl)
         else:
             encryptedStream, encryptedKey = self.encryptor.EncryptStream(body)
             metadata['key'] = b64encode(encryptedKey)
-            return self.interface.UploadStream(encryptedStream, object_name, metadata, acl)
+            return self.interface.upload_stream(encryptedStream, object_name, metadata, acl)
 
     def download_stream(self, object_name):
 
-        stream = self.interface.DownloadStream(object_name)
+        stream = self.interface.download_stream(object_name)
         if self.encryption == 'AES':
             stream.content = self.encryptor.DecryptStream(stream.content)
         else:
             stream.content = self.encryptor.DecryptStream(stream.content, b64decode(stream.metadata['key']))
         return stream
 
-    def upload_from_file(self, localFileName, object_name = None, ExtraArgs = dict(ACL = DEFAULT_ACL)):
+    def upload_from_file(self, local_file_name, object_name = None, ExtraArgs = dict(ACL = DEFAULT_ACL)):
 
         if not object_name:
-            object_name = localFileName
-        with open(localFileName) as f:
+            object_name = local_file_name
+        with open(local_file_name) as f:
             return self.upload_object(object_name, f, ExtraArgs['ACL'])
 
     def download_to_file(self, object_name, fileName):

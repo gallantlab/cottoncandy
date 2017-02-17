@@ -60,7 +60,7 @@ class S3FSLike(BrowserObject):
         return os.path.join(self._parent, self._curdir)
 
     def __call__(self):
-        assert self.interface.CheckFileExists(self._fullpath)
+        assert self.interface.check_file_exists(self._fullpath)
         return self.interface.get_object(self._fullpath)
 
 
@@ -184,7 +184,7 @@ class S3Directory(S3FSLike):
         else:
             # allow user-provided paths. useful when >1000 objects
             child_path = os.path.join(self._fullpath, attr)
-            assert (self.interface.CheckFileExists(child_path) or \
+            assert (self.interface.check_file_exists(child_path) or \
 					self.interface.lsdir(child_path))
 
         try:
@@ -240,6 +240,6 @@ class S3HDF5(S3Directory):
             else:
                 raise ValueError('"%s" not in %s'%(key, dataset_path))
 
-        if self.interface.CheckFileExists(dataset_path):
+        if self.interface.check_file_exists(dataset_path):
             return self.interface.download_raw_array(dataset_path)
         print('Specify key to download:\n%s'%','.join(sorted(self._subdirs.keys())))
