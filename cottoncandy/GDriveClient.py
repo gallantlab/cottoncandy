@@ -58,7 +58,7 @@ class GDriveClient(CCBackEnd):
         # get credentials
         authenticator.LoadCredentialsFile(credentials)
         if authenticator.credentials is None:  # no credentials
-            response = raw_input('No credentials. Authenticate with web browser? [y]/n > ')
+            response = raw_input('No credentials. Authenticate with local web browser? [y]/n > ')
             if response.lower() in ['y', 'yes'] or len(response) == 0:
                 authenticator.LocalWebserverAuth()
             else:
