@@ -135,19 +135,19 @@ class BasicInterface(InterfaceObject):
 
     def exists_bucket(self, bucket_name):
         """Check whether the bucket exists"""
-        return self.interface.CheckBucketExists(bucket_name)
+        return self.interface.check_bucket_exists(bucket_name)
 
     def create_bucket(self, bucket_name, acl = DEFAULT_ACL):
         """Create a new bucket"""
-        self.interface.CreateBucket(bucket_name, acl)
+        self.interface.create_bucket(bucket_name, acl)
 
     def set_bucket(self, bucket_name):
         """Bucket to use"""
-        self.interface.SetBucket(bucket_name)
+        self.interface.set_current_bucket(bucket_name)
 
     def get_bucket(self):
         """Get bucket boto3 object"""
-        return self.interface.GetBucket()
+        return self.interface.get_bucket()
 
     def get_bucket_objects(self, **kwargs):
         """Get list of objects from the bucket
@@ -229,14 +229,14 @@ class BasicInterface(InterfaceObject):
 
     def show_buckets(self):
         """Show available buckets"""
-        self.interface.ShowBuckets()
+        self.interface.show_all_buckets()
 
     @clean_object_name
     def get_object(self, object_name, bucket_name = None):
         """Get a boto3 object. Create it if it doesn't exist"""
         # TODO: should this be here? this is an s3-specific action
         # NOTE: keeping this in case outside code is using this.
-        return self.interface.GetS3Object(object_name, bucket_name)
+        return self.interface.get_s3_object(object_name, bucket_name)
 
     def show_objects(self, limit = 1000, page_size = 1000):
         """Print objects in the current bucket"""
