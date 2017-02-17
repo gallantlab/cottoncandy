@@ -971,11 +971,11 @@ class FileSystemInterface(BasicInterface):
         # determine if we're globbing
 
         if isinstance(self.interface, S3Client):
-            return self.globS3(pattern, **kwargs)
+            return self.glob_s3(pattern, **kwargs)
         else:
-            return self.globGDrive(pattern)
+            return self.glob_google_drive(pattern)
 
-    def globGDrive(self, pattern):
+    def glob_google_drive(self, pattern):
         """
         Globbing on google drive
         Parameters
@@ -999,14 +999,14 @@ class FileSystemInterface(BasicInterface):
         else:						# find all wildcard matches and recursively glob them
             files = self.interface.list_objects()
             for f in files:
-                matches.append(self.globGDrive())
+                matches.append(self.glob_google_drive())
 
         # TODO: finish this
 
         return
 
 
-    def globS3(self, pattern, **kwargs):
+    def glob_s3(self, pattern, **kwargs):
         """
         Globbing on S3
 
