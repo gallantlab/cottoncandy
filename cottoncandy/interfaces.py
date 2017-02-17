@@ -473,7 +473,7 @@ class ArrayInterface(BasicInterface):
         array : np.ndarray
         """
         assert self.exists_object(object_name)
-        array = np.load(StringIO(self.download_object(object_name)).read())
+        array = np.load(StringIO(self.download_object(object_name)))
         return array
 
     @clean_object_name
