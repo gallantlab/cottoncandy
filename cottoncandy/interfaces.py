@@ -48,6 +48,7 @@ from cottoncandy.utils import (clean_object_name,
                                GzipInputStream,
                                generate_ndarray_chunks,
                                bytes2human,
+                               string2bool,
                                MB,
                                MIN_MPU_SIZE,
                                MAX_PUT_SIZE,
@@ -58,6 +59,8 @@ from cottoncandy.utils import (clean_object_name,
                                DASK_CHUNKSIZE,
                                SEPARATOR,
                                DEFAULT_ACL,
+                               MANDATORY_BUCKET_PREFIX,
+                               ISBOTO_VERBOSE,
                                )
 
 import cottoncandy.browser
@@ -112,13 +115,15 @@ class BasicInterface(InterfaceObject):
                 self.bucket_name = None
 
         if verbose:
-            logging.getLogger('boto3').setLevel(logging.INFO)
-            logging.getLogger('botocore').setLevel(logging.INFO)
             print('Available buckets:')
             self.show_buckets()
-        else:
+            print('Current bucket:')
+            print(self.bucket_name)
+
+        if string2bool(ISBOTO_VERBOSE) is False:
             logging.getLogger('boto3').setLevel(logging.WARNING)
             logging.getLogger('botocore').setLevel(logging.WARNING)
+
 
     def __repr__(self):
         details = (__package__, self.bucket_name, self.url)
@@ -194,9 +199,21 @@ class BasicInterface(InterfaceObject):
 
     def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
         '''Create a new bucket'''
-        self.connection.create_bucket(Bucket=bucket_name)
-        self.get_bucket(bucket_name).set_acl(acl)
+        if MANDATORY_BUCKET_PREFIX:
+            tt = len(MANDATORY_BUCKET_PREFIX)
+            assert bucket_name[:tt] == MANDATORY_BUCKET_PREFIX
+
+        self.connection.create_bucket(Bucket=bucket_name, ACL=acl)
         self.set_bucket(bucket_name)
+
+    def rm_bucket(self, bucket_name):
+        '''Remove an empty bucket. Throws an exception when bucket is not empty.'''
+        self.set_bucket(bucket_name)
+        bucket = self.get_bucket()
+        try:
+            bucket.delete()
+        except botocore.exceptions.ClientError as e:
+            print("Bucket not empty. To delete, first empty the bucket.")
 
     def set_bucket(self, bucket_name):
         '''Bucket to use'''
@@ -432,7 +449,7 @@ class BasicInterface(InterfaceObject):
         if verbose:
             print('MPU: %0.02fMB file in %i parts'%(nbytes_total/(2.**20), nparts))
 
-        for chunk_idx in xrange(nparts):
+        for chunk_idx in range(nparts):
             part_number = chunk_idx + 1
             if part_number == nparts:
                 buffersize += last_part_offset
@@ -737,7 +754,7 @@ class ArrayInterface(BasicInterface):
         datadict  : dict
             An arbitrary depth dictionary.
         '''
-        from .browser import S3Directory
+        from cottoncandy.browser import S3Directory
         ob = S3Directory(object_root, interface=self)
 
         datadict = {}
@@ -776,7 +793,7 @@ class ArrayInterface(BasicInterface):
             This can be conceptualized as implementing an h5py/pytables
             object with ``load()`` and ``keys()`` methods.
         '''
-        from .browser import S3Directory
+        from cottoncandy.browser import S3Directory
         return S3Directory(object_root, interface=self)
 
     @clean_object_name
@@ -831,7 +848,7 @@ class ArrayInterface(BasicInterface):
 
         # convert to dask convention (sorry)
         details = [t[0] for t in metadata['dask']]
-        dimension_sizes = [dict() for idx in xrange(arr.ndim)]
+        dimension_sizes = [dict() for idx in range(arr.ndim)]
         for dim, chunks in enumerate(zip(*details)):
             for sample_idx, chunk_idx in enumerate(chunks):
                 if chunk_idx not in dimension_sizes[dim]:
@@ -1159,7 +1176,7 @@ class FileSystemInterface(BasicInterface):
 
         See documentation for ``cottoncandy.get_browser``
         '''
-        return browser.S3Directory('', interface=self)
+        return cottoncandy.browser.S3Directory('', interface=self)
 
     def cp(self, source_name, dest_name,
            source_bucket=None, dest_bucket=None, overwrite=False):

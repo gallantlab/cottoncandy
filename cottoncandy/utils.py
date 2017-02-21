@@ -33,7 +33,9 @@ DASK_CHUNKSIZE = int(options.config.get('upload_settings', 'dask_chunksize'))*MB
 SEPARATOR = options.config.get('basic', 'path_separator')
 
 DEFAULT_ACL = options.config.get('basic', 'default_acl')
+MANDATORY_BUCKET_PREFIX = options.config.get('basic', 'mandatory_bucket_prefix')
 
+ISBOTO_VERBOSE = options.config.get('login', 'verbose_boto')
 
 ##############################
 # misc functions
@@ -301,7 +303,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
         factor = arr.ndim
     else:
         if axis == -1: axis = (arr.ndim - 1)
-        dims = [arr.shape[t] for t in xrange(arr.ndim) if t != axis]
+        dims = [arr.shape[t] for t in range(arr.ndim) if t != axis]
         logsum = np.sum(map(np.log, dims))
         factor = 1
 
@@ -315,7 +317,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
 
     chunk_shapes = [ii if (axis is None) else \
                     (arr.shape[dim] if (dim != axis) else ii) \
-                    for dim in xrange(arr.ndim)]
+                    for dim in range(arr.ndim)]
 
     dim_ranges = map(lambda x: range(x), dim_nchunks)
     iterator = itertools.product(*dim_ranges)
