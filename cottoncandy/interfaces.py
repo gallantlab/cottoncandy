@@ -103,14 +103,6 @@ class BasicInterface(InterfaceObject):
         else:
             return '{}.interface on Google Drive'.format(__package__)
 
-    @staticmethod
-    def pathjoin(a, *p):
-        """Join two or more pathname components, inserting SEPARATOR as needed.
-        If any component is an absolute path, all previous path components
-        will be discarded.  An empty last part will result in a path that
-        ends with a separator."""
-        return PathJoin(a, *p)
-
     def _get_bucket_name(self, bucket_name):
         return self.interface._get_bucket_name(bucket_name)
 

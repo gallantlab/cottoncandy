@@ -469,7 +469,7 @@ class S3Client(CCBackEnd):
         if self.check_file_exists(ob_new.key, bucket_name = dest_bucket):
             assert overwrite is True
 
-        fpath = PathJoin(source_bucket, source)
+        fpath = pathjoin(source_bucket, source)
         ob_new.copy_from(CopySource = fpath)
         return ob_new
 
