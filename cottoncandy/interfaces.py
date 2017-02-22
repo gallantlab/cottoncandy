@@ -18,16 +18,12 @@ try:
 except ImportError:
     from io import StringIO
 
-import logging
-
 import numpy as np
 from scipy.sparse import (coo_matrix,
                           csr_matrix,
                           csc_matrix,
                           bsr_matrix,
                           dia_matrix)
-
-from base64 import b64encode, b64decode
 
 import cottoncandy.browser
 
@@ -90,11 +86,7 @@ class BasicInterface(InterfaceObject):
                 print('Available buckets:')
                 self.show_buckets()
             else:
-                print('Google drive have no concept of buckets.')
-
-        if string2bool(ISBOTO_VERBOSE) is False:
-            logging.getLogger('boto3').setLevel(logging.WARNING)
-            logging.getLogger('botocore').setLevel(logging.WARNING)
+                print('Google drive backend instantiated.')
 
     def __repr__(self):
         if isinstance(self.interface, S3Client):

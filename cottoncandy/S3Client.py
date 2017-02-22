@@ -1,6 +1,7 @@
 from __future__ import print_function
 import boto3
 import botocore
+import logging
 from io import BytesIO
 
 from botocore.utils import fix_s3_host
@@ -73,6 +74,10 @@ class S3Client(CCBackEnd):
                       '* Use with caution!\n' \
                       '* Many features will not work!!!\n')
                 self.bucket = None
+
+        if string2bool(ISBOTO_VERBOSE) is False:
+            logging.getLogger('boto3').setLevel(logging.WARNING)
+            logging.getLogger('botocore').setLevel(logging.WARNING)
 
     def get_bucket_name(self, bucket_name):
         """
