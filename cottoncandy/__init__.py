@@ -83,15 +83,10 @@ def get_encrypted_interface(bucket_name=default_bucket,
 
     Parameters
     ----------
-    bucket_name
-    ACCESS_KEY
-    SECRET_KEY
-    endpoint_url
-    force_bucket_creation
-    verbose
-    backend
-    encryption
-    encryptionKey
+    encryption : str
+    	'RSA' | 'AES'
+    encryptionKey : str
+    	if RSA, path to key file, if AES, binary string encryption key
 
     Returns
     -------

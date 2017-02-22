@@ -79,13 +79,13 @@ class GDriveClient(CCBackEnd):
         @param credentials: 	str, name of saved credentials file
         @param config:			str, name of config file, if given will override other settings
         """
+        super(GDriveClient, self).__init__()
 
         # fields
         self.drive = None
         self.current_directory_object = None
         self.dir = None
         self.service = None
-        self.keyFolder = None
         self.rootID = None
 
         if not config:
@@ -111,7 +111,7 @@ class GDriveClient(CCBackEnd):
         """
         self.drive = GoogleDrive(authenticator)
         self.current_directory_object = self.get_file_by_ID('root')  # cmd-like movement in google drive structure
-        self.rootID = self.currentDirectoryID  # remember root ID
+        self.rootID = self.current_directory_id  # remember root ID
         self.dir = '/'
         self.list_objects(True)  # this call inits self.drive.auth.service, which exposes lower-level api calls
         self.service = self.drive.auth.service  # less typing XD
@@ -130,7 +130,6 @@ class GDriveClient(CCBackEnd):
 
         if bool(config['DriveClient-Config']['FileIO']['@Encryption']):
             self.encryptor = RSAAESEncryption(config['DriveClient-Config']['FileIO']['Encryption']['RSAkey'])
-            self.keyFolder = config['DriveClient-Config']['FileIO']['Encryption']['KeyFolder']
 
     def save_config(self, file_name):
         """
@@ -140,7 +139,7 @@ class GDriveClient(CCBackEnd):
         """
 
     @property
-    def currentDirectoryID(self):
+    def current_directory_id(self):
         """
         ID of the current object
         @return: 	str
@@ -230,7 +229,7 @@ class GDriveClient(CCBackEnd):
         elif directory in ['/', '']:  # change to root
             self.current_directory_object = self.get_file_by_ID('root')
         else:  # move down one
-            directories = self.drive.ListFile({'q': 'title="{}" and "{}" in parents and mimeType = \'application/vnd.google-apps.folder\' and trashed=false'.format(directory, self.currentDirectoryID)}).GetList()
+            directories = self.drive.ListFile({'q': 'title="{}" and "{}" in parents and mimeType = \'application/vnd.google-apps.folder\' and trashed=false'.format(directory, self.current_directory_id)}).GetList()
             if len(directories) < 1:
                 if not make_if_not_exist:
                     print('No such directory: {}'.format(directory))
@@ -269,12 +268,12 @@ class GDriveClient(CCBackEnd):
                     return None
             folder_name = tokens[-1]
 
-        directories = self.drive.ListFile({'q': 'title="{}" and "{}" in parents and mimeType = \'application/vnd.google-apps.folder\' and trashed=false'.format(folder_name, self.currentDirectoryID)}).GetList()
+        directories = self.drive.ListFile({'q': 'title="{}" and "{}" in parents and mimeType = \'application/vnd.google-apps.folder\' and trashed=false'.format(folder_name, self.current_directory_id)}).GetList()
         if len(directories) > 0:
             print('Folder already exists')
             return None
 
-        folder = self.drive.CreateFile({'title': folder_name, 'mimeType': 'application/vnd.google-apps.folder', 'parents': [{'id': self.currentDirectoryID}]})
+        folder = self.drive.CreateFile({'title': folder_name, 'mimeType': 'application/vnd.google-apps.folder', 'parents': [{'id': self.current_directory_id}]})
         folder.Upload()
 
         if curDirObj is not None:
@@ -396,7 +395,7 @@ class GDriveClient(CCBackEnd):
         # metadata
         metadata = {}
         metadata['title'] = cloud_name
-        metadata['parents'] = [{'id': self.currentDirectoryID}]
+        metadata['parents'] = [{'id': self.current_directory_id}]
 
         # try to upload the file_name
         newFile = self.drive.CreateFile(metadata)
@@ -441,7 +440,7 @@ class GDriveClient(CCBackEnd):
         # metadata
         metadata = {}
         metadata['title'] = name
-        metadata['parents'] = [{'id': self.currentDirectoryID}]
+        metadata['parents'] = [{'id': self.current_directory_id}]
 
         newFile = self.drive.CreateFile(metadata)
         newFile.Upload()
@@ -468,7 +467,7 @@ class GDriveClient(CCBackEnd):
         return self.upload_stream(stream, cloudName, properties, permissions)
 
 
-    def Download(self, driveFile, localFile = None):
+    def download_to_file(self, driveFile, localFile = None):
         """
         Download file to disk
         @param driveFile:	str, cloudName of file on g drive
@@ -549,7 +548,7 @@ class GDriveClient(CCBackEnd):
         After a cd, rebuilds the current working directory string
         @return:
         """
-        if self.currentDirectoryID == 'root':
+        if self.current_directory_id == 'root':
             self.dir = '/'
             return
 
@@ -569,12 +568,12 @@ class GDriveClient(CCBackEnd):
         @return: list<GoogleDriveFile>|list<str>
         """
         if namesOnly:
-            files = self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.currentDirectoryID, str(includeTrash).lower())}).GetList()
+            files = self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.current_directory_id, str(includeTrash).lower())}).GetList()
             out = []
             for f in files:
                 out.append(f['title'])
             return out
-        return self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.currentDirectoryID, str(includeTrash).lower())}).GetList()
+        return self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.current_directory_id, str(includeTrash).lower())}).GetList()
 
     def get_file_by_name(self, name):
         """

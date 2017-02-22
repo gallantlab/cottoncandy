@@ -2,11 +2,6 @@
 class FileNotFoundError(RuntimeError):
     """File not found error"""
 
-class AbstractMethod(RuntimeError):
-    """
-    This method is abstract
-    """
-
 class CCBackEnd(object):
     """
     Interface for cottoncandy backends
@@ -31,7 +26,7 @@ class CCBackEnd(object):
         -------
         bool
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     def upload_stream(self, stream, cloudName, metadata, permissions):
         """
@@ -52,7 +47,7 @@ class CCBackEnd(object):
         -------
         bool, upload success
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     def upload_file(self, fileName, cloudName, permissions):
         """
@@ -71,7 +66,7 @@ class CCBackEnd(object):
         -------
         bool, upload success
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     def upload_multipart(self, stream, cloudName, metadata, permissions):
         """
@@ -92,7 +87,7 @@ class CCBackEnd(object):
         -------
         bool, upload success
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     def download_stream(self, cloudName):
         """
@@ -107,7 +102,7 @@ class CCBackEnd(object):
         -------
         CloudStream object
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     def download_to_file(self, cloudName, fileName):
         """
@@ -124,7 +119,7 @@ class CCBackEnd(object):
         -------
         bool, download success
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     ## Basic File management
 
@@ -141,7 +136,7 @@ class CCBackEnd(object):
         -------
 
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     def list_objects(self):
         """
@@ -172,7 +167,7 @@ class CCBackEnd(object):
         -------
         bool, copy success
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     def move(self, source, destination, sourceBucket, destinationBucket, overwrite):
         """
@@ -190,7 +185,7 @@ class CCBackEnd(object):
         -------
 
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     def delete(self, fileName, recursive = False, delete = False):
         """
@@ -209,7 +204,7 @@ class CCBackEnd(object):
         -------
 
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
     @property
     def size(self):
@@ -219,7 +214,7 @@ class CCBackEnd(object):
         -------
         int
         """
-        raise AbstractMethod
+        raise NotImplementedError
 
 class CloudStream(object):
     """

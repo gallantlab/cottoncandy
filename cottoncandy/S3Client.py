@@ -57,6 +57,8 @@ class S3Client(CCBackEnd):
         s3url
         forceBucketCreation
         """
+        super(S3Client, self).__init__()
+
         self.connection = S3Client.connect(accessKey, secretKey, s3url)
         self.url = s3url
         if self.check_bucket_exists(bucket):
@@ -510,3 +512,6 @@ class S3Client(CCBackEnd):
             # we got objects on the leaf nodes
             object_names += unquote_names([t['Key'] for t in response['Contents']])
         return map(os.path.normpath, object_names)
+
+    def delete(self, fileName, recursive = False, delete = False):
+        raise RuntimeError('Deleting on S3 backend is implemented by cottoncandy interface object')
