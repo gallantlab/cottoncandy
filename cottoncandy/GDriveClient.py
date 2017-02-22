@@ -2,13 +2,9 @@ from __future__ import print_function
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from pydrive.files import GoogleDriveFile, FileNotUploadedError, ApiRequestError
-from base64 import b64decode, b64encode
-
-from Encryption import RSAAESEncryption
 from CCBackEnd import *
 import sys
 import re
-import xmltodict
 
 # Ipython autocomplete
 try:
@@ -72,12 +68,11 @@ class GDriveClient(CCBackEnd):
 
         return authenticator
 
-    def __init__(self, secrets = 'client_secrets.json', credentials = 'gdrive-credentials.txt', config = None):
+    def __init__(self, secrets = 'client_secrets.json', credentials = 'gdrive-credentials.txt'):
         """
         Constructor
         @param secrets:			str, name of client secrets file
         @param credentials: 	str, name of saved credentials file
-        @param config:			str, name of config file, if given will override other settings
         """
         super(GDriveClient, self).__init__()
 
@@ -88,14 +83,11 @@ class GDriveClient(CCBackEnd):
         self.service = None
         self.rootID = None
 
-        if not config:
-            ### Authentication
-            authenticator = GDriveClient.Authenticate(secrets, credentials)
+        ### Authentication
+        authenticator = GDriveClient.Authenticate(secrets, credentials)
 
-            ### Get actual drive client
-            self.initialise_drive(authenticator)
-        else:
-            self.load_config(config)
+        ### Get actual drive client
+        self.initialise_drive(authenticator)
 
         # if running in ipython, hook in autocomplete
         try:
@@ -115,28 +107,6 @@ class GDriveClient(CCBackEnd):
         self.dir = '/'
         self.list_objects(True)  # this call inits self.drive.auth.service, which exposes lower-level api calls
         self.service = self.drive.auth.service  # less typing XD
-
-    def load_config(self, file_name):
-        """
-        Load a config file
-        @param file_name: 	str, name of file
-        @return:
-        """
-        with open(file_name) as configFile:
-            config = xmltodict.parse(configFile.read())
-
-        authenticator = self.Authenticate(config['DriveClient-Config']['Authentication']['Client-Secrets'], config['DriveClient-Config']['Authentication']['Credentials'])
-        self.initialise_drive(authenticator)
-
-        if bool(config['DriveClient-Config']['FileIO']['@Encryption']):
-            self.encryptor = RSAAESEncryption(config['DriveClient-Config']['FileIO']['Encryption']['RSAkey'])
-
-    def save_config(self, file_name):
-        """
-        Saves the current configs
-        @param file_name:
-        @return:
-        """
 
     @property
     def current_directory_id(self):
