@@ -84,7 +84,7 @@ class Encryption(object):
         file_name : str
             path to file to be encrypted
         encrypted_file_name : str
-            path for encrypted file
+            path for encrypted file, if None, appends 'enc' to the file extenstion
 
         Returns
         -------
@@ -119,7 +119,7 @@ class Encryption(object):
         key : str
             key to use for decryption
         decrypted_file_name : str
-            name for decrypted file
+            name for decrypted file, if None, strips the last 3 chars off the name (assumes 'enc' on extension)
 
         Returns
         -------
@@ -198,8 +198,10 @@ class AESEncryption(Encryption):
 
         Parameters
         ----------
-        file_name
-        encrypted_file_name
+        file_name : str
+        	path to file
+        encrypted_file_name : str
+        	name for encrypted file
         key : str
             key to use
         chunk_size : int
@@ -317,7 +319,8 @@ class AESEncryption(Encryption):
             path to encrypted file
         key : str
             key to use
-        decrypted_file_name
+        decrypted_file_name : str
+        	name for decrypted file
         chunk_size : int
             bytes in each chunk
         initialisation_vector_size : int
@@ -423,8 +426,10 @@ class RSAAESEncryption(AESEncryption):
         ----------
         key : str
             key to use
-        keyfile
-        mode
+        keyfile : str
+        	path to key file
+        mode : int
+        	AES encryption method
         chunk_size : int
             bytes in each chunk
         initialisation_vector_size : int
@@ -525,8 +530,10 @@ class RSAAESEncryption(AESEncryption):
         encrypted_file_name
         AESkey : str
             AES key to use for this particular file
-        chunk_size
-        initialisation_vector_size
+        chunk_size : int
+            bytes in each chunk
+        initialisation_vector_size : int
+            bytes in initialisation vector
 
         Returns
         -------
@@ -597,10 +604,12 @@ class RSAAESEncryption(AESEncryption):
 
         Parameters
         ----------
-        file_name
+        file_name : str
+        	path to encrypted file
         encrypted_AES_key : str
             The encrypted AES key associated with this file
-        decrypted_file_name
+        decrypted_file_name : str
+        	name for decrypted file
         chunk_size : int
             bytes in each chunk
         initialisation_vector_size : int
