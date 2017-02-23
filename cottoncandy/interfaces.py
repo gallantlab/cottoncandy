@@ -1245,10 +1245,10 @@ class EncryptedInterface(DefaultInterface):
     def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
 
         if self.encryption == 'AES':
-            encryptedStream = self.encryptor.EncryptStream(body)
+            encryptedStream = self.encryptor.encrypt_stream(body)
             return self.interface.upload_stream(encryptedStream, object_name, metadata, acl)
         else:
-            encryptedStream, encryptedKey = self.encryptor.EncryptStream(body)
+            encryptedStream, encryptedKey = self.encryptor.encrypt_stream(body)
             metadata['key'] = b64encode(encryptedKey)
             return self.interface.upload_stream(encryptedStream, object_name, metadata, acl)
 
@@ -1256,9 +1256,9 @@ class EncryptedInterface(DefaultInterface):
 
         stream = self.interface.download_stream(object_name)
         if self.encryption == 'AES':
-            stream.content = self.encryptor.DecryptStream(stream.content)
+            stream.content = self.encryptor.decrypt_stream(stream.content)
         else:
-            stream.content = self.encryptor.DecryptStream(stream.content, b64decode(stream.metadata['key']))
+            stream.content = self.encryptor.decrypt_stream(stream.content, b64decode(stream.metadata['key']))
         return stream
 
     def upload_from_file(self, local_file_name, object_name = None, ExtraArgs = dict(ACL = DEFAULT_ACL)):
