@@ -18,6 +18,8 @@ try:
 except ImportError:
     from io import StringIO
 
+from base64 import b64decode, b64encode
+
 import numpy as np
 from scipy.sparse import (coo_matrix,
                           csr_matrix,
