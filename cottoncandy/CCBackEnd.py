@@ -11,15 +11,15 @@ class CCBackEnd(object):
 
     ## Basic File IO
 
-    def check_file_exists(self, fileName, bucketName):
+    def check_file_exists(self, file_name, bucket_name):
         """
         Checks whether a file exists on the cloud
 
         Parameters
         ----------
-        fileName : str
+        file_name : str
             file on cloud
-        bucketName : str
+        bucket_name : str
             (s3) bucket to check in
 
         Returns
@@ -49,15 +49,15 @@ class CCBackEnd(object):
         """
         raise NotImplementedError
 
-    def upload_file(self, fileName, cloudName, permissions):
+    def upload_file(self, file_name, cloud_name, permissions):
         """
         Uploads a file from disk
 
         Parameters
         ----------
-        fileName : str
+        file_name : str
             name of file to upload
-        cloudName : str
+        cloud_name : str
             name to use on the cloud
         permissions : str?
             permissions for this file
@@ -89,13 +89,13 @@ class CCBackEnd(object):
         """
         raise NotImplementedError
 
-    def download_stream(self, cloudName):
+    def download_stream(self, cloud_name):
         """
         Downloads a object to an in-memory stream
 
         Parameters
         ----------
-        cloudName : str
+        cloud_name : str
             name of object to download
 
         Returns
@@ -104,15 +104,15 @@ class CCBackEnd(object):
         """
         raise NotImplementedError
 
-    def download_to_file(self, cloudName, fileName):
+    def download_to_file(self, cloud_name, file_name):
         """
         Downloads an object directly to disk
 
         Parameters
         ----------
-        cloudName : str
+        cloud_name : str
             name of object to download
-        fileName : str
+        file_name : str
             name on disk to use
 
         Returns
@@ -146,7 +146,7 @@ class CCBackEnd(object):
 
         """
 
-    def copy(self, source, destination, sourceBucket, destinationBucket, overwrite):
+    def copy(self, source, destination, source_bucket, destination_bucket, overwrite):
         """
         Copys an object
 
@@ -156,9 +156,9 @@ class CCBackEnd(object):
             origin path
         destination : str
             destination path
-        sourceBucket : str
+        source_bucket : str
             (s3) origin bucket
-        destinationBucket : str
+        destination_bucket : str
             (s3) destination bucket
         overwrite : bool
             overwrite if destination exists?
@@ -169,7 +169,7 @@ class CCBackEnd(object):
         """
         raise NotImplementedError
 
-    def move(self, source, destination, sourceBucket, destinationBucket, overwrite):
+    def move(self, source, destination, source_bucket, destination_bucket, overwrite):
         """
         Moves an object
 
@@ -177,8 +177,8 @@ class CCBackEnd(object):
         ----------
         source
         destination
-        sourceBucket
-        destinationBucket
+        source_bucket
+        destination_bucket
         overwrite
 
         Returns
@@ -187,13 +187,13 @@ class CCBackEnd(object):
         """
         raise NotImplementedError
 
-    def delete(self, fileName, recursive = False, delete = False):
+    def delete(self, file_name, recursive = False, delete = False):
         """
         Deletes an object
 
         Parameters
         ----------
-        fileName : str
+        file_name : str
             name of cloud object to delete
         recursive : bool
             recursively delete directory?

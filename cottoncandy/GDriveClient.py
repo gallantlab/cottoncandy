@@ -25,10 +25,6 @@ if sys.version_info.major > 2:
     raw_input = input  # future compatibility
 
 
-class NotS3Error(RuntimeError):
-    """This is not an S3 backend"""
-
-
 class GDriveClient(CCBackEnd):
     """
     Google Drive client based on PyDrive, which is based on google apis.
@@ -38,10 +34,17 @@ class GDriveClient(CCBackEnd):
     @staticmethod
     def Authenticate(secrets, credentials):
         """
-        Authenticates with Gdrive
-        @param secrets: 		str, name of client secrets file
-        @param credentials: 	str, name of saved credentials file
-        @return:	GoogleAuth object with authentications
+
+        Parameters
+        ----------
+        secrets : str
+            path to client secrets json file
+        credentials : str
+            path to credentials file
+        Returns
+        -------
+        authenticator : GoogleAuth
+            google drive authentication object
         """
         authenticator = GoogleAuth()
         authenticator.settings = {
@@ -70,10 +73,19 @@ class GDriveClient(CCBackEnd):
 
     def __init__(self, secrets = 'client_secrets.json', credentials = 'gdrive-credentials.txt'):
         """
-        Constructor
-        @param secrets:			str, name of client secrets file
-        @param credentials: 	str, name of saved credentials file
+
+        Parameters
+        ----------
+        secrets : str
+            path to client secrets json file
+        credentials : str
+            path to credentials file
+
+        Returns
+        -------
+
         """
+
         super(GDriveClient, self).__init__()
 
         # fields
@@ -97,9 +109,15 @@ class GDriveClient(CCBackEnd):
 
     def initialise_drive(self, authenticator):
         """
-        Initializes internal gdrive client
-        @param authenticator: 	authenticated GoogleAuth instance
-        @return:
+
+        Parameters
+        ----------
+        authenticator : GoogleAuth
+            authenticated GoogleAuth object
+
+        Returns
+        -------
+
         """
         self.drive = GoogleDrive(authenticator)
         self.current_directory_object = self.get_file_by_ID('root')  # cmd-like movement in google drive structure
@@ -111,8 +129,11 @@ class GDriveClient(CCBackEnd):
     @property
     def current_directory_id(self):
         """
-        ID of the current object
-        @return: 	str
+        ID of current directory
+        Returns
+        -------
+        id : str
+            Google UUID
         """
         if self.current_directory_object.metadata['id'] == self.rootID:
             return 'root'
@@ -124,8 +145,11 @@ class GDriveClient(CCBackEnd):
     @property
     def pwd(self):
         """
-        Prints current working directory, no quotes attached
-        @return:
+        Prints current working directory
+
+        Returns
+        -------
+        None
         """
         print(self.dir)
         return None
@@ -145,8 +169,16 @@ class GDriveClient(CCBackEnd):
 
     def ls(self, directory = None):
         """
-        Prints the current folder's contents
-        @return: Nothing
+        Prints contents of a folder
+
+        Parameters
+        ----------
+        directory : str
+            folder to list, if None defaults to pwd
+
+        Returns
+        -------
+        None
         """
         if directory is not None:
             directory = re.sub('^\./', '', directory)
@@ -163,11 +195,20 @@ class GDriveClient(CCBackEnd):
 
     def cd(self, directory = None, make_if_not_exist = False, isID = False):
         """
-        Changes the current directory
-        @param directory:			str, where to?
-        @param make_if_not_exist:	bool, should the directory be made if it does not exist? (Mainly used for uploading)
-        @param isID:				bool, is the specified directory an id instead of a name? Can CD immediately there.
-        @return:	bool, success of action
+        Changes directory
+
+        Parameters
+        ----------
+        directory : str
+            path
+        make_if_not_exist : bool
+            make the directory if it doesn't exist?
+        isID : bool
+            is `directory` a Google UUID?
+        Returns
+        -------
+        : bool
+            success of cd operation
         """
         if directory is None or directory == '.':
             print(self.dir)
@@ -221,9 +262,17 @@ class GDriveClient(CCBackEnd):
 
     def mkdir(self, folder_name):
         """
-        Make directory
-        @param folder_name:	str, name of new folder
-        @return:			str, id of new folder
+
+        Parameters
+        ----------
+        folder_name : str
+            name of folder to make
+
+        Returns
+        -------
+        id : str
+            Google UUID of new directory
+
         """
         # name formatting
         folder_name = re.sub('^\./', '', folder_name)
@@ -253,10 +302,18 @@ class GDriveClient(CCBackEnd):
 
     def move(self, file, destination, sb = None, db = None, o = None):
         """
-        Moves a file to another folder
-        @param file:
-        @param destination:
-        @return:
+
+        Parameters
+        ----------
+        file : str
+            file to move
+        destination : str
+            destination folder
+
+        Returns
+        -------
+        : bool
+            success of move operation
         """
 
         # TODO: renaming in mv
@@ -273,10 +330,18 @@ class GDriveClient(CCBackEnd):
 
     def rename(self, file, newName):
         """
-        Renames a file
-        @param file:		str, name of file
-        @param newName:		str, new name
-        @return:
+
+        Parameters
+        ----------
+        file : str
+            file to rename
+        newName : str
+            new name
+
+        Returns
+        -------
+        : bool
+            success of operation
         """
 
         # TODO: name validation
@@ -288,10 +353,17 @@ class GDriveClient(CCBackEnd):
 
     def copy(self, original_name, copy_name, sb = None, db = None, o = None):
         """
-        Copys a file
-        @param original_name: 	str, name of file
-        @param copy_name: 		str, name of copy
-        @return:
+
+        Parameters
+        ----------
+        original_name : str
+            name of origin
+        copy_name : str
+            name/path of copy
+
+        Returns
+        -------
+
         """
         # TODO: directory copying and deep/shallowness
         try:
@@ -309,11 +381,20 @@ class GDriveClient(CCBackEnd):
 
     def delete(self, file_name, recursive = False, delete = False):
         """
-        Deletes a file on drive. Works for both files and folders. Will apply action to everything inside folder.
-        @param file_name:		str, name of file to delete
-        @param recursive: 		bool, recursive delete folder?
-        @param delete:			bool, if true, hard deletes, if false, trashes the file
-        @return:				bool, success of action
+
+        Parameters
+        ----------
+        file_name : str
+            name of file/folder to delete
+        recursive : bool
+            recursively delete a folder?
+        delete : bool
+            hard delete files?
+
+        Returns
+        -------
+        : bool
+            success of operation
         """
         try:
             fileID = self.get_ID_by_name(file_name)
@@ -335,12 +416,19 @@ class GDriveClient(CCBackEnd):
 
     def upload_file(self, file_name, cloud_name = None, permissions = None):
         """
-        Uploads a file/file-like object to the current directory.
-        Will automatically multi-part
-        @param file_name:			str, name of local file
-        @param cloud_name:			str, name on drive for file
-        @param permissions:			None, for signature compatibility with S3
-        @return: bool, upload success
+        Uploads from file on disk
+
+        Parameters
+        ----------
+        file_name : str
+            path to file on disk to upload
+        cloud_name : str
+            path/name for cloud file
+
+        Returns
+        -------
+        : bool
+            success of operation
         """
         if cloud_name is None:
             cloud_name = file_name
@@ -384,15 +472,23 @@ class GDriveClient(CCBackEnd):
 
         return True
 
-    def upload_stream(self, fileObj, name, properties = None, permissions = None):
+    def upload_stream(self, stream, name, properties = None, permissions = None):
         """
-        Uploads a file from a file-like object in memory that has a .read() function
-        Will automatically multi-part
-        @param name:			str, cloudName on drive for file
-        @param fileObj:			file-like, stream object with data
-        @param properties:		dict, custom metadata values
-        @param permissions:		None, for signature compatibility with S3
-        @return:				bool, success of action
+        Upload a stream with a .read() method
+
+        Parameters
+        ----------
+        stream : stream
+            stream to upload
+        name : str
+            name to use for cloud file
+        properties : dict
+            custom metadata
+
+        Returns
+        -------
+        : bool
+            success of operation
         """
         # cloudName formatting
         name = re.sub('^./', '', name)
@@ -415,7 +511,7 @@ class GDriveClient(CCBackEnd):
         newFile = self.drive.CreateFile(metadata)
         newFile.Upload()
         try:
-            newFile.content = fileObj
+            newFile.content = stream
             newFile.Upload()
         except Exception as e:
             print('Error uploading stream:\n{}'.format(e.__str__()))
@@ -433,41 +529,61 @@ class GDriveClient(CCBackEnd):
 
         return True
 
-    def upload_multipart(self, stream, cloudName, properties = None, permissions = None):
-        return self.upload_stream(stream, cloudName, properties, permissions)
+    def upload_multipart(self, stream, cloud_name, properties = None, permissions = None):
+        return self.upload_stream(stream, cloud_name, properties, permissions)
 
 
-    def download_to_file(self, driveFile, localFile = None):
+    def download_to_file(self, drive_file, local_file = None):
         """
-        Download file to disk
-        @param driveFile:	str, cloudName of file on g drive
-        @param localFile:	str, cloudName of file to save to, if None, will use same cloudName as g-drive file
-        @return:
+        Download a file to disk
+
+        Parameters
+        ----------
+        drive_file : str
+            name of file to download
+        local_file : str
+            name to use on disk, if None, uses same name
+
+        Returns
+        -------
+        : bool
+            success of operation
         """
 
         try:
-            f = self.drive.CreateFile({'id': self.get_ID_by_name(driveFile)})
+            f = self.drive.CreateFile({'id': self.get_ID_by_name(drive_file)})
         except FileNotFoundError:
             print('File not found')
             return False
 
         f.FetchMetadata()
-        if localFile is None:
-            localFile = f.metadata['title']
-        f.GetContentFile(localFile)
+        if local_file is None:
+            local_file = f.metadata['title']
+        f.GetContentFile(local_file)
 
         return True
 
-    def download_stream(self, driveFile):
+    def download_stream(self, drive_file):
         """
-        Download file to memory
-        @param driveFile:	str, cloudName of file on g-drive
-        @return:			StringIO object if mode == 'r', ByteIO if 'b'
-        @raise FileNotFoundError:	 when file is not found
+        Downloads a file to memory
+
+        Parameters
+        ----------
+        drive_file : str
+            name of file to download
+
+        Returns
+        -------
+        : CloudStream
+            object in memory of downloaded data
+
+        Raises
+        ------
+        FileNotFoundError
         """
 
         try:
-            f = self.drive.CreateFile({'id': self.get_ID_by_name(driveFile)})
+            f = self.drive.CreateFile({'id': self.get_ID_by_name(drive_file)})
         except FileNotFoundError:
             print('File not found')
             raise FileNotFoundError
@@ -485,9 +601,16 @@ class GDriveClient(CCBackEnd):
 
     def check_ID_exists(self, id):
         """
-        Checks if a file with the given id exists on google drive
-        @param id:
-        @return:
+
+        Parameters
+        ----------
+        id : str
+            Google UUID
+
+        Returns
+        -------
+        : bool
+            existence of ID on drive
         """
         metadata = {'id': id}
         item = GoogleDriveFile(self.drive.auth, metadata, uploaded = True)
@@ -498,12 +621,18 @@ class GDriveClient(CCBackEnd):
             return False
         print('This line should not be executed.')
 
-    def check_file_exists(self, file_name, bucketName):
+    def check_file_exists(self, file_name, bn):
         """
-        Checks if a file with the given cloudName exists on google drive
-        @param file_name:
-        @param bucketName:		useless, for compatibility reasons with s3 client
-        @return:
+
+        Parameters
+        ----------
+        file_name : str
+            path on cloud to check
+
+        Returns
+        -------
+        : bool
+            existence of file
         """
         try:
             self.get_ID_by_name(file_name)
@@ -516,7 +645,6 @@ class GDriveClient(CCBackEnd):
     def rebuild_current_path(self):
         """
         After a cd, rebuilds the current working directory string
-        @return:
         """
         if self.current_directory_id == 'root':
             self.dir = '/'
@@ -530,34 +658,58 @@ class GDriveClient(CCBackEnd):
             self.dir = '/' + thisDir['title'] + self.dir
         self.dir = str(self.dir)
 
-    def list_objects(self, namesOnly = False, includeTrash = False):
+    def list_objects(self, namesOnly = False, trashed = False):
         """
-        Gets a list of items in the current folder
-        @param namesOnly:		bool, if true, returns a list of strings of names, if false returns full drive file objects
-        @param includeTrash:	bool, look in trashed files?
-        @return: list<GoogleDriveFile>|list<str>
+        Gets a list of all files in current directory
+
+        Parameters
+        ----------
+        namesOnly : bool
+            Returns names only?
+        trashed : bool
+            Look in trash folder instead?
+
+        Returns
+        -------
+        : list<str> | list<GoogleDriveFile>
+            List of files
         """
         if namesOnly:
-            files = self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.current_directory_id, str(includeTrash).lower())}).GetList()
+            files = self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.current_directory_id, str(trashed).lower())}).GetList()
             out = []
             for f in files:
                 out.append(f['title'])
             return out
-        return self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.current_directory_id, str(includeTrash).lower())}).GetList()
+        return self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.current_directory_id, str(trashed).lower())}).GetList()
 
     def get_file_by_name(self, name):
         """
-        Gets the file corresponding to a cloudName
-        @param name:
-        @return:
+        Gets the GoogleDriveFile for a file
+        Parameters
+        ----------
+        name : str
+            name of file to get
+
+        Returns
+        -------
+        item : GoogleDriveFile
+            object for the file
         """
         return self.get_file_by_ID(self.get_ID_by_name(name))
 
     def get_file_by_ID(self, id):
         """
-        Gets a file by google's ID for it
-        @param id: 	str, id of object
-        @return:	GoogleDriveFile
+        Gets the GoogleDriveFile for a file
+
+        Parameters
+        ----------
+        id : str
+            Google UUID
+
+        Returns
+        -------
+        item : GoogleDriveFile
+            object for the file
         """
         metadata = {'id': id}
         item = GoogleDriveFile(self.drive.auth, metadata, uploaded = True)
@@ -570,10 +722,17 @@ class GDriveClient(CCBackEnd):
 
     def get_ID_by_name(self, file_name):
         """
-        Gets a file's ID by its cloudName
-        @param file_name:	str, file cloudName
-        @return:	str, id of the file
-        @raise FileNotFoundError when file not found
+        Gets the Google UUID for a file
+
+        Parameters
+        ----------
+        file_name : str
+            name of file to get
+
+        Returns
+        -------
+        id : str
+            Google UUID
         """
 
         drive_file = re.sub('^\./', '', file_name)
@@ -612,11 +771,23 @@ class GDriveClient(CCBackEnd):
     def insert_property(self, id, key, value, visibility = 'PUBLIC'):
         """
         Adds a custom property to a file
-        @param id:			str, id of file to add property to
-        @param key:			str, key of property
-        @param value:		str, value of property
-        @param visibility:	'PUBLIC'|'PRIVATE'
-        @return:
+
+        Parameters
+        ----------
+        id : str
+            Google UUID of file
+        key : str
+            name of the custom property
+        value : str
+            value of the custom property
+        visibility : 'PUBLIC'|'PRIVATE'
+            visibility of the property
+
+        Returns
+        -------
+        : bool
+            operation success
+
         """
 
         if visibility not in ['PUBLIC', 'PRIVATE']:
@@ -637,9 +808,17 @@ class GDriveClient(CCBackEnd):
 
     def get_file_properties(self, id):
         """
-        Gets the properties, i.e. custom metadata, of a file
-        @param id:	str, id of the file
-        @return:	dict
+        Gets the properties for a file
+
+        Parameters
+        ----------
+        id : str
+            Google UUID of file
+
+        Returns
+        -------
+        properties : dict
+            custom metadata
         """
         try:
             f = self.get_file_by_ID(id)
@@ -655,23 +834,32 @@ class GDriveClient(CCBackEnd):
             print('Error: {}'.format(e.__str__()))
             return None
 
-    def store_encryption_key(self, fileID, key64, chunkSize = 96):
+    def store_encryption_key(self, fileID, key64, chunk_size = 96):
         """
-        Stores a key to the custom properties of a file
-        @param fileID:		str, id of file to store key to
-        @param key65:		str, RSA encrypted key in base64 encoding
-        @param chunkSize:	int,  bytes per chunk of key as a metadata entry
-        @return:
+        Stores a base64-encoded encryption key
+
+        Parameters
+        ----------
+        fileID : str
+            file UUID to store this to
+        key64 : str
+            base-64 encoded key
+        chunk_size : int
+            size in chars to store the key in (there are limits to property lengths)
+
+        Returns
+        -------
+
         """
-        if chunkSize > 114:
+        if chunk_size > 114:
             print('Chunk size set to 114 because of limitations of metadata size')
-            chunkSize = 114
-        nChuncks = len(key64) / chunkSize + (len(key64) % chunkSize > 0)
+            chunk_size = 114
+        nChuncks = len(key64) / chunk_size + (len(key64) % chunk_size > 0)
         self.insert_property(fileID, 'keyChunks', str(nChuncks))
         self.insert_property(fileID, 'key', 'in chunks')
         for i in range(nChuncks):
-            start = i * chunkSize
-            end = (i + 1) * chunkSize
+            start = i * chunk_size
+            end = (i + 1) * chunk_size
             end = end if end < len(key64) else len(key64)
             if not self.insert_property(fileID, 'keyChunk{}'.format(i), key64[start:end]):
                 print('Key upload failed')
@@ -679,9 +867,17 @@ class GDriveClient(CCBackEnd):
 
     def get_encryption_key(self, fileID):
         """
-        Gets the stored and chunked key
-        @param fileID:	str, id of file
-        @return: RSA encrypted key encoded in base 64
+        Gets the encryption key from the properties for a file
+
+        Parameters
+        ----------
+        fileID : str
+            Google UUID
+
+        Returns
+        -------
+        key64 : str
+            base-64 encoded encryption key
         """
         key64 = ''
         properties = self.get_file_properties(fileID)
@@ -696,10 +892,19 @@ class GDriveClient(CCBackEnd):
 
     def update_metadata(self, file_name, metadata):
         """
-        Updates the metadata on a file
-        @param file_name: 	str, cloudName of file (not id)
-        @param metadata: 	dict, updated values
-        @return: 	bool, success of action
+        Updates the custom properties for a file
+
+        Parameters
+        ----------
+        file_name : str
+            Name of file
+        metadata : dict
+            new metadata
+
+        Returns
+        -------
+        : bool
+            operation success
         """
         try:
             drive_file = self.service.files().get(fileId = self.get_ID_by_name(file_name)).execute()
@@ -723,10 +928,19 @@ class GDriveClient(CCBackEnd):
 
     def completer(self, context, event):
         """
-        IPython autocompleter calculations.
-        @param context: 	I have no idea what this is
-        @param event: 		ipy's event info about what the user typed, etc
-        @return:
+        Ipython autocomplete hook
+
+        Parameters
+        ----------
+        context : ???
+            ???
+        event : ???
+            eventargs
+
+        Returns
+        -------
+        : list<str>
+            autocompelte options
         """
         # print(event.line)
         path = re.sub('(?:.*\=)?(.+?)(\.(ls|cd|Download.?|rm|mv|rename|CheckFileExists|CheckIDExists))\([\'"]', '', event.line)  # remove the user command, leaving only the path
@@ -768,7 +982,6 @@ class GDriveClient(CCBackEnd):
     def hook_ipython_completer(self):
         """
         Hooks the autocompleter into ipython
-        @return:
         """
         ipython = get_ipython()
         if ipython is None:
