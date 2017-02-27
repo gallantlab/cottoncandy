@@ -69,14 +69,14 @@ def get_interface(bucket_name=default_bucket,
 
 
 def get_encrypted_interface(bucket_name=default_bucket,
-                          	ACCESS_KEY=ACCESS_KEY,
-							SECRET_KEY=SECRET_KEY,
-							endpoint_url=ENDPOINT_URL,
-							force_bucket_creation=force_bucket_creation,
-							verbose=True,
-							backend='s3',
-							encryption=encryption,
-							encryptionKey=encryptionKey):
+                            ACCESS_KEY=ACCESS_KEY,
+                            SECRET_KEY=SECRET_KEY,
+                            endpoint_url=ENDPOINT_URL,
+                            force_bucket_creation=force_bucket_creation,
+                            verbose=True,
+                            backend='s3',
+                            encryption=encryption,
+                            encryptionKey=encryptionKey):
     """
     Returns a cc interface that encrypts things
     By default, encryption is 32 bit AES, single key for everything. The key is stored in base64
@@ -86,9 +86,9 @@ def get_encrypted_interface(bucket_name=default_bucket,
     Parameters
     ----------
     encryption : str
-    	'RSA' | 'AES'
+        'RSA' | 'AES'
     encryptionKey : str
-    	if RSA, path to key file, if AES, binary string encryption key
+        if RSA, path to key file, if AES, binary string encryption key
 
     Returns
     -------

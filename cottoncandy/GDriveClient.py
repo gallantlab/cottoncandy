@@ -157,13 +157,13 @@ class GDriveClient(CCBackEnd):
     def list_directory(self, path, limit):
         if path is not None:
             path = re.sub('^\./', '', path)
-        curDirObj = self.current_directory_object
+        current_directory = self.current_directory_object
         if path is not None and len(path) > 0:
             if not self.cd(path):
                 return
         list = self.list_objects(namesOnly = True)
         if path is not None:
-            self.current_directory_object = curDirObj
+            self.current_directory_object = current_directory
             self.rebuild_current_path()
         return list
 
@@ -182,7 +182,7 @@ class GDriveClient(CCBackEnd):
         """
         if directory is not None:
             directory = re.sub('^\./', '', directory)
-        curDirObj = self.current_directory_object
+        current_directory = self.current_directory_object
         if directory is not None and len(directory) > 0:
             if not self.cd(directory):
                 return
@@ -190,7 +190,7 @@ class GDriveClient(CCBackEnd):
         for item in list:
             print('{} {}'.format('d' if item['mimeType'] == 'application/vnd.google-apps.folder' else ' ', item['title']))
         if directory is not None:
-            self.current_directory_object = curDirObj
+            self.current_directory_object = current_directory
             self.rebuild_current_path()
 
     def cd(self, directory = None, make_if_not_exist = False, isID = False):
@@ -278,9 +278,9 @@ class GDriveClient(CCBackEnd):
         folder_name = re.sub('^\./', '', folder_name)
 
         # not current dir
-        curDirObj = None
+        current_directory = None
         if '/' in folder_name:
-            curDirObj = self.current_directory_object
+            current_directory = self.current_directory_object
             tokens = re.split('/', folder_name)
             for i in range(len(tokens) - 1):
                 if not self.cd(tokens[i], True):
@@ -295,8 +295,8 @@ class GDriveClient(CCBackEnd):
         folder = self.drive.CreateFile({'title': folder_name, 'mimeType': 'application/vnd.google-apps.folder', 'parents': [{'id': self.current_directory_id}]})
         folder.Upload()
 
-        if curDirObj is not None:
-            self.current_directory_object = curDirObj
+        if current_directory is not None:
+            self.current_directory_object = current_directory
             self.rebuild_current_path()
         return folder.metadata['id']
 
@@ -317,25 +317,25 @@ class GDriveClient(CCBackEnd):
         """
 
         # TODO: renaming in mv
-        originDir = re.match('.*/', file)
-        destDir = re.match('.*/', destination)
-        if originDir is destDir:
+        origin = re.match('.*/', file)
+        destination = re.match('.*/', destination)
+        if origin is destination:
             print('renaming using move is not supported yet. use the .rename method')
             return False
-        if originDir.group(0) == destDir.group(0):
+        if origin.group(0) == destination.group(0):
             print('renaming using move is not supported yet. use the .rename method')
             return False
 
         return self.update_metadata(file, {'parents': [{'id': self.get_ID_by_name(destination)}]})
 
-    def rename(self, file, newName):
+    def rename(self, original_name, new_name):
         """
 
         Parameters
         ----------
-        file : str
+        original_name : str
             file to rename
-        newName : str
+        new_name : str
             new name
 
         Returns
@@ -345,11 +345,11 @@ class GDriveClient(CCBackEnd):
         """
 
         # TODO: name validation
-        if '/' in newName:
+        if '/' in new_name:
             print('No slashes in name, please')
             return False
 
-        return self.update_metadata(file, {'title': newName})
+        return self.update_metadata(original_name, {'title': new_name})
 
     def copy(self, original_name, copy_name, sb = None, db = None, o = None):
         """
@@ -441,9 +441,9 @@ class GDriveClient(CCBackEnd):
         cloud_name = re.sub('^\./', '', cloud_name)
 
         # not current dir
-        curDirObj = None
+        current_directory = None
         if '/' in cloud_name:
-            curDirObj = self.current_directory_object
+            current_directory = self.current_directory_object
             tokens = re.split('/', cloud_name)
             for i in range(len(tokens) - 1):
                 if not self.cd(tokens[i], True):
@@ -456,18 +456,18 @@ class GDriveClient(CCBackEnd):
         metadata['parents'] = [{'id': self.current_directory_id}]
 
         # try to upload the file_name
-        newFile = self.drive.CreateFile(metadata)
-        newFile.Upload()
+        newfile = self.drive.CreateFile(metadata)
+        newfile.Upload()
         try:
-            newFile.SetContentFile(file_name)
-            newFile.Upload()
+            newfile.SetContentFile(file_name)
+            newfile.Upload()
         except Exception as e:
             print('Error uploading file_name:\n{}'.format(e.__str__()))
-            newFile.delete()
+            newfile.delete()
             return False
 
-        if curDirObj is not None:
-            self.current_directory_object = curDirObj
+        if current_directory is not None:
+            self.current_directory_object = current_directory
             self.rebuild_current_path()
 
         return True
@@ -494,9 +494,9 @@ class GDriveClient(CCBackEnd):
         name = re.sub('^./', '', name)
 
         # not current dir
-        curDirObj = None
+        current_directory = None
         if '/' in name:
-            curDirObj = self.current_directory_object
+            current_directory = self.current_directory_object
             tokens = re.split('/', name)
             for i in range(len(tokens) - 1):
                 if not self.cd(tokens[i], True):
@@ -508,23 +508,23 @@ class GDriveClient(CCBackEnd):
         metadata['title'] = name
         metadata['parents'] = [{'id': self.current_directory_id}]
 
-        newFile = self.drive.CreateFile(metadata)
-        newFile.Upload()
+        newfile = self.drive.CreateFile(metadata)
+        newfile.Upload()
         try:
-            newFile.content = stream
-            newFile.Upload()
+            newfile.content = stream
+            newfile.Upload()
         except Exception as e:
             print('Error uploading stream:\n{}'.format(e.__str__()))
-            newFile.delete()
+            newfile.delete()
             return False
 
         if properties is not None:
             for key in properties.keys():
-                if not self.insert_property(newFile.metadata['id'], key, properties[key]):
+                if not self.insert_property(newfile.metadata['id'], key, properties[key]):
                     print('Property insertion for {} failed'.format(key))
 
-        if curDirObj is not None:
-            self.current_directory_object = curDirObj
+        if current_directory is not None:
+            self.current_directory_object = current_directory
             self.rebuild_current_path()
 
         return True
@@ -651,11 +651,11 @@ class GDriveClient(CCBackEnd):
             return
 
         self.dir = ''
-        thisDir = self.current_directory_object
-        self.dir = '/' + thisDir['title'] + self.dir
-        while (not thisDir['parents'][0]['isRoot']):
-            thisDir = self.get_file_by_ID(self.current_directory_object['parents'][0]['id'])
-            self.dir = '/' + thisDir['title'] + self.dir
+        this_directory = self.current_directory_object
+        self.dir = '/' + this_directory['title'] + self.dir
+        while (not this_directory['parents'][0]['isRoot']):
+            this_directory = self.get_file_by_ID(self.current_directory_object['parents'][0]['id'])
+            self.dir = '/' + this_directory['title'] + self.dir
         self.dir = str(self.dir)
 
     def list_objects(self, namesOnly = False, trashed = False):
@@ -741,9 +741,9 @@ class GDriveClient(CCBackEnd):
             return 'root'
 
         # not current dir
-        curDirObj = None
+        current_directory = None
         if '/' in drive_file:
-            curDirObj = self.current_directory_object
+            current_directory = self.current_directory_object
             tokens = re.split('/', drive_file)
             if ('' in tokens):
                 tokens.remove('')
@@ -759,8 +759,8 @@ class GDriveClient(CCBackEnd):
                 item = i
                 break
 
-        if curDirObj is not None:
-            self.current_directory_object = curDirObj
+        if current_directory is not None:
+            self.current_directory_object = current_directory
             self.rebuild_current_path()
 
         if item is not None:
@@ -955,13 +955,13 @@ class GDriveClient(CCBackEnd):
                 path = path.group(0)
             # print('\n{}\n{}\n'.format(directory, path))
 
-            curDirObj = self.current_directory_object
+            current_directory = self.current_directory_object
             if directory is not None:
                 if not self.cd(directory):  # if the directory doesn't actually exist, return empty list
                     return []
             items = self.list_objects(True)
             if directory is not None:
-                self.current_directory_object = curDirObj
+                self.current_directory_object = current_directory
                 self.rebuild_current_path()
             out = []
             for item in items:

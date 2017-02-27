@@ -185,7 +185,7 @@ class S3Directory(S3FSLike):
             # allow user-provided paths. useful when >1000 objects
             child_path = os.path.join(self._fullpath, attr)
             assert (self.interface.check_file_exists(child_path) or \
-					self.interface.lsdir(child_path))
+                    self.interface.lsdir(child_path))
 
         try:
             has_ext = '.' in child_path # shitty check...

@@ -235,8 +235,8 @@ class BasicInterface(InterfaceObject):
                 object_list = self.interface.list_objects(limit = limit, page_size = page_size * 100)
                 print_objects(object_list)
         else:
-            driveFiles = self.interface.drive.ListFile({'q': "trashed=false"}).GetList()
-            object_list = [df['title'] for df in driveFiles]
+            drivefiles = self.interface.drive.ListFile({'q': "trashed=false"}).GetList()
+            object_list = [df['title'] for df in drivefiles]
             for obj in object_list:
                 # TODO: also print last modified date and whatever else to match s3
                 print(obj)
@@ -282,16 +282,16 @@ class BasicInterface(InterfaceObject):
         return self.interface.upload_file(flname, object_name, ExtraArgs['ACL'])
 
     @clean_object_name
-    def download_to_file(self, object_name, fileName):
+    def download_to_file(self, object_name, file_name):
         """Download S3 object to a file
 
         Parameters
         ----------
         object_name : str
-        fileName : str
+        file_name : str
             Absolute path where the data will be downloaded on disk
         """
-        return self.interface.download_to_file(object_name, fileName)
+        return self.interface.download_to_file(object_name, file_name)
 
     @clean_object_name
     def download_object(self, object_name):
@@ -510,16 +510,16 @@ class ArrayInterface(BasicInterface):
             gz.write(array.data)
             gz.close()
             zipdata.seek(0)
-            fileStream = zipdata
-            data_nbytes = get_fileobject_size(fileStream)
+            filestream = zipdata
+            data_nbytes = get_fileobject_size(filestream)
         else:
             data_nbytes = array.nbytes
-            fileStream = StringIO(array.data)
+            filestream = StringIO(array.data)
 
         if data_nbytes > MPU_THRESHOLD:
-            response = self.mpu_fileobject(object_name, fileStream, metadata = meta)
+            response = self.mpu_fileobject(object_name, filestream, metadata = meta)
         else:
-            response = self.upload_object(object_name, fileStream, DEFAULT_ACL, **meta)
+            response = self.upload_object(object_name, filestream, DEFAULT_ACL, **meta)
 
         return response
 
@@ -543,16 +543,16 @@ class ArrayInterface(BasicInterface):
         boolean flag. This is all automatically handled by ``upload_raw_array``.
         """
         assert self.exists_object(object_name)
-        arrayStream = self.download_stream(object_name)
+        arraystream = self.download_stream(object_name)
 
-        shape = arrayStream.metadata['shape']
+        shape = arraystream.metadata['shape']
         shape = map(int, shape.split(',')) if shape else ()
-        dtype = np.dtype(arrayStream.metadata['dtype'])
-        order = arrayStream.metadata.get('order', 'C')
+        dtype = np.dtype(arraystream.metadata['dtype'])
+        order = arraystream.metadata.get('order', 'C')
         array = np.empty(shape, dtype = dtype, order = order)
 
-        body = arrayStream.content
-        if 'gzip' in arrayStream.metadata and arrayStream.metadata['gzip'] == 'True':
+        body = arraystream.content
+        if 'gzip' in arraystream.metadata and arraystream.metadata['gzip'] == 'True':
             # gzipped!
             datastream = GzipInputStream(body)
         else:
@@ -1217,7 +1217,7 @@ class EncryptedInterface(DefaultInterface):
     """
     Interface that transparently encrypts everything uploaded to the cloud
     """
-    def __init__(self, bucket, access, secret, url, encryption = 'AES', encryptionKey = None, *args, **kwargs):
+    def __init__(self, bucket, access, secret, url, encryption = 'AES', key = None, *args, **kwargs):
         """
 
         Parameters
@@ -1227,7 +1227,7 @@ class EncryptedInterface(DefaultInterface):
         secret
         url
         encryption : 'AES' | 'RSA'
-        encryptionKey : str
+        key : str
             if AES, key; if RSA, filename of .pem format key
         args
         kwargs
@@ -1239,20 +1239,20 @@ class EncryptedInterface(DefaultInterface):
             raise ValueError('Encryption type {} not recognised. Currently AES and RSA are available'.format(encryption))
         self.encryption = encryption
         if encryption == 'AES':
-            self.encryptor = AESEncryption(encryptionKey)
+            self.encryptor = AESEncryption(key)
         else:
-            self.encryptor = RSAAESEncryption(encryptionKey)
+            self.encryptor = RSAAESEncryption(key)
 
     # File I/O methods that encrypt object streams before passing them to the backend
     def upload_object(self, object_name, body, acl = DEFAULT_ACL, **metadata):
 
         if self.encryption == 'AES':
-            encryptedStream = self.encryptor.encrypt_stream(body)
-            return self.interface.upload_stream(encryptedStream, object_name, metadata, acl)
+            encrypted_stream = self.encryptor.encrypt_stream(body)
+            return self.interface.upload_stream(encrypted_stream, object_name, metadata, acl)
         else:
-            encryptedStream, encryptedKey = self.encryptor.encrypt_stream(body)
-            metadata['key'] = b64encode(encryptedKey)
-            return self.interface.upload_stream(encryptedStream, object_name, metadata, acl)
+            encrypted_stream, encrypted_key = self.encryptor.encrypt_stream(body)
+            metadata['key'] = b64encode(encrypted_key)
+            return self.interface.upload_stream(encrypted_stream, object_name, metadata, acl)
 
     def download_stream(self, object_name):
 
@@ -1270,8 +1270,8 @@ class EncryptedInterface(DefaultInterface):
         with open(local_file_name) as f:
             return self.upload_object(object_name, f, ExtraArgs['ACL'])
 
-    def download_to_file(self, object_name, fileName):
+    def download_to_file(self, object_name, file_name):
 
-        with open(fileName, 'wb') as localFile:
+        with open(file_name, 'wb') as local_file:
             stream = self.download_stream(object_name)
-            localFile.write(stream.content.read())
+            local_file.write(stream.content.read())
