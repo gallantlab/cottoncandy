@@ -1032,12 +1032,13 @@ class FileSystemInterface(BasicInterface):
         object_names = []
         if 'CommonPrefixes' in response:
             # we got common paths
-            object_list = [t.values() for t in response['CommonPrefixes']]
+            object_list = [list(t.values())
+                           for t in response['CommonPrefixes']]
             object_names += reduce(lambda x,y: x+y, object_list)
         if 'Contents' in response:
             # we got objects on the leaf nodes
             object_names += unquote_names([t['Key'] for t in response['Contents']])
-        return map(os.path.normpath, object_names)
+        return list(map(os.path.normpath, object_names))
 
     @clean_object_name
     def ls(self, pattern, page_size=10**3, limit=10**3, verbose=False):
@@ -1090,7 +1091,7 @@ class FileSystemInterface(BasicInterface):
             object_names = fnmatch.filter(object_names, pattern)
         if verbose:
             print('\n'.join(sorted(object_names)))
-        return object_names
+        return list(object_names)
 
     @clean_object_name
     def glob(self, pattern, **kwargs):
