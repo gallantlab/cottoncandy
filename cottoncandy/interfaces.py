@@ -12,6 +12,11 @@ try:
 except ImportError:
     from urllib.parse import unquote
 
+try:
+    reduce
+except NameError:
+    from functools import reduce
+
 import fnmatch
 from gzip import GzipFile
 from dateutil.tz import tzlocal
@@ -19,7 +24,7 @@ from dateutil.tz import tzlocal
 try:
     from cStringIO import StringIO
 except ImportError:
-    from io import StringIO
+    from io import BytesIO as StringIO
 
 import logging
 
@@ -78,7 +83,7 @@ class BasicInterface(InterfaceObject):
     '''Basic cottoncandy interface to S3.
     '''
     def __init__(self, bucket_name,
-                 ACCESS_KEY,SECRET_KEY,url,
+                 ACCESS_KEY, SECRET_KEY, url,
                  force_bucket_creation=False,
                  verbose=True):
         '''
@@ -261,7 +266,7 @@ class BasicInterface(InterfaceObject):
         else:
             request = bucket.objects.filter(**prefix)
 
-        for method_name, value in defaults.iteritems():
+        for method_name, value in defaults.items():
             if value is None:
                 continue
             method = getattr(request, method_name)
@@ -536,10 +541,6 @@ class BasicInterface(InterfaceObject):
         return pickle.loads(obj.get()['Body'].read())
 
 
-
-
-
-
 class ArrayInterface(BasicInterface):
     '''Provides numpy.array concepts.
     '''
@@ -564,7 +565,8 @@ class ArrayInterface(BasicInterface):
         super(ArrayInterface, self).__init__(*args, **kwargs)
 
     @clean_object_name
-    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL, **metadata):
+    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL,
+                         **metadata):
         '''Upload a np.ndarray using ``np.save``
 
         This method creates a copy of the array in memory
@@ -589,7 +591,9 @@ class ArrayInterface(BasicInterface):
         np.save(arr_strio, array)
         arr_strio.reset()
         try:
-            response = self.get_object(object_name).put(Body=arr_strio.read(), ACL=acl, Metadata=metadata)
+            response =\
+             self.get_object(object_name).put(Body=arr_strio.read(),
+                                              ACL=acl, Metadata=metadata)
         except OverflowError:
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
         return response
@@ -612,7 +616,8 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, gzip=True, acl=DEFAULT_ACL, **metadata):
+    def upload_raw_array(self, object_name, array, gzip=True,
+                         acl=DEFAULT_ACL, **metadata):
         '''Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -640,8 +645,9 @@ class ArrayInterface(BasicInterface):
 
         order = 'F' if array.flags.f_contiguous else 'C'
         if not array.flags['%s_CONTIGUOUS'%order]:
-            print ('array is a slice along a non-contiguous axis. copying the array '
-                   'before saving (will use extra memory)')
+            print('array is a slice along a non-contiguous axis.'
+                  'copying the array '
+                  'before saving (will use extra memory)')
             array = np.array(array, order=order)
 
         meta = dict(dtype=array.dtype.str,
@@ -650,7 +656,11 @@ class ArrayInterface(BasicInterface):
                     order=order)
 
         # check for conflicts in metadata
-        assert not any([key in meta for key in metadata.iterkeys()])
+        metadata_keys = []
+        for k in metadata.keys():
+            metadata_keys.append(k)
+
+        assert not any(metadata_keys)
         meta.update(metadata)
 
         if gzip:
@@ -695,9 +705,9 @@ class ArrayInterface(BasicInterface):
         array_object = self.get_object(object_name)
 
         shape = array_object.metadata['shape']
-        shape = map(int, shape.split(',')) if shape else ()
+        shape = tuple(map(int, shape.split(','))) if shape else ()
         dtype = np.dtype(array_object.metadata['dtype'])
-        order = array_object.metadata.get('order','C')
+        order = array_object.metadata.get('order', 'C')
         array = np.empty(shape, dtype=dtype, order=order)
 
         body = array_object.get()['Body']
@@ -724,7 +734,7 @@ class ArrayInterface(BasicInterface):
         verbose : bool
             Whether to print object_name after completion
         '''
-        for k,v in array_dict.iteritems():
+        for k,v in array_dict.items():
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
@@ -854,7 +864,7 @@ class ArrayInterface(BasicInterface):
                 if chunk_idx not in dimension_sizes[dim]:
                     dimension_sizes[dim][chunk_idx] = metadata['chunk_sizes'][sample_idx][dim]
 
-        chunks = [[value for k,value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
+        chunks = [[value for k,value in sorted(sizes.items())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
 
