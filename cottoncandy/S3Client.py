@@ -73,7 +73,7 @@ class S3Client(CCBackEnd):
                 print('* cottoncandy instantiated without bucket...\n' \
                       '* Use with caution!\n' \
                       '* Many features will not work!!!\n')
-                self.bucket = None
+                self.bucket_name = None
 
         if string2bool(ISBOTO_VERBOSE) is False:
             logging.getLogger('boto3').setLevel(logging.WARNING)
