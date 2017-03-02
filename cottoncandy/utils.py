@@ -336,7 +336,7 @@ def read_buffered(frm, to, buffersize=64):
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize
         end = min(nbytes_total, (ci + 1) * buffersize)
-        to.data[start:end] = np.frombuffer(frm.read(buffersize))
+        to.data[start:end] = frm.read(buffersize)
 
 
 class GzipInputStream(object):
