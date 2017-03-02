@@ -9,6 +9,13 @@ import itertools
 from dateutil.tz import tzlocal
 from functools import wraps
 
+
+try:
+    from urllib import unquote
+except ImportError:
+    from urllib.parse import unquote
+
+
 import numpy as np
 
 from . import options
@@ -139,13 +146,13 @@ def get_keys():
 def objects2names(objects):
     '''Return the name of all objects in a list
     '''
-    return [urllib.unquote(t.key) for t in objects]
+    return [unquote(t.key) for t in objects]
 
 
 def unquote_names(object_names):
     '''Clean the URL object name
     '''
-    return [urllib.unquote(t) for t in object_names]
+    return [unquote(t) for t in object_names]
 
 
 def print_objects(object_list):
@@ -305,7 +312,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
     else:
         if axis == -1: axis = (arr.ndim - 1)
         dims = [arr.shape[t] for t in range(arr.ndim) if t != axis]
-        logsum = np.sum(map(np.log, dims))
+        logsum = np.sum([np.log(t) for t in  dims])
         factor = 1
 
     logii = ((np.log(buffersize) - np.log(arr.itemsize)) - logsum)/factor

@@ -12,6 +12,11 @@ try:
 except ImportError:
     from urllib.parse import unquote
 
+try:
+    reduce
+except NameError:
+    from functools import reduce
+
 import fnmatch
 from gzip import GzipFile
 from dateutil.tz import tzlocal
@@ -260,7 +265,7 @@ class BasicInterface(InterfaceObject):
         else:
             request = bucket.objects.filter(**prefix)
 
-        for method_name, value in defaults.iteritems():
+        for method_name, value in defaults.items():
             if value is None:
                 continue
             method = getattr(request, method_name)
@@ -728,7 +733,7 @@ class ArrayInterface(BasicInterface):
         verbose : bool
             Whether to print object_name after completion
         '''
-        for k,v in array_dict.iteritems():
+        for k,v in array_dict.items():
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
@@ -858,7 +863,7 @@ class ArrayInterface(BasicInterface):
                 if chunk_idx not in dimension_sizes[dim]:
                     dimension_sizes[dim][chunk_idx] = metadata['chunk_sizes'][sample_idx][dim]
 
-        chunks = [[value for k,value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
+        chunks = [[value for k,value in sorted(sizes.items())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
 
