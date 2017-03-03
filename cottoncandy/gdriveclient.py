@@ -2,7 +2,7 @@ from __future__ import print_function
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from pydrive.files import GoogleDriveFile, FileNotUploadedError, ApiRequestError
-from CCBackEnd import *
+from .backend import *
 import sys
 import re
 
@@ -71,7 +71,7 @@ class GDriveClient(CCBackEnd):
 
         return authenticator
 
-    def __init__(self, secrets = 'client_secrets.json', credentials = 'gdrive-credentials.txt'):
+    def __init__(self, secrets='client_secrets.json', credentials='gdrive-credentials.txt'):
         """
 
         Parameters
@@ -167,7 +167,7 @@ class GDriveClient(CCBackEnd):
             self.rebuild_current_path()
         return list
 
-    def ls(self, directory = None):
+    def ls(self, directory=None):
         """
         Prints contents of a folder
 
@@ -193,7 +193,7 @@ class GDriveClient(CCBackEnd):
             self.current_directory_object = current_directory
             self.rebuild_current_path()
 
-    def cd(self, directory = None, make_if_not_exist = False, isID = False):
+    def cd(self, directory=None, make_if_not_exist=False, isID=False):
         """
         Changes directory
 
@@ -240,7 +240,7 @@ class GDriveClient(CCBackEnd):
         elif directory in ['/', '']:  # change to root
             self.current_directory_object = self.get_file_by_ID('root')
         else:  # move down one
-            directories = self.drive.ListFile({'q': 'title="{}" and "{}" in parents and mimeType = \'application/vnd.google-apps.folder\' and trashed=false'.format(directory, self.current_directory_id)}).GetList()
+            directories = self.drive.ListFile({'q': 'title="{}" and "{}" in parents and mimeType = \'application/vnd.google-apps.folder\' and trashed = false'.format(directory, self.current_directory_id)}).GetList()
             if len(directories) < 1:
                 if not make_if_not_exist:
                     print('No such directory: {}'.format(directory))
@@ -300,7 +300,7 @@ class GDriveClient(CCBackEnd):
             self.rebuild_current_path()
         return folder.metadata['id']
 
-    def move(self, file, destination, sb = None, db = None, o = None):
+    def move(self, file, destination, sb=None, db=None, o=None):
         """
 
         Parameters
@@ -351,7 +351,7 @@ class GDriveClient(CCBackEnd):
 
         return self.update_metadata(original_name, {'title': new_name})
 
-    def copy(self, original_name, copy_name, sb = None, db = None, o = None):
+    def copy(self, original_name, copy_name, sb=None, db=None, o=None):
         """
 
         Parameters
@@ -379,7 +379,7 @@ class GDriveClient(CCBackEnd):
             print (e.__str__())
             return False
 
-    def delete(self, file_name, recursive = False, delete = False):
+    def delete(self, file_name, recursive=False, delete=False):
         """
 
         Parameters
@@ -414,7 +414,7 @@ class GDriveClient(CCBackEnd):
 
     #### File IO functions
 
-    def upload_file(self, file_name, cloud_name = None, permissions = None):
+    def upload_file(self, file_name, cloud_name=None, permissions=None):
         """
         Uploads from file on disk
 
@@ -472,7 +472,7 @@ class GDriveClient(CCBackEnd):
 
         return True
 
-    def upload_stream(self, stream, name, properties = None, permissions = None):
+    def upload_stream(self, stream, name, properties=None, permissions=None):
         """
         Upload a stream with a .read() method
 
@@ -529,11 +529,11 @@ class GDriveClient(CCBackEnd):
 
         return True
 
-    def upload_multipart(self, stream, cloud_name, properties = None, permissions = None):
+    def upload_multipart(self, stream, cloud_name, properties=None, permissions=None):
         return self.upload_stream(stream, cloud_name, properties, permissions)
 
 
-    def download_to_file(self, drive_file, local_file = None):
+    def download_to_file(self, drive_file, local_file=None):
         """
         Download a file to disk
 
@@ -658,7 +658,7 @@ class GDriveClient(CCBackEnd):
             self.dir = '/' + this_directory['title'] + self.dir
         self.dir = str(self.dir)
 
-    def list_objects(self, namesOnly = False, trashed = False):
+    def list_objects(self, namesOnly=False, trashed=False):
         """
         Gets a list of all files in current directory
 
@@ -768,7 +768,7 @@ class GDriveClient(CCBackEnd):
         else:
             raise FileNotFoundError
 
-    def insert_property(self, id, key, value, visibility = 'PUBLIC'):
+    def insert_property(self, id, key, value, visibility='PUBLIC'):
         """
         Adds a custom property to a file
 
@@ -834,7 +834,7 @@ class GDriveClient(CCBackEnd):
             print('Error: {}'.format(e.__str__()))
             return None
 
-    def store_encryption_key(self, fileID, key64, chunk_size = 96):
+    def store_encryption_key(self, fileID, key64, chunk_size=96):
         """
         Stores a base64-encoded encryption key
 
