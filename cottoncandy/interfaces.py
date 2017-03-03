@@ -740,6 +740,7 @@ class ArrayInterface(BasicInterface):
             if isinstance(v, dict):
                 _ = self.dict2cloud(name, v, acl=acl, **metadata)
             elif isinstance(v, np.ndarray):
+                v = v if v.flags.owndata else np.array(v)
                 _ = self.upload_raw_array(name, v, acl=acl, **metadata)
             else: # try converting to array
                 _ = self.upload_raw_array(name, np.asarray(v), acl=acl)
