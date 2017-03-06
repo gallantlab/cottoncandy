@@ -421,13 +421,13 @@ class BasicInterface(InterfaceObject):
         s3_object = self.get_object(object_name)
         return s3_object.get()['Body'].read()
 
-    def upload_from_file(self, flname, object_name=None,
+    def upload_from_file(self, file_name, object_name=None,
                          ExtraArgs=dict(ACL=DEFAULT_ACL)):
         '''Upload a file to S3
 
         Parameters
         ----------
-        flname : str
+        file_name : str
             Absolute path of file to upload
         object_name : str, None
             Name of uploaded object. If None, use
@@ -439,31 +439,31 @@ class BasicInterface(InterfaceObject):
         -------
         boto3_response
         '''
-        assert os.path.exists(flname)
+        assert os.path.exists(file_name)
         if object_name is None:
-            object_name = os.path.abspath(flname)
+            object_name = os.path.abspath(file_name)
         object_name = remove_root(object_name)
         s3_object = self.get_object(object_name)
-        return s3_object.upload_file(flname, ExtraArgs=ExtraArgs)
+        return s3_object.upload_file(file_name, ExtraArgs=ExtraArgs)
 
     @clean_object_name
-    def download_to_file(self, object_name, flname):
+    def download_to_file(self, object_name, file_name):
         '''Download S3 object to a file
 
         Parameters
         ----------
         object_name : str
-        flname : str
+        file_name : str
             Absolute path where the data will be downloaded on disk
         '''
         assert self.exists_object(object_name) # make sure object exists
         s3_object = self.get_object(object_name)
-        return s3_object.download_file(flname)
+        return s3_object.download_file(file_name)
 
     @clean_object_name
     def mpu_fileobject(self, object_name, file_object,
                        buffersize=MPU_CHUNKSIZE, verbose=True, **metadata):
-        '''Multi-part upload for a python file-object.
+        '''Multi-part upload for a file-object.
 
         This automatically creates a multipart upload of an object.
         Useful for large objects that are loaded in memory. This avoids
@@ -473,14 +473,17 @@ class BasicInterface(InterfaceObject):
         ----------
         object_name : str
         file_object :
-            file-like python object (e.g. StringIO, file, etc)
-        buffersize  : int
+            file-like object (e.g. StringIO, file, etc)
+        buffersize  : int, (defaults to 100MB)
             Byte size of the individual parts to create.
-            Defaults to 100MB
         verbose     : bool
             verbosity flag of whether to print mpu information to stdout
         **metadata  : optional
             Metadata to store along with MPU object
+
+        Returns
+        -------
+        boto3_mpu_response
         '''
         client = self.connection.meta.client
         mpu = client.create_multipart_upload(Bucket=self.bucket_name,
@@ -551,6 +554,10 @@ class BasicInterface(InterfaceObject):
         object_name : str
         ddict : dict
         metadata : dict, optional
+
+        Returns
+        -------
+        boto3_response
         '''
         json_data = json.dumps(ddict)
         obj = self.get_object(object_name)
@@ -606,23 +613,21 @@ class ArrayInterface(BasicInterface):
     '''Provides numpy.array concepts.
     '''
     def __init__(self, *args, **kwargs):
-        '''
+        """
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
 
         Returns
         -------
-        cci : ccio
-            Cottoncandy interface object
-        '''
+        cci : cottoncandy interface object
+        """
         super(ArrayInterface, self).__init__(*args, **kwargs)
 
     @clean_object_name
@@ -638,6 +643,8 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : numpy.ndarray
+        acl : ACL for this object
+        **metadata : extra kwargs are uploaded to object metadata
 
         Returns
         -------
@@ -656,6 +663,7 @@ class ArrayInterface(BasicInterface):
              self.get_object(object_name).put(Body=arr_strio.read(),
                                               ACL=acl, Metadata=metadata)
         except OverflowError:
+            # XXX: replace with MAX_PUT_SIZE check
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
         return response
 
