@@ -385,12 +385,26 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
+        '''Upload an object to the bucket
+
+        Parameters
+        ----------
+        object_name : str
+        body : file-like, stream
+        acl : ACL for object
+        **metadata : Extra kwargs are uploaded as object metadata
+
+        Returns
+        -------
+        boto3_response
+        '''
         obj = self.get_object(object_name)
         return obj.put(Body=body, ACL=acl, Metadata=metadata)
 
     @clean_object_name
     def download_object(self, object_name):
-        '''Download object raw data.
+        '''Download object raw data
+
         This simply calls the object body ``read()`` method.
 
         Parameters
@@ -409,7 +423,7 @@ class BasicInterface(InterfaceObject):
 
     def upload_from_file(self, flname, object_name=None,
                          ExtraArgs=dict(ACL=DEFAULT_ACL)):
-        '''Upload a file to S3.
+        '''Upload a file to S3
 
         Parameters
         ----------
@@ -418,10 +432,12 @@ class BasicInterface(InterfaceObject):
         object_name : str, None
             Name of uploaded object. If None, use
             the full file name as the object name.
+        ExtraArgs : dict
+            Defaults ``dict(ACL=DEFAULT_ACL)``
 
         Returns
         -------
-        response : boto3 response
+        boto3_response
         '''
         assert os.path.exists(flname)
         if object_name is None:
