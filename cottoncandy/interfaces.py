@@ -86,23 +86,21 @@ class BasicInterface(InterfaceObject):
                  ACCESS_KEY, SECRET_KEY, url,
                  force_bucket_creation=False,
                  verbose=True):
-        '''
+        """
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
 
         Returns
         -------
-        cci  : ccio
-            Cottoncandy interface object
-        '''
+        cci  : cottoncandy.InterfaceObject
+        """
         self.connection = self.connect(ACCESS_KEY=ACCESS_KEY,
                                        SECRET_KEY=SECRET_KEY,
                                        url=url)
@@ -173,7 +171,10 @@ class BasicInterface(InterfaceObject):
         Parameters
         ----------
         object_name : str
-            The object name
+
+        Returns
+        -------
+        exists : bool
         '''
         bucket_name = self._get_bucket_name(bucket_name)
         ob = self.connection.Object(key=object_name, bucket_name=bucket_name)
@@ -190,7 +191,16 @@ class BasicInterface(InterfaceObject):
         return exists
 
     def exists_bucket(self, bucket_name):
-        '''Check whether the bucket exists'''
+        '''Check whether the bucket exists
+
+        Parameters
+        ----------
+        bucket_name : str
+
+        Returns
+        -------
+        exists : bool
+        '''
         try:
             self.connection.meta.client.head_bucket(Bucket=bucket_name)
         except botocore.exceptions.ClientError as e:
@@ -203,7 +213,19 @@ class BasicInterface(InterfaceObject):
         return exists
 
     def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
-        '''Create a new bucket'''
+        '''Create a new bucket on S3
+
+        Parameters
+        ----------
+        bucket_name : str
+        acl : str
+            ACL value for this bucket
+
+        Notes
+        -----
+        If ``mandatory_bucket_prefix`` is given in `~/.config/cottoncandy/options.cfg`,
+        make sure ``bucket_name`` starts with that prefix.
+        '''
         if MANDATORY_BUCKET_PREFIX:
             tt = len(MANDATORY_BUCKET_PREFIX)
             assert bucket_name[:tt] == MANDATORY_BUCKET_PREFIX
