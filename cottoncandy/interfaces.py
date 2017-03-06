@@ -696,17 +696,16 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : np.ndarray
-        gzip  : bool, optional
-            Whether to gzip the array
+        gzip  : bool (defaults True)
+            Whether to gzip array content
         acl : str
-            "access control list", specifies permissions for s3 data.
-            default is "authenticated-read" (authenticated users can read)
-        metadata : dict, optional
+            ACL for the object
+        **metadata : optional
 
         Notes
         -----
-        This method also uploads the array ``dtype``, ``shape``, and ``gzip``
-        flag as metadata
+        Uploads array ``dtype``, ``shape``, and ``gzip``
+        flags as metadata
         '''
         if array.nbytes >= 2**31:
             # avoid zlib issues
@@ -759,7 +758,7 @@ class ArrayInterface(BasicInterface):
         Parameters
         ----------
         object_name : str
-        buffersize  : optional
+        buffersize  : optional (defaults 2^16)
 
         Returns
         -------
@@ -767,8 +766,8 @@ class ArrayInterface(BasicInterface):
 
         Notes
         -----
-        The object must have metadata containing: shape, dtype and a gzip
-        boolean flag. This is all automatically handled by ``upload_raw_array``.
+        The S3 object must have metadata containing: shape, dtype and gzip
+        flags. This is automatically handled by ``upload_raw_array``
         '''
         assert self.exists_object(object_name)
         array_object = self.get_object(object_name)
