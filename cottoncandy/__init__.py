@@ -39,8 +39,7 @@ def get_interface(bucket_name=default_bucket,
 
     Returns
     -------
-    cci  : cottoncandy.InterfaceObject
-        cottoncandy interface object
+    cci : cottoncandy.InterfaceObject
     """
     from cottoncandy.interfaces import DefaultInterface
 
@@ -74,12 +73,11 @@ def get_browser(bucket_name=default_bucket,
 
     Returns
     -------
-    ccb  : cottoncandy.BrowserObject
-        cottoncandy browser object
+    ccb : cottoncandy.BrowserObject
 
     Example
     -------
-    >>> browser = cc.get_browser('my_bucket_name',
+    >>> browser = cc.get_browser('my_bucket',
                                  ACCESS_KEY='FAKEACCESSKEYTEXT',
                                  SECRET_KEY='FAKESECRETKEYTEXT',
                                  endpoint_url='https://s3.amazonaws.com')
