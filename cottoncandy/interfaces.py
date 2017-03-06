@@ -234,7 +234,8 @@ class BasicInterface(InterfaceObject):
         self.set_bucket(bucket_name)
 
     def rm_bucket(self, bucket_name):
-        '''Remove an empty bucket. Throws an exception when bucket is not empty.'''
+        '''Remove an empty bucket. Throws an exception when bucket is not empty.
+        '''
         self.set_bucket(bucket_name)
         bucket = self.get_bucket()
         try:
@@ -243,18 +244,19 @@ class BasicInterface(InterfaceObject):
             print("Bucket not empty. To delete, first empty the bucket.")
 
     def set_bucket(self, bucket_name):
-        '''Bucket to use'''
+        '''S3 bucket to use with current interface'''
         if not self.exists_bucket(bucket_name):
             raise IOError('Bucket "%s" does not exist'%bucket_name)
         self.bucket_name = bucket_name
 
     def get_bucket(self):
-        '''Get bucket boto3 object'''
+        '''Get boto3 bucket object'''
         s3_bucket = self.connection.Bucket(self.bucket_name)
         return s3_bucket
 
     def get_bucket_objects(self, **kwargs):
-        """Get list of objects from the bucket
+        """Get list of objects from the bucket.
+
         This is a wrapper to ``self.get_bucket().bucket.objects``
 
         Parameters
@@ -266,9 +268,13 @@ class BasicInterface(InterfaceObject):
         filter : dict
             A dictionary with key 'Prefix', specifying a prefix
             string.  Only return objects matching this string.
-            Defaults to '/', all objects.
+            Defaults to '/' (i.e. all objects).
         kwargs : optional
             Dictionary of {method:value} for ``bucket.objects``
+
+        Returns
+        -------
+        objects_list : list (boto3 objects)
 
         Notes
         -----
@@ -305,9 +311,9 @@ class BasicInterface(InterfaceObject):
 
         Parameters
         ----------
-        limit : int, 1000
+        limit : int, 10^6
             Maximum number of items to return
-        page_size : int, 1000
+        page_size : int, 10^6
             The page size for pagination
 
         Returns
@@ -323,7 +329,6 @@ class BasicInterface(InterfaceObject):
         suspicious round numbers.
         TODO(anunez): Remove this note when the bug is fixed.
         '''
-        assert self.exists_bucket(self.bucket_name)
         obs = self.get_bucket_objects(limit=limit, page_size=page_size)
         object_sizes = [t.size for t in obs]
         total_bytes = sum(object_sizes)
@@ -345,12 +350,30 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def get_object(self, object_name, bucket_name=None):
-        """Get a boto3 object. Create it if it doesn't exist"""
+        """Get a boto3 object. Create it if it doesn't exist
+
+        Parameters
+        ----------
+        object_name : str
+        bucket_name : str (defaults to current bucket)
+
+        Returns
+        -------
+        boto3_object
+        """
         bucket_name = self._get_bucket_name(bucket_name)
         return self.connection.Object(bucket_name=bucket_name, key=object_name)
 
     def show_objects(self, limit=1000, page_size=1000):
-        '''Print objects in the current bucket'''
+        '''Print objects in the current bucket
+
+        Parameters
+        ----------
+        limit : int, 1000
+            Maximum number of items to return
+        page_size : int, 1000
+            The page size for pagination
+        '''
         bucket = self.get_bucket()
         object_list = self.get_bucket_objects(limit=limit, page_size=page_size)
         try:
