@@ -349,7 +349,6 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
     axis : int, None
         The axis along which to slice the array. If None is given,
         the array is chunked into ideal isotropic voxels.
-        `axis=None` is WIP and atm works fine for near isotropic matrices
     buffersize : scalar
         Byte size of the desired array chunks
 
@@ -363,6 +362,9 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
           Indices of the current chunk along each dimension
         * chunk_data_slice:
           Data for this chunk
+    Notes
+    -----
+    ``axis=None`` is WIP and only works well for near isotropic matrices.
     '''
     shape = arr.shape
     nbytes_total = arr.nbytes
@@ -405,7 +407,15 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
 
 
 def read_buffered(frm, to, buffersize=64):
-    '''Fill an array with file-like object contents
+    '''Fill a numpy n-d array with file-like object contents
+    (XXX: python3 broken)
+
+    Parameters
+    ----------
+    frm : buffer
+        Object with a ``read`` method
+    to : np.ndarray
+        Array to which the contents will be put
     '''
     nbytes_total = to.size * to.dtype.itemsize
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
