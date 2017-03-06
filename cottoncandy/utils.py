@@ -18,7 +18,7 @@ except ImportError:
 
 import numpy as np
 
-from . import options
+from cottoncandy import options
 
 ##############################
 # Globals
