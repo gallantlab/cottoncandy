@@ -6,7 +6,7 @@ from io import BytesIO
 
 from botocore.utils import fix_s3_host
 from cottoncandy.utils import *
-from CCBackEnd import *
+from .backend import *
 
 try:
     from urllib import unquote
@@ -46,7 +46,7 @@ class S3Client(CCBackEnd):
         s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
         return s3
 
-    def __init__(self, bucket, access_key, secret_key, s3url, force_bucket_creation = False):
+    def __init__(self, bucket, access_key, secret_key, s3url, force_bucket_creation=False):
         """
         Constructor
 
@@ -96,7 +96,7 @@ class S3Client(CCBackEnd):
         return bucket_name
 
     @clean_object_name
-    def check_file_exists(self, file_name, bucket_name = None):
+    def check_file_exists(self, file_name, bucket_name=None):
         """
         Check whether object exists in bucket
 
@@ -143,7 +143,7 @@ class S3Client(CCBackEnd):
             exists = True
         return exists
 
-    def create_bucket(self, bucket_name, acl = DEFAULT_ACL):
+    def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
         """
         Create a new bucket
 
@@ -242,7 +242,7 @@ class S3Client(CCBackEnd):
     def size(self):
         return self.get_current_bucket_size()
 
-    def get_current_bucket_size(self, limit = 10 ** 6, page_size = 10 ** 6):
+    def get_current_bucket_size(self, limit=10 ** 6, page_size=10 ** 6):
         """
         Counts the size of all objects in the current bucket.
 
@@ -293,7 +293,7 @@ class S3Client(CCBackEnd):
         print('\n'.join(info))
 
     @clean_object_name
-    def get_s3_object(self, file_name, bucket_name = None):
+    def get_s3_object(self, file_name, bucket_name=None):
         """
         Get a boto3 object. Create it if it doesn't exist
 
@@ -309,7 +309,7 @@ class S3Client(CCBackEnd):
         bucket_name = self.get_bucket_name(bucket_name)
         return self.connection.Object(bucket_name = bucket_name, key = file_name)
 
-    def upload_stream(self, body, file_name, metadata, acl = DEFAULT_ACL):
+    def upload_stream(self, body, file_name, metadata, acl=DEFAULT_ACL):
         """
         Uploads a stream
 
@@ -346,7 +346,7 @@ class S3Client(CCBackEnd):
         s3_object = self.get_s3_object(file_name)
         return CloudStream(BytesIO(s3_object.get()['Body'].read()), s3_object.metadata)
 
-    def upload_file(self, file_name, cloud_name = None, acl = DEFAULT_ACL):
+    def upload_file(self, file_name, cloud_name=None, acl=DEFAULT_ACL):
         """Upload a file to S3.
 
         Parameters
@@ -384,7 +384,7 @@ class S3Client(CCBackEnd):
         return s3_object.download_file(local_name)
 
     def upload_multipart(self, file_name, file_object,
-                         buffersize = MPU_CHUNKSIZE, verbose = True, **metadata):
+                         buffersize=MPU_CHUNKSIZE, verbose=True, **metadata):
         """Multi-part upload for a python file-object.
 
         This automatically creates a multipart upload of an object.
@@ -404,7 +404,7 @@ class S3Client(CCBackEnd):
         **metadata  : optional
             Metadata to store along with MPU object
         """
-        client = self.connection.meta.client
+        client=self.connection.meta.client
         mpu = client.create_multipart_upload(Bucket = self.bucket_name,
                                              Key = file_name,
                                              Metadata = metadata)
@@ -519,5 +519,5 @@ class S3Client(CCBackEnd):
             object_names += unquote_names([t['Key'] for t in response['Contents']])
         return map(os.path.normpath, object_names)
 
-    def delete(self, file_name, recursive = False, delete = False):
+    def delete(self, file_name, recursive=False, delete=False):
         raise RuntimeError('Deleting on S3 backend is implemented by cottoncandy interface object')
