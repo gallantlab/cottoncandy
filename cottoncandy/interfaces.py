@@ -660,7 +660,7 @@ class ArrayInterface(BasicInterface):
         '''
         # TODO: check array.dtype.hasobject
         arr_strio = StringIO()
-        np.save(arr_strio, array)
+        np.save(arr_strio, array, allow_pickle=False)
         arr_strio.reset()
         try:
             response =\
