@@ -1,4 +1,7 @@
 import os
+import sys
+import time
+
 import numpy as np
 
 import cottoncandy as cc
@@ -7,8 +10,7 @@ import cottoncandy as cc
 # globals
 ##############################
 
-
-prefix = 'testcc'
+prefix = 'testcc_py%s'%sys.version[:6]
 object_name = os.path.join(prefix, 'test')
 
 bucket_name = os.environ['DL_BUCKET_NAME']
@@ -51,13 +53,25 @@ def content_generator():
 
 def test_upload_from_file():
     '''test file uploads'''
+
+    # byte round trip
+    content = b'abcdefg123457890'
+    flname = '/tmp/test.txt'
+    with open(flname, 'wb') as fl:
+        fl.write(content)
+
+    print(cci.upload_from_file(flname, object_name=object_name))
+    dat = cci.download_object(os.path.join(prefix, 'test'))
+    assert dat == content
+
+    # string roundtrip
     content = 'abcdefg123457890'
     flname = '/tmp/test.txt'
     with open(flname, 'w') as fl:
         fl.write(content)
 
     print(cci.upload_from_file(flname, object_name=object_name))
-    dat = cci.download_object(os.path.join(prefix, 'test'))
+    dat = cci.download_object(os.path.join(prefix, 'test')).decode()
     assert dat == content
 
 
@@ -93,6 +107,7 @@ def test_upload_raw_array():
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
+        time.sleep(1.0)
 
 
 def test_upload_dask_array():
@@ -102,6 +117,8 @@ def test_upload_dask_array():
         dat = np.asarray(dat)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
+        time.sleep(1.0)
+
 
 def test_dict2cloud():
     for cc in content_generator():
@@ -117,3 +134,4 @@ def test_dict2cloud():
         for k,v in content['deep'].items():
             assert np.allclose(v, dat['deep'][k])
         cci.rm(object_name, recursive=True)
+        time.sleep(1.0)
