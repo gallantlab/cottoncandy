@@ -1,5 +1,8 @@
 sudo: true  # To use travis container infrastructure
 
+before_install:
+  - sudo apt-get install python-dateutil
+
 language: python
 python:
   - "2.7"
