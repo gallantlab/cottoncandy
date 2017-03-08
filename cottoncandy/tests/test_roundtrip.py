@@ -8,6 +8,7 @@ import cottoncandy as cc
 ##############################
 
 
+prefix = 'testcc'
 object_name = os.path.join(prefix, 'test')
 
 bucket_name = os.environ['DL_BUCKET_NAME']
@@ -104,7 +105,7 @@ def test_upload_dask_array():
 
 def test_dict2cloud():
     for cc in content_generator():
-        content = dict(arr1=cc
+        content = dict(arr1=cc,
                        deep=dict(dat01=np.random.randn(15),
                                  dat02=np.random.randn(30),
                                  ),
