@@ -151,11 +151,15 @@ class BasicInterface(InterfaceObject):
     def connect(self, ACCESS_KEY=False, SECRET_KEY=False, url=None):
         '''Connect to S3 using boto'''
         self.url = url
+
         s3 = boto3.resource('s3',
                             endpoint_url=self.url,
                             aws_access_key_id=ACCESS_KEY,
                             aws_secret_access_key=SECRET_KEY)
-        s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
+        if 's3.amazonaws.com' not in self.url:
+            # TODO: why is this happening?
+            # needed for ceph radosgw, but somehow breaks aws regional buckets
+            s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
         return s3
 
     def _get_bucket_name(self, bucket_name):
@@ -1054,23 +1058,21 @@ class FileSystemInterface(BasicInterface):
     '''Emulate some file system functionality.
     '''
     def __init__(self, *args, **kwargs):
-        '''
+        """
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
 
         Returns
         -------
-        cci : ccio
-            Cottoncandy interface object
-        '''
+        cci : cottoncandy interface object
+        """
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
     def lsdir(self, path='/', limit=10**3):
@@ -1244,7 +1246,7 @@ class FileSystemInterface(BasicInterface):
     def search(self, pattern, **kwargs):
         '''Print the objects matching the glob pattern
 
-        See ``glob`` documentation for details
+        See ``glob`` documentation for details.
         '''
         matches = self.glob(pattern, verbose=True, **kwargs)
 
@@ -1382,16 +1384,19 @@ class DefaultInterface(FileSystemInterface,
     concepts for easy data I/O and bucket/object exploration.
     '''
     def __init__(self, *args, **kwargs):
-        '''
+        """
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
-        '''
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
+
+        Returns
+        -------
+        cci  : cottoncandy.InterfaceObject
+        """
         super(DefaultInterface, self).__init__(*args, **kwargs)
