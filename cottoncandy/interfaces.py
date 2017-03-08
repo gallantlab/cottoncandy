@@ -582,7 +582,7 @@ class BasicInterface(InterfaceObject):
         '''
         assert self.exists_object(object_name)
         obj = self.get_object(object_name)
-        return json.loads(obj.get()['Body'].read())
+        return json.loads(obj.get()['Body'].read().decode())
 
     @clean_object_name
     def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL):
@@ -660,14 +660,14 @@ class ArrayInterface(BasicInterface):
         '''
         # TODO: check array.dtype.hasobject
         arr_strio = StringIO()
-        np.save(arr_strio, array, allow_pickle=False)
-        arr_strio.reset()
+        np.save(arr_strio, array)
+        arr_strio.seek(0)
         try:
             response =\
              self.get_object(object_name).put(Body=arr_strio.read(),
                                               ACL=acl, Metadata=metadata)
         except OverflowError:
-            # XXX: replace with MAX_PUT_SIZE check
+            # TODO: replace with MAX_PUT_SIZE check
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
         return response
 

@@ -402,7 +402,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
     for chunk_idx, chunk_coords in enumerate(iterator):
         beg = [chunk_shapes[dim]*cc for dim, cc in enumerate(chunk_coords)]
         end = [min(chunk_shapes[dim]*(cc+1), shape[dim])for dim, cc in enumerate(chunk_coords)]
-        slicers = map(lambda dim_lims: slice(dim_lims[0],dim_lims[1]), zip(beg,end))
+        slicers = list(map(lambda dim_lims: slice(dim_lims[0],dim_lims[1]), zip(beg,end)))
         yield chunk_coords, arr[slicers]
 
 
@@ -421,7 +421,7 @@ def read_buffered(frm, to, buffersize=64):
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize
         end = min(nbytes_total, (ci + 1) * buffersize)
-        to.data[start:end] = frm.read(buffersize)
+        to.data[start:end] = frm.read(end - start)
 
 
 class GzipInputStream(object):
