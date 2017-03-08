@@ -6,10 +6,12 @@ before_install:
 language: python
 python:
   - "2.7"
+  - "3.5"
+
 # command to install dependencies
 install:
   - pip install -r requirements.txt
   - python setup.py install
 
 # command to run tests
-script: pytest --doctest-modules -v
+script: pytest -v
