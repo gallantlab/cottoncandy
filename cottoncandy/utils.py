@@ -9,9 +9,16 @@ import itertools
 from dateutil.tz import tzlocal
 from functools import wraps
 
+
+try:
+    from urllib import unquote
+except ImportError:
+    from urllib.parse import unquote
+
+
 import numpy as np
 
-from . import options
+from cottoncandy import options
 
 ##############################
 # Globals
@@ -41,14 +48,22 @@ ISBOTO_VERBOSE = options.config.get('login', 'verbose_boto')
 # misc functions
 ##############################
 
-def string2bool(mstring):
+def string2bool(truth_string):
+    '''Convert a truth value from a text string to boolean.
+
+    Parameters
+    ----------
+    truth_string : str
+
+    Returns
+    -------
+    truth_value : bool (defaults to False)
     '''
-    '''
-    val = False
-    if mstring in ['True','true', 'tru', 't',
+    truth_value = False
+    if truth_string in ['True','true', 'tru', 't',
                    'y','yes', '1']:
-        val = True
-    return val
+        truth_value = True
+    return truth_value
 
 
 def bytes2human(nbytes):
@@ -63,7 +78,6 @@ def bytes2human(nbytes):
     -------
     human_bytes : str
         Human readable byte size (e.g. "10.00MB", "1.24GB", etc.).
-
     '''
     if nbytes == 0:
         return '0.00B'
@@ -87,6 +101,14 @@ def bytes2human(nbytes):
 
 def get_object_size(boto_s3_object):
     '''Return the size of the S3 object in MB
+
+    Parameters
+    ----------
+    boto_s3_object : boto object
+
+    Returns
+    -------
+    object_size : float (in MB)
     '''
     boto_s3_object.load()
     return boto_s3_object.meta.data['ContentLength']/2.**20
@@ -94,6 +116,14 @@ def get_object_size(boto_s3_object):
 
 def get_fileobject_size(file_object):
     '''Return byte size of file-object
+
+    Parameters
+    ----------
+    file_object : file object
+
+    Returns
+    -------
+    nbytes : int
     '''
     file_object.seek(0,2)
     nbytes = file_object.tell()
@@ -102,7 +132,16 @@ def get_fileobject_size(file_object):
 
 
 def get_key_from_s3fs():
-    '''If user has s3fs-fuse keys,return them
+    '''Get AWS keys from default S3fs location if available.
+
+    Returns
+    -------
+    ACCESS_KEY : str
+    SECRET_KEY : str
+
+    Notes
+    -----
+    Reads ~/.passwd-s3fs to get ACCESSKEY and SECRET KEY
     '''
     key_path = os.path.expanduser('~/.passwd-s3fs')
     if os.path.exists(key_path):
@@ -113,6 +152,17 @@ def get_key_from_s3fs():
 
 
 def get_key_from_environ():
+    '''Get AWS keys from environmental variables if available
+
+    Returns
+    -------
+    ACCESS_KEY : str
+    SECRET_KEY : str
+
+    Notes
+    -----
+    Reads AWS_ACCESS_KEY and AWS_SECRET_KEY
+    '''
     try:
         return os.environ['AWS_ACCESS_KEY'], os.environ['AWS_SECRET_KEY']
     except:
@@ -120,7 +170,12 @@ def get_key_from_environ():
 
 
 def get_keys():
-    '''try to find the user keys in the machine
+    '''Read AWS keys from S3fs configuration or environmental variables.
+
+    Returns
+    -------
+    ACCESS_KEY : str
+    SECRET_KEY : str
     '''
     # try to outload keys
     resulta = get_key_from_s3fs()
@@ -138,18 +193,38 @@ def get_keys():
 
 def objects2names(objects):
     '''Return the name of all objects in a list
+
+    Parameters
+    ----------
+    objects : list (of boto3 objects)
+
+    Returns
+    -------
+    object_names : list (of strings)
     '''
-    return [urllib.unquote(t.key) for t in objects]
+    return [unquote(t.key) for t in objects]
 
 
 def unquote_names(object_names):
-    '''Clean the URL object name
+    '''Clean URL names from a list.
+
+    Parameters
+    ----------
+    object_names : list (of strings)
+
+    Returns
+    -------
+    clean_object_names : list (of strings)
     '''
-    return [urllib.unquote(t) for t in object_names]
+    return [unquote(t) for t in object_names]
 
 
 def print_objects(object_list):
-    '''Print the name and creation date of a list of objects.
+    '''Print name, size, and creation date of objects in list.
+
+    Parameters
+    ----------
+    object_list : list (of boto3 objects)
     '''
     object_names = objects2names(object_list)
     if len(object_names):
@@ -167,10 +242,10 @@ def print_objects(object_list):
 
 
 def clean_object_name(input_function):
-    '''remove leading "/" from object_name
+    '''Remove leading "/" from object_name
 
-    This is important for compatibility with s3fs.
-    s3fs does not list objects with a "/" prefix.
+    This is important for compatibility with S3fs.
+    S3fs does not list objects with a "/" prefix.
     '''
     @wraps(input_function)
     def iremove_root(self, object_name, *args, **kwargs):
@@ -180,6 +255,7 @@ def clean_object_name(input_function):
             pass
         elif object_name[0] == SEPARATOR:
             object_name = object_name[1:]
+
         return input_function(self, object_name, *args, **kwargs)
     return iremove_root
 
@@ -273,7 +349,6 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
     axis : int, None
         The axis along which to slice the array. If None is given,
         the array is chunked into ideal isotropic voxels.
-        `axis=None` is WIP and atm works fine for near isotropic matrices
     buffersize : scalar
         Byte size of the desired array chunks
 
@@ -287,6 +362,9 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
           Indices of the current chunk along each dimension
         * chunk_data_slice:
           Data for this chunk
+    Notes
+    -----
+    ``axis=None`` is WIP and only works well for near isotropic matrices.
     '''
     shape = arr.shape
     nbytes_total = arr.nbytes
@@ -304,7 +382,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
     else:
         if axis == -1: axis = (arr.ndim - 1)
         dims = [arr.shape[t] for t in range(arr.ndim) if t != axis]
-        logsum = np.sum(map(np.log, dims))
+        logsum = np.sum([np.log(t) for t in  dims])
         factor = 1
 
     logii = ((np.log(buffersize) - np.log(arr.itemsize)) - logsum)/factor
@@ -324,18 +402,26 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
     for chunk_idx, chunk_coords in enumerate(iterator):
         beg = [chunk_shapes[dim]*cc for dim, cc in enumerate(chunk_coords)]
         end = [min(chunk_shapes[dim]*(cc+1), shape[dim])for dim, cc in enumerate(chunk_coords)]
-        slicers = map(lambda dim_lims: slice(dim_lims[0],dim_lims[1]), zip(beg,end))
+        slicers = list(map(lambda dim_lims: slice(dim_lims[0],dim_lims[1]), zip(beg,end)))
         yield chunk_coords, arr[slicers]
 
 
 def read_buffered(frm, to, buffersize=64):
-    '''Fill an array with file-like object contents
+    '''Fill a numpy n-d array with file-like object contents
+    (XXX: python3 broken)
+
+    Parameters
+    ----------
+    frm : buffer
+        Object with a ``read`` method
+    to : np.ndarray
+        Array to which the contents will be put
     '''
     nbytes_total = to.size * to.dtype.itemsize
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize
         end = min(nbytes_total, (ci + 1) * buffersize)
-        to.data[start:end] = frm.read(buffersize)
+        to.data[start:end] = frm.read(end - start)
 
 
 class GzipInputStream(object):
@@ -361,7 +447,7 @@ class GzipInputStream(object):
         self._file = fileobj
         self._zip = zlib.decompressobj(self.WINDOW_BUFFER_SIZE)
         self._offset = 0  # position in unzipped stream
-        self._data = ""
+        self._data = b''
 
     def __fill(self, num_bytes):
         """
@@ -410,7 +496,7 @@ class GzipInputStream(object):
             self._data = self._data[size:]
         else:
             data = self._data
-            self._data = ""
+            self._data = b''
         self._offset = self._offset + len(data)
         return data
 

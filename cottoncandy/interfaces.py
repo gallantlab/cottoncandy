@@ -12,6 +12,11 @@ try:
 except ImportError:
     from urllib.parse import unquote
 
+try:
+    reduce
+except NameError:
+    from functools import reduce
+
 import fnmatch
 from gzip import GzipFile
 from dateutil.tz import tzlocal
@@ -19,7 +24,7 @@ from dateutil.tz import tzlocal
 try:
     from cStringIO import StringIO
 except ImportError:
-    from io import StringIO
+    from io import BytesIO as StringIO
 
 import logging
 
@@ -78,26 +83,24 @@ class BasicInterface(InterfaceObject):
     '''Basic cottoncandy interface to S3.
     '''
     def __init__(self, bucket_name,
-                 ACCESS_KEY,SECRET_KEY,url,
+                 ACCESS_KEY, SECRET_KEY, url,
                  force_bucket_creation=False,
                  verbose=True):
-        '''
+        """
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
 
         Returns
         -------
-        cci  : ccio
-            Cottoncandy interface object
-        '''
+        cci  : cottoncandy.InterfaceObject
+        """
         self.connection = self.connect(ACCESS_KEY=ACCESS_KEY,
                                        SECRET_KEY=SECRET_KEY,
                                        url=url)
@@ -148,11 +151,15 @@ class BasicInterface(InterfaceObject):
     def connect(self, ACCESS_KEY=False, SECRET_KEY=False, url=None):
         '''Connect to S3 using boto'''
         self.url = url
+
         s3 = boto3.resource('s3',
                             endpoint_url=self.url,
                             aws_access_key_id=ACCESS_KEY,
                             aws_secret_access_key=SECRET_KEY)
-        s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
+        if 's3.amazonaws.com' not in self.url:
+            # TODO: why is this happening?
+            # needed for ceph radosgw, but somehow breaks aws regional buckets
+            s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
         return s3
 
     def _get_bucket_name(self, bucket_name):
@@ -168,7 +175,10 @@ class BasicInterface(InterfaceObject):
         Parameters
         ----------
         object_name : str
-            The object name
+
+        Returns
+        -------
+        exists : bool
         '''
         bucket_name = self._get_bucket_name(bucket_name)
         ob = self.connection.Object(key=object_name, bucket_name=bucket_name)
@@ -185,7 +195,16 @@ class BasicInterface(InterfaceObject):
         return exists
 
     def exists_bucket(self, bucket_name):
-        '''Check whether the bucket exists'''
+        '''Check whether the bucket exists
+
+        Parameters
+        ----------
+        bucket_name : str
+
+        Returns
+        -------
+        exists : bool
+        '''
         try:
             self.connection.meta.client.head_bucket(Bucket=bucket_name)
         except botocore.exceptions.ClientError as e:
@@ -198,7 +217,19 @@ class BasicInterface(InterfaceObject):
         return exists
 
     def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
-        '''Create a new bucket'''
+        '''Create a new bucket on S3
+
+        Parameters
+        ----------
+        bucket_name : str
+        acl : str
+            ACL value for this bucket
+
+        Notes
+        -----
+        If ``mandatory_bucket_prefix`` is given in `~/.config/cottoncandy/options.cfg`,
+        make sure ``bucket_name`` starts with that prefix.
+        '''
         if MANDATORY_BUCKET_PREFIX:
             tt = len(MANDATORY_BUCKET_PREFIX)
             assert bucket_name[:tt] == MANDATORY_BUCKET_PREFIX
@@ -207,7 +238,8 @@ class BasicInterface(InterfaceObject):
         self.set_bucket(bucket_name)
 
     def rm_bucket(self, bucket_name):
-        '''Remove an empty bucket. Throws an exception when bucket is not empty.'''
+        '''Remove an empty bucket. Throws an exception when bucket is not empty.
+        '''
         self.set_bucket(bucket_name)
         bucket = self.get_bucket()
         try:
@@ -216,18 +248,19 @@ class BasicInterface(InterfaceObject):
             print("Bucket not empty. To delete, first empty the bucket.")
 
     def set_bucket(self, bucket_name):
-        '''Bucket to use'''
+        '''S3 bucket to use with current interface'''
         if not self.exists_bucket(bucket_name):
             raise IOError('Bucket "%s" does not exist'%bucket_name)
         self.bucket_name = bucket_name
 
     def get_bucket(self):
-        '''Get bucket boto3 object'''
+        '''Get boto3 bucket object'''
         s3_bucket = self.connection.Bucket(self.bucket_name)
         return s3_bucket
 
     def get_bucket_objects(self, **kwargs):
-        """Get list of objects from the bucket
+        """Get list of objects from the bucket.
+
         This is a wrapper to ``self.get_bucket().bucket.objects``
 
         Parameters
@@ -239,9 +272,13 @@ class BasicInterface(InterfaceObject):
         filter : dict
             A dictionary with key 'Prefix', specifying a prefix
             string.  Only return objects matching this string.
-            Defaults to '/', all objects.
+            Defaults to '/' (i.e. all objects).
         kwargs : optional
             Dictionary of {method:value} for ``bucket.objects``
+
+        Returns
+        -------
+        objects_list : list (boto3 objects)
 
         Notes
         -----
@@ -261,7 +298,7 @@ class BasicInterface(InterfaceObject):
         else:
             request = bucket.objects.filter(**prefix)
 
-        for method_name, value in defaults.iteritems():
+        for method_name, value in defaults.items():
             if value is None:
                 continue
             method = getattr(request, method_name)
@@ -278,9 +315,9 @@ class BasicInterface(InterfaceObject):
 
         Parameters
         ----------
-        limit : int, 1000
+        limit : int, 10^6
             Maximum number of items to return
-        page_size : int, 1000
+        page_size : int, 10^6
             The page size for pagination
 
         Returns
@@ -296,7 +333,6 @@ class BasicInterface(InterfaceObject):
         suspicious round numbers.
         TODO(anunez): Remove this note when the bug is fixed.
         '''
-        assert self.exists_bucket(self.bucket_name)
         obs = self.get_bucket_objects(limit=limit, page_size=page_size)
         object_sizes = [t.size for t in obs]
         total_bytes = sum(object_sizes)
@@ -318,12 +354,30 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def get_object(self, object_name, bucket_name=None):
-        """Get a boto3 object. Create it if it doesn't exist"""
+        """Get a boto3 object. Create it if it doesn't exist
+
+        Parameters
+        ----------
+        object_name : str
+        bucket_name : str (defaults to current bucket)
+
+        Returns
+        -------
+        boto3_object
+        """
         bucket_name = self._get_bucket_name(bucket_name)
         return self.connection.Object(bucket_name=bucket_name, key=object_name)
 
     def show_objects(self, limit=1000, page_size=1000):
-        '''Print objects in the current bucket'''
+        '''Print objects in the current bucket
+
+        Parameters
+        ----------
+        limit : int, 1000
+            Maximum number of items to return
+        page_size : int, 1000
+            The page size for pagination
+        '''
         bucket = self.get_bucket()
         object_list = self.get_bucket_objects(limit=limit, page_size=page_size)
         try:
@@ -335,12 +389,26 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
+        '''Upload an object to the bucket
+
+        Parameters
+        ----------
+        object_name : str
+        body : file-like, stream
+        acl : ACL for object
+        **metadata : Extra kwargs are uploaded as object metadata
+
+        Returns
+        -------
+        boto3_response
+        '''
         obj = self.get_object(object_name)
         return obj.put(Body=body, ACL=acl, Metadata=metadata)
 
     @clean_object_name
     def download_object(self, object_name):
-        '''Download object raw data.
+        '''Download object raw data
+
         This simply calls the object body ``read()`` method.
 
         Parameters
@@ -357,47 +425,49 @@ class BasicInterface(InterfaceObject):
         s3_object = self.get_object(object_name)
         return s3_object.get()['Body'].read()
 
-    def upload_from_file(self, flname, object_name=None,
+    def upload_from_file(self, file_name, object_name=None,
                          ExtraArgs=dict(ACL=DEFAULT_ACL)):
-        '''Upload a file to S3.
+        '''Upload a file to S3
 
         Parameters
         ----------
-        flname : str
+        file_name : str
             Absolute path of file to upload
         object_name : str, None
             Name of uploaded object. If None, use
             the full file name as the object name.
+        ExtraArgs : dict
+            Defaults ``dict(ACL=DEFAULT_ACL)``
 
         Returns
         -------
-        response : boto3 response
+        boto3_response
         '''
-        assert os.path.exists(flname)
+        assert os.path.exists(file_name)
         if object_name is None:
-            object_name = os.path.abspath(flname)
+            object_name = os.path.abspath(file_name)
         object_name = remove_root(object_name)
         s3_object = self.get_object(object_name)
-        return s3_object.upload_file(flname, ExtraArgs=ExtraArgs)
+        return s3_object.upload_file(file_name, ExtraArgs=ExtraArgs)
 
     @clean_object_name
-    def download_to_file(self, object_name, flname):
+    def download_to_file(self, object_name, file_name):
         '''Download S3 object to a file
 
         Parameters
         ----------
         object_name : str
-        flname : str
+        file_name : str
             Absolute path where the data will be downloaded on disk
         '''
         assert self.exists_object(object_name) # make sure object exists
         s3_object = self.get_object(object_name)
-        return s3_object.download_file(flname)
+        return s3_object.download_file(file_name)
 
     @clean_object_name
     def mpu_fileobject(self, object_name, file_object,
                        buffersize=MPU_CHUNKSIZE, verbose=True, **metadata):
-        '''Multi-part upload for a python file-object.
+        '''Multi-part upload for a file-object.
 
         This automatically creates a multipart upload of an object.
         Useful for large objects that are loaded in memory. This avoids
@@ -407,14 +477,17 @@ class BasicInterface(InterfaceObject):
         ----------
         object_name : str
         file_object :
-            file-like python object (e.g. StringIO, file, etc)
-        buffersize  : int
+            file-like object (e.g. StringIO, file, etc)
+        buffersize  : int, (defaults to 100MB)
             Byte size of the individual parts to create.
-            Defaults to 100MB
         verbose     : bool
             verbosity flag of whether to print mpu information to stdout
         **metadata  : optional
             Metadata to store along with MPU object
+
+        Returns
+        -------
+        boto3_mpu_response
         '''
         client = self.connection.meta.client
         mpu = client.create_multipart_upload(Bucket=self.bucket_name,
@@ -485,6 +558,10 @@ class BasicInterface(InterfaceObject):
         object_name : str
         ddict : dict
         metadata : dict, optional
+
+        Returns
+        -------
+        boto3_response
         '''
         json_data = json.dumps(ddict)
         obj = self.get_object(object_name)
@@ -505,7 +582,7 @@ class BasicInterface(InterfaceObject):
         '''
         assert self.exists_object(object_name)
         obj = self.get_object(object_name)
-        return json.loads(obj.get()['Body'].read())
+        return json.loads(obj.get()['Body'].read().decode())
 
     @clean_object_name
     def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL):
@@ -536,35 +613,30 @@ class BasicInterface(InterfaceObject):
         return pickle.loads(obj.get()['Body'].read())
 
 
-
-
-
-
 class ArrayInterface(BasicInterface):
     '''Provides numpy.array concepts.
     '''
     def __init__(self, *args, **kwargs):
-        '''
+        """
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
 
         Returns
         -------
-        cci : ccio
-            Cottoncandy interface object
-        '''
+        cci : cottoncandy interface object
+        """
         super(ArrayInterface, self).__init__(*args, **kwargs)
 
     @clean_object_name
-    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL, **metadata):
+    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL,
+                         **metadata):
         '''Upload a np.ndarray using ``np.save``
 
         This method creates a copy of the array in memory
@@ -575,6 +647,8 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : numpy.ndarray
+        acl : ACL for this object
+        **metadata : extra kwargs are uploaded to object metadata
 
         Returns
         -------
@@ -587,10 +661,13 @@ class ArrayInterface(BasicInterface):
         # TODO: check array.dtype.hasobject
         arr_strio = StringIO()
         np.save(arr_strio, array)
-        arr_strio.reset()
+        arr_strio.seek(0)
         try:
-            response = self.get_object(object_name).put(Body=arr_strio.read(), ACL=acl, Metadata=metadata)
+            response =\
+             self.get_object(object_name).put(Body=arr_strio.read(),
+                                              ACL=acl, Metadata=metadata)
         except OverflowError:
+            # TODO: replace with MAX_PUT_SIZE check
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
         return response
 
@@ -612,7 +689,8 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, gzip=True, acl=DEFAULT_ACL, **metadata):
+    def upload_raw_array(self, object_name, array, gzip=True,
+                         acl=DEFAULT_ACL, **metadata):
         '''Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -622,17 +700,16 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : np.ndarray
-        gzip  : bool, optional
-            Whether to gzip the array
+        gzip  : bool (defaults True)
+            Whether to gzip array content
         acl : str
-            "access control list", specifies permissions for s3 data.
-            default is "authenticated-read" (authenticated users can read)
-        metadata : dict, optional
+            ACL for the object
+        **metadata : optional
 
         Notes
         -----
-        This method also uploads the array ``dtype``, ``shape``, and ``gzip``
-        flag as metadata
+        Uploads array ``dtype``, ``shape``, and ``gzip``
+        flags as metadata
         '''
         if array.nbytes >= 2**31:
             # avoid zlib issues
@@ -640,8 +717,9 @@ class ArrayInterface(BasicInterface):
 
         order = 'F' if array.flags.f_contiguous else 'C'
         if not array.flags['%s_CONTIGUOUS'%order]:
-            print ('array is a slice along a non-contiguous axis. copying the array '
-                   'before saving (will use extra memory)')
+            print('array is a slice along a non-contiguous axis.'
+                  'copying the array '
+                  'before saving (will use extra memory)')
             array = np.array(array, order=order)
 
         meta = dict(dtype=array.dtype.str,
@@ -650,7 +728,11 @@ class ArrayInterface(BasicInterface):
                     order=order)
 
         # check for conflicts in metadata
-        assert not any([key in meta for key in metadata.iterkeys()])
+        metadata_keys = []
+        for k in metadata.keys():
+            metadata_keys.append(k)
+
+        assert not any(metadata_keys)
         meta.update(metadata)
 
         if gzip:
@@ -680,7 +762,7 @@ class ArrayInterface(BasicInterface):
         Parameters
         ----------
         object_name : str
-        buffersize  : optional
+        buffersize  : optional (defaults 2^16)
 
         Returns
         -------
@@ -688,16 +770,16 @@ class ArrayInterface(BasicInterface):
 
         Notes
         -----
-        The object must have metadata containing: shape, dtype and a gzip
-        boolean flag. This is all automatically handled by ``upload_raw_array``.
+        The S3 object must have metadata containing: shape, dtype and gzip
+        flags. This is automatically handled by ``upload_raw_array``
         '''
         assert self.exists_object(object_name)
         array_object = self.get_object(object_name)
 
         shape = array_object.metadata['shape']
-        shape = map(int, shape.split(',')) if shape else ()
+        shape = tuple(map(int, shape.split(','))) if shape else ()
         dtype = np.dtype(array_object.metadata['dtype'])
-        order = array_object.metadata.get('order','C')
+        order = array_object.metadata.get('order', 'C')
         array = np.empty(shape, dtype=dtype, order=order)
 
         body = array_object.get()['Body']
@@ -724,7 +806,7 @@ class ArrayInterface(BasicInterface):
         verbose : bool
             Whether to print object_name after completion
         '''
-        for k,v in array_dict.iteritems():
+        for k,v in array_dict.items():
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
@@ -854,7 +936,7 @@ class ArrayInterface(BasicInterface):
                 if chunk_idx not in dimension_sizes[dim]:
                     dimension_sizes[dim][chunk_idx] = metadata['chunk_sizes'][sample_idx][dim]
 
-        chunks = [[value for k,value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
+        chunks = [[value for k,value in sorted(sizes.items())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
 
@@ -976,23 +1058,21 @@ class FileSystemInterface(BasicInterface):
     '''Emulate some file system functionality.
     '''
     def __init__(self, *args, **kwargs):
-        '''
+        """
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
 
         Returns
         -------
-        cci : ccio
-            Cottoncandy interface object
-        '''
+        cci : cottoncandy interface object
+        """
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
     def lsdir(self, path='/', limit=10**3):
@@ -1022,12 +1102,13 @@ class FileSystemInterface(BasicInterface):
         object_names = []
         if 'CommonPrefixes' in response:
             # we got common paths
-            object_list = [t.values() for t in response['CommonPrefixes']]
+            object_list = [list(t.values())
+                           for t in response['CommonPrefixes']]
             object_names += reduce(lambda x,y: x+y, object_list)
         if 'Contents' in response:
             # we got objects on the leaf nodes
             object_names += unquote_names([t['Key'] for t in response['Contents']])
-        return map(os.path.normpath, object_names)
+        return list(map(os.path.normpath, object_names))
 
     @clean_object_name
     def ls(self, pattern, page_size=10**3, limit=10**3, verbose=False):
@@ -1080,7 +1161,7 @@ class FileSystemInterface(BasicInterface):
             object_names = fnmatch.filter(object_names, pattern)
         if verbose:
             print('\n'.join(sorted(object_names)))
-        return object_names
+        return list(object_names)
 
     @clean_object_name
     def glob(self, pattern, **kwargs):
@@ -1165,7 +1246,7 @@ class FileSystemInterface(BasicInterface):
     def search(self, pattern, **kwargs):
         '''Print the objects matching the glob pattern
 
-        See ``glob`` documentation for details
+        See ``glob`` documentation for details.
         '''
         matches = self.glob(pattern, verbose=True, **kwargs)
 
@@ -1303,16 +1384,19 @@ class DefaultInterface(FileSystemInterface,
     concepts for easy data I/O and bucket/object exploration.
     '''
     def __init__(self, *args, **kwargs):
-        '''
+        """
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
-        '''
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
+
+        Returns
+        -------
+        cci  : cottoncandy.InterfaceObject
+        """
         super(DefaultInterface, self).__init__(*args, **kwargs)
