@@ -6,7 +6,7 @@ python:
 install:
 - pip install -r requirements.txt
 - python setup.py install
-script: pytest -v
+script: pytest -v --full-trace --tb=long
 env:
   global:
   - secure: UyJENFv2HYtRZU/LPmhXCbrvGT+I9D0iG/YVJGoe0hMEoMLm4/amceH7TaoTVx7o81WRiFnUYV4IFv4jSoeohApSPMeMXZZqJf+S86Tr2g98b4uuglW/Ir0eA3fzmhHPrvXe3SWEAJvTy/JZDxOKRJW79ZEGDlL1btq2ZPmR0rgUF71QbfCwVmon3IoB/1386pBYE09BJpUA6URZAFHJyjEksi9ECQJVkMvw4MEosnk3o08+0HTWRXZA0AWYZOe+v5ZJQFImQs9ctggpAnt0CPhePvG9y+CP/Q3egJZwE2UL8t8r9jz1gt5yl+NXKeC6mZklXa4sCb967r8IwVPAUyA5p4P3MhYY8W/Nhk3RWWvufVJOYLGGGweuisw+Gq2CYXifLQxFW8+UkLLMN8R/7/l28ftDE7s0d8seUh0SFx/kn6KLA3LF3H69zfCxecNRkbwmCMf1f8ep7o71+0V1+NizQSSRYADn4LzuZOwerYmJbOznXC2/Q1x+zreeYocpjoB05ZewV0a848WnPfRPoHA/38SvbtUJU0U5v5W3WqgTJYRvTW+ktMUNialQJZSf2bVWKlnumBb+wUUbYhvbTRTtWqNHM0W9Ly+1vrLNa5BURPQFJst0jrUd4F4m5HdpTgtiPjLDj5DBJmmAwW0k8sqTZYG1DbDj2LJBa1lcDNY=
