@@ -404,7 +404,7 @@ class GDriveClient(CCBackEnd):
                 print('Is folder and recursive delete is not selected')
                 return False
             if delete:
-                f.delete()
+                f.Delete()
             else:
                 f.Trash()  # trashed files still exist so the association count remains the same
             return True

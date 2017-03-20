@@ -100,6 +100,9 @@ class BasicInterface(InterfaceObject):
     def _get_bucket_name(self, bucket_name):
         return self.interface._get_bucket_name(bucket_name)
 
+    def pathjoin(self, a, *p):
+        return pathjoin(a, *p)
+
     @property
     def bucket_name(self):
         if isinstance(self.interface, S3Client):
