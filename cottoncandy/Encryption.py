@@ -151,8 +151,8 @@ class AESEncryption(Encryption):
     Encrypts files using an AES cipher. All files passing through the same object will be encrypted with the same key
     Encrypted files have the following structure:
 
-    [  16 bytes default   ][		file size 		     || file size % 16 - 8 bytes ][	 	8 bytes		 ]
-    [initialization vector][ binary ciphertext for file  ||   padding with spaces	 ][file size in bytes]
+    [  16 bytes default   ][        file size            || file size % 16 - 8 bytes ][     8 bytes      ]
+    [initialization vector][ binary ciphertext for file  ||   padding with spaces    ][file size in bytes]
     """
 
     def __init__(self, key = None, keyfile = None, mode = CIPHER_BLOCK_CHAIN, chunk_size = DEFAULT_CHUNK_SIZE, initialisation_vector_size = INIT_VECT_SIZE):
