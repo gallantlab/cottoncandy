@@ -60,5 +60,7 @@ target/
 
 # Pycharm
 .idea
+test
+test.cfg
 #Ipython Notebook
 .ipynb_checkpoints
