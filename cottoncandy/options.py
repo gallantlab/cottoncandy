@@ -1,4 +1,6 @@
 import os
+from Crypto import Random
+from base64 import b64decode, b64encode
 try:
     import configparser
 except ImportError:
@@ -42,6 +44,8 @@ usercfg = os.path.join(userdir, "options.cfg")
 config = configparser.ConfigParser()
 config.readfp(open(os.path.join(cwd, 'defaults.cfg')))
 
+
+# case no user config file
 if len(config.read(usercfg)) == 0:
     os.makedirs(userdir)
 
@@ -57,5 +61,37 @@ if len(config.read(usercfg)) == 0:
         config.set("login", "access_key", ak)
         config.set("login", "secret_key", sk)
 
+    aesKey = config.get('encryption', 'key')
+    if aesKey == 'auto':
+        newKey = Random.get_random_bytes(32)
+        aesKey = b64encode(newKey)
+        config.set("encryption", 'key', aesKey)
+
     with open(usercfg, 'w') as fp:
         config.write(fp)
+
+# add things to old versions of config if needed
+else:
+    try:	# encryption section
+        aesKey = config.get('encryption', 'key')
+        if aesKey == 'auto':
+            newKey = Random.get_random_bytes(32)
+            aesKey = b64encode(newKey)
+            config.set("encryption", 'key', aesKey)
+    except configparser.NoSectionError:
+        config.add_section('encryption')
+        newKey = Random.get_random_bytes(32)
+        aesKey = b64encode(newKey)
+        config.set("encryption", 'key', aesKey)
+        config.set('encryption', 'method', 'AES')
+
+    try:	# gdrive section
+        secrets = config.get('gdrive', 'secrets')
+        credentials = config.get('gdrive', 'credentials')
+    except configparser.NoSectionError:
+        config.add_section('gdrive')
+        config.set('gdrive', 'secrets', 'client_secrets.json')
+        config.set('gdrive', 'credentials', 'credentials.txt')
+
+    with open(usercfg, 'w') as configfile:
+        config.write(configfile)

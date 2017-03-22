@@ -48,19 +48,26 @@ ISBOTO_VERBOSE = options.config.get('login', 'verbose_boto')
 # misc functions
 ##############################
 
-def string2bool(truth_string):
-    '''Convert a truth value from a text string to boolean.
+def pathjoin(a, *p):
+    """Join two or more pathname components, inserting SEPARATOR as needed.
+    If any component is an absolute path, all previous path components
+    will be discarded.  An empty last part will result in a path that
+    ends with a separator."""
+    path = a
+    for b in p:
+        if b.startswith(SEPARATOR):
+            path = b
+        elif path == '' or path.endswith(SEPARATOR):
+            path += b
+        else:
+            path += SEPARATOR + b
+    return path
 
-    Parameters
-    ----------
-    truth_string : str
-
-    Returns
-    -------
-    truth_value : bool (defaults to False)
+def string2bool(mstring):
+    '''
     '''
     truth_value = False
-    if truth_string in ['True','true', 'tru', 't',
+    if mstring in ['True','true', 'tru', 't',
                    'y','yes', '1']:
         truth_value = True
     return truth_value
@@ -276,11 +283,12 @@ check_digits = re.compile('[0-9]')
 def has_start_digit(s):
     return check_digits.match(s) is not None
 
+MAGIC_CHECK = re.compile('[*?[]')
+
 def has_magic(s):
     '''Check string to see if it has any glob magic
     '''
-    magic_check = re.compile('[*?[]')
-    return magic_check.search(s) is not None
+    return MAGIC_CHECK.search(s) is not None
 
 
 def has_trivial_magic(s):

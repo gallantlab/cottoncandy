@@ -1,5 +1,3 @@
-import os
-import re
 import json
 
 try:
@@ -19,18 +17,13 @@ except NameError:
 
 import fnmatch
 from gzip import GzipFile
-from dateutil.tz import tzlocal
 
 try:
     from cStringIO import StringIO
 except ImportError:
     from io import BytesIO as StringIO
 
-import logging
-
-import boto3
-import botocore
-from botocore.utils import fix_s3_host
+from base64 import b64decode, b64encode
 
 import numpy as np
 from scipy.sparse import (coo_matrix,
@@ -39,203 +32,107 @@ from scipy.sparse import (coo_matrix,
                           bsr_matrix,
                           dia_matrix)
 
-from cottoncandy.utils import (clean_object_name,
-                               has_magic,
-                               has_real_magic,
-                               remove_trivial_magic,
-                               remove_root,
-                               mk_aws_path,
-                               objects2names,
-                               unquote_names,
-                               print_objects,
-                               get_fileobject_size,
-                               read_buffered,
-                               GzipInputStream,
-                               generate_ndarray_chunks,
-                               bytes2human,
-                               string2bool,
-                               MB,
-                               MIN_MPU_SIZE,
-                               MAX_PUT_SIZE,
-                               MAX_MPU_SIZE,
-                               MAX_MPU_PARTS,
-                               MPU_THRESHOLD,
-                               MPU_CHUNKSIZE,
-                               DASK_CHUNKSIZE,
-                               SEPARATOR,
-                               DEFAULT_ACL,
-                               MANDATORY_BUCKET_PREFIX,
-                               ISBOTO_VERBOSE,
-                               )
-
 import cottoncandy.browser
 
+from .s3client import *
+from .gdriveclient import *
+from .utils import *
+from warnings import warn
+from .Encryption import *
 
-#------------------
-# S3 Interfaces
-#------------------
+
+# ------------------
+# Cloud Interfaces
+# ------------------
 
 class InterfaceObject(object):
     pass
 
 
 class BasicInterface(InterfaceObject):
-    '''Basic cottoncandy interface to S3.
-    '''
+    """Basic cottoncandy interface to the cloud.
+    """
+
     def __init__(self, bucket_name,
-                 ACCESS_KEY, SECRET_KEY, url,
+                 ACCESS_KEY, SECRET_KEY, url=None,
                  force_bucket_creation=False,
-                 verbose=True):
+                 verbose=True, backend='s3'):
         """
         Parameters
         ----------
         bucket_name : str
         ACCESS_KEY : str
+            The S3 access key, or client secrets json file
         SECRET_KEY : str
-        endpoint_url : str
+            The S3 secret key, or client credentials file
+        url : str
             The URL for the S3 gateway
-        force_bucket_creation : bool
-            Create requested bucket if it doesn't exist
+        force_bucket_creation: bool
+            if bucket does not exist, make it?
+        verbose: bool
+            print things?
+        backend: 's3'|'gdrive'
+            Access s3 or google drive?
 
         Returns
         -------
-        cci  : cottoncandy.InterfaceObject
+        cci  : ccio
+            Cottoncandy interface object
         """
-        self.connection = self.connect(ACCESS_KEY=ACCESS_KEY,
-                                       SECRET_KEY=SECRET_KEY,
-                                       url=url)
-        if self.exists_bucket(bucket_name):
-            self.set_bucket(bucket_name)
+
+        if backend == 's3':
+            self.interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url, force_bucket_creation)
+        elif backend == 'gdrive':
+            self.interface = GDriveClient(ACCESS_KEY, SECRET_KEY)
         else:
-            print('* Bucket "%s" does not exist'%bucket_name)
-            if force_bucket_creation:
-                print('* Creating "%s" bucket...\n'%bucket_name)
-                self.create_bucket(bucket_name)
-            else:
-                print('* cottoncandy instantiated without bucket...\n'\
-                      '* Use with caution!\n' \
-                      '* Many features will not work!!!\n')
-                self.bucket_name = None
+            raise ValueError('Bad backend')
 
         if verbose:
-            print('Available buckets:')
-            self.show_buckets()
-            print('Current bucket:')
-            print(self.bucket_name)
-
-        if string2bool(ISBOTO_VERBOSE) is False:
-            logging.getLogger('boto3').setLevel(logging.WARNING)
-            logging.getLogger('botocore').setLevel(logging.WARNING)
-
+            if backend == 's3':
+                print('Available buckets:')
+                self.show_buckets()
+            else:
+                print('Google drive backend instantiated.')
 
     def __repr__(self):
-        details = (__package__, self.bucket_name, self.url)
-        return '%s.interface <bucket:%s on %s>' % details
-
-    @staticmethod
-    def pathjoin(a, *p):
-        """Join two or more pathname components, inserting SEPARATOR as needed.
-        If any component is an absolute path, all previous path components
-        will be discarded.  An empty last part will result in a path that
-        ends with a separator."""
-        path = a
-        for b in p:
-            if b.startswith(SEPARATOR):
-                path = b
-            elif path == '' or path.endswith(SEPARATOR):
-                path +=  b
-            else:
-                path += SEPARATOR + b
-        return path
-
-    def connect(self, ACCESS_KEY=False, SECRET_KEY=False, url=None):
-        '''Connect to S3 using boto'''
-        self.url = url
-
-        s3 = boto3.resource('s3',
-                            endpoint_url=self.url,
-                            aws_access_key_id=ACCESS_KEY,
-                            aws_secret_access_key=SECRET_KEY)
-        if 's3.amazonaws.com' not in self.url:
-            # TODO: why is this happening?
-            # needed for ceph radosgw, but somehow breaks aws regional buckets
-            s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
-        return s3
+        if isinstance(self.interface, S3Client):
+            details = (__package__, self.bucket_name, self.interface.url)
+            return '%s.interface <bucket:%s on %s>' % details
+        else:
+            return '{}.interface on Google Drive'.format(__package__)
 
     def _get_bucket_name(self, bucket_name):
-        bucket_name = self.bucket_name \
-                      if bucket_name is None\
-                      else bucket_name
-        return bucket_name
+        return self.interface._get_bucket_name(bucket_name)
+
+    def pathjoin(self, a, *p):
+        return pathjoin(a, *p)
+
+    @property
+    def bucket_name(self):
+        if isinstance(self.interface, S3Client):
+            return self.interface.bucket_name
+        else:
+            print('Google drive has no concept of buckets')
+            return None
 
     @clean_object_name
     def exists_object(self, object_name, bucket_name=None):
-        '''Check whether object exists in bucket
+        """Check whether object exists in bucket
 
         Parameters
         ----------
         object_name : str
-
-        Returns
-        -------
-        exists : bool
-        '''
-        bucket_name = self._get_bucket_name(bucket_name)
-        ob = self.connection.Object(key=object_name, bucket_name=bucket_name)
-
-        try:
-            ob.load()
-        except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == "404":
-                exists = False
-            else:
-                raise e
-        else:
-            exists = True
-        return exists
+            The object name
+        """
+        return self.interface.check_file_exists(object_name, bucket_name)
 
     def exists_bucket(self, bucket_name):
-        '''Check whether the bucket exists
-
-        Parameters
-        ----------
-        bucket_name : str
-
-        Returns
-        -------
-        exists : bool
-        '''
-        try:
-            self.connection.meta.client.head_bucket(Bucket=bucket_name)
-        except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == "404":
-                exists = False
-            else:
-                raise e
-        else:
-            exists = True
-        return exists
+        """Check whether the bucket exists"""
+        return self.interface.check_bucket_exists(bucket_name)
 
     def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
-        '''Create a new bucket on S3
-
-        Parameters
-        ----------
-        bucket_name : str
-        acl : str
-            ACL value for this bucket
-
-        Notes
-        -----
-        If ``mandatory_bucket_prefix`` is given in `~/.config/cottoncandy/options.cfg`,
-        make sure ``bucket_name`` starts with that prefix.
-        '''
-        if MANDATORY_BUCKET_PREFIX:
-            tt = len(MANDATORY_BUCKET_PREFIX)
-            assert bucket_name[:tt] == MANDATORY_BUCKET_PREFIX
-
-        self.connection.create_bucket(Bucket=bucket_name, ACL=acl)
-        self.set_bucket(bucket_name)
+        """Create a new bucket"""
+        self.interface.create_bucket(bucket_name, acl)
 
     def rm_bucket(self, bucket_name):
         '''Remove an empty bucket. Throws an exception when bucket is not empty.
@@ -248,15 +145,12 @@ class BasicInterface(InterfaceObject):
             print("Bucket not empty. To delete, first empty the bucket.")
 
     def set_bucket(self, bucket_name):
-        '''S3 bucket to use with current interface'''
-        if not self.exists_bucket(bucket_name):
-            raise IOError('Bucket "%s" does not exist'%bucket_name)
-        self.bucket_name = bucket_name
+        """Bucket to use"""
+        self.interface.set_current_bucket(bucket_name)
 
     def get_bucket(self):
-        '''Get boto3 bucket object'''
-        s3_bucket = self.connection.Bucket(self.bucket_name)
-        return s3_bucket
+        """Get bucket boto3 object"""
+        return self.interface.get_bucket()
 
     def get_bucket_objects(self, **kwargs):
         """Get list of objects from the bucket.
@@ -285,33 +179,25 @@ class BasicInterface(InterfaceObject):
         If you get a 'PaginationError', this means you have
         a lot of items on your bucket and should increase ``page_size``
         """
-        defaults = dict(limit=1000,
-                        page_size=1000,
-                        filter=dict(Prefix=SEPARATOR),
-                        )
-        defaults.update(kwargs)
-        bucket = self.get_bucket()
-        prefix = defaults.pop('filter')
+        warn('Deprecated. Use get_objects() instead', DeprecationWarning)
+        return self.interface.list_objects(**kwargs)
 
-        if prefix['Prefix'] == SEPARATOR:
-            request = bucket.objects
-        else:
-            request = bucket.objects.filter(**prefix)
+    def get_objects(self, **kwargs):
+        """
+        Like get_bucket_objects, but more aptly named to the generic interface
+        Parameters
+        ----------
+        self
+        kwargs
 
-        for method_name, value in defaults.items():
-            if value is None:
-                continue
-            method = getattr(request, method_name)
-            if isinstance(value, dict):
-                request = method(**value)
-            else:
-                request = method(value)
+        Returns
+        -------
 
-        response = request.all()
-        return response
+        """
+        return self.interface.list_objects(**kwargs)
 
-    def get_bucket_size(self, limit=10**6, page_size=10**6):
-        '''Counts the size of all objects in the current bucket.
+    def get_bucket_size(self, limit=10 ** 6, page_size=10 ** 6):
+        """Counts the size of all objects in the current bucket.
 
         Parameters
         ----------
@@ -332,102 +218,75 @@ class BasicInterface(InterfaceObject):
         underestimate the total size. Check the printed number of objects for
         suspicious round numbers.
         TODO(anunez): Remove this note when the bug is fixed.
-        '''
-        obs = self.get_bucket_objects(limit=limit, page_size=page_size)
-        object_sizes = [t.size for t in obs]
-        total_bytes = sum(object_sizes)
-        num_objects = len(object_sizes)
-        del object_sizes
+        """
+        warn('Deprecated, use get_size() instead', DeprecationWarning)
+        return self.interface.size
 
-        txt = "%i bytes (%s) over %i objects"
-        print(txt%(total_bytes,bytes2human(total_bytes),num_objects))
-        return total_bytes
+    def get_size(self):
+        """
+        Gets the total size of the current container of objects. Generic naming.
+        Parameters
+        ----------
+        self
+
+        Returns
+        -------
+
+        """
+        return self.interface.size
 
     def show_buckets(self):
-        '''Show available buckets'''
-        all_buckets = list(self.connection.buckets.all())
-        timeformat = lambda x: x.creation_date.astimezone(tzlocal()).strftime
-        info = ['{0: <40} {1}'.format(unquote(t.name),
-                                      timeformat(t)('%Y/%m/%d (%H:%M:%S)'))\
-                for t in all_buckets]
-        print('\n'.join(info))
+        """Show available buckets"""
+        self.interface.show_all_buckets()
 
     @clean_object_name
     def get_object(self, object_name, bucket_name=None):
-        """Get a boto3 object. Create it if it doesn't exist
-
-        Parameters
-        ----------
-        object_name : str
-        bucket_name : str (defaults to current bucket)
-
-        Returns
-        -------
-        boto3_object
-        """
-        bucket_name = self._get_bucket_name(bucket_name)
-        return self.connection.Object(bucket_name=bucket_name, key=object_name)
+        """Get a boto3 object. Create it if it doesn't exist"""
+        # NOTE: keeping this in case outside code is using this.
+        return self.interface.get_s3_object(object_name, bucket_name)
 
     def show_objects(self, limit=1000, page_size=1000):
-        '''Print objects in the current bucket
+        """Print objects in the current bucket"""
+        if isinstance(self.interface, S3Client):
+            object_list = self.interface.list_objects(limit, page_size)
+            try:
+                print_objects(object_list)
+            except botocore.exceptions.PaginationError:
+                print('Loads of objects in "%s". Increasing page_size by 100x...' % self.bucket_name)
+                object_list = self.interface.list_objects(limit = limit, page_size = page_size * 100)
+                print_objects(object_list)
+        else:
+            drivefiles = self.interface.drive.ListFile({'q': "trashed=false"}).GetList()
+            object_list = [df['title'] for df in drivefiles]
+            for obj in object_list:
+                # TODO: also print last modified date and whatever else to match s3
+                print(obj)
 
-        Parameters
-        ----------
-        limit : int, 1000
-            Maximum number of items to return
-        page_size : int, 1000
-            The page size for pagination
-        '''
-        bucket = self.get_bucket()
-        object_list = self.get_bucket_objects(limit=limit, page_size=page_size)
-        try:
-            print_objects(object_list)
-        except botocore.exceptions.PaginationError:
-            print('Loads of objects in "%s". Increasing page_size by 100x...'%self.bucket_name)
-            object_list = self.get_bucket_objects(limit=limit, page_size=page_size*100)
-            print_objects(object_list)
+    # With the abstraction of the cloud interface, and the encrypting interface, all file I/O methods
+    # should be calling upload_object() and download_stream() instead of directly interfacing with the
+    # CCBackEnd object or the actual cloud APIs
 
     @clean_object_name
     def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
-        '''Upload an object to the bucket
+        self.interface.upload_stream(body, object_name, metadata, acl)
 
+    def download_stream(self, object_name):
+        """
+        Returns the CloudStream object for an object
         Parameters
         ----------
-        object_name : str
-        body : file-like, stream
-        acl : ACL for object
-        **metadata : Extra kwargs are uploaded as object metadata
+        self
+        object_name
 
         Returns
         -------
-        boto3_response
-        '''
-        obj = self.get_object(object_name)
-        return obj.put(Body=body, ACL=acl, Metadata=metadata)
+        CloudStream object
+        """
+        return self.interface.download_stream(object_name)
 
-    @clean_object_name
-    def download_object(self, object_name):
-        '''Download object raw data
-
-        This simply calls the object body ``read()`` method.
-
-        Parameters
-        ---------
-        object_name : str
-
-        Returns
-        -------
-        byte_data : str
-            Object byte contents
-        '''
-        if not self.exists_object(object_name):
-            raise IOError('Object "%s" does not exist'%object_name)
-        s3_object = self.get_object(object_name)
-        return s3_object.get()['Body'].read()
-
-    def upload_from_file(self, file_name, object_name=None,
-                         ExtraArgs=dict(ACL=DEFAULT_ACL)):
-        '''Upload a file to S3
+    def upload_from_file(self, flname, object_name=None,
+                         ExtraArgs=dict(ACL = DEFAULT_ACL)):
+        """Upload a file to the cloud.
 
         Parameters
         ----------
@@ -441,33 +300,42 @@ class BasicInterface(InterfaceObject):
 
         Returns
         -------
-        boto3_response
-        '''
-        assert os.path.exists(file_name)
-        if object_name is None:
-            object_name = os.path.abspath(file_name)
-        object_name = remove_root(object_name)
-        s3_object = self.get_object(object_name)
-        return s3_object.upload_file(file_name, ExtraArgs=ExtraArgs)
+        response : boto3 response
+        """
+        return self.interface.upload_file(flname, object_name, ExtraArgs['ACL'])
 
     @clean_object_name
     def download_to_file(self, object_name, file_name):
-        '''Download S3 object to a file
+        """Download cloud object to a file
 
         Parameters
         ----------
         object_name : str
         file_name : str
             Absolute path where the data will be downloaded on disk
-        '''
-        assert self.exists_object(object_name) # make sure object exists
-        s3_object = self.get_object(object_name)
-        return s3_object.download_file(file_name)
+        """
+        return self.interface.download_to_file(object_name, file_name)
+
+    @clean_object_name
+    def download_object(self, object_name):
+        """Download object raw data.
+        This simply calls the object body ``read()`` method.
+
+        Parameters
+        ---------
+        object_name : str
+
+        Returns
+        -------
+        byte_data : str
+            Object byte contents
+        """
+        return self.download_stream(object_name).content.read()
 
     @clean_object_name
     def mpu_fileobject(self, object_name, file_object,
                        buffersize=MPU_CHUNKSIZE, verbose=True, **metadata):
-        '''Multi-part upload for a file-object.
+        """Multi-part upload for a file-object.
 
         This automatically creates a multipart upload of an object.
         Useful for large objects that are loaded in memory. This avoids
@@ -484,92 +352,25 @@ class BasicInterface(InterfaceObject):
             verbosity flag of whether to print mpu information to stdout
         **metadata  : optional
             Metadata to store along with MPU object
-
-        Returns
-        -------
-        boto3_mpu_response
-        '''
-        client = self.connection.meta.client
-        mpu = client.create_multipart_upload(Bucket=self.bucket_name,
-                                             Key=object_name,
-                                             Metadata=metadata)
-
-        # get size
-        nbytes_total = get_fileobject_size(file_object)
-        file_object.seek(0)
-
-        # check if our buffersize is sensible
-        if nbytes_total < buffersize:
-            npotential = nbytes_total / float(MIN_MPU_SIZE)
-            if npotential > 10:
-                # 10MB sensible minimum for 50MB < x < 100MB (default)
-                buffersize = MIN_MPU_SIZE*2
-            else:
-                # this file is smaller than chunksize by a little
-                buffersize = MIN_MPU_SIZE
-
-        # figure out parts split
-        nparts = int(np.floor(nbytes_total / float(buffersize)))
-        last_part_offset = int(nbytes_total - nparts*buffersize)
-
-        # make sure we can upload
-        assert nbytes_total < MAX_MPU_SIZE # 5TB
-        assert buffersize >= MIN_MPU_SIZE  # 5MB
-        assert nparts < MAX_MPU_PARTS      # 10,000
-        assert nbytes_total > buffersize
-
-        mpu_info = dict(Parts=[])
-        if verbose:
-            print('MPU: %0.02fMB file in %i parts'%(nbytes_total/(2.**20), nparts))
-
-        for chunk_idx in range(nparts):
-            part_number = chunk_idx + 1
-            if part_number == nparts:
-                buffersize += last_part_offset
-            txt = (part_number, nparts, buffersize/(2.**20), nbytes_total/(2.**20))
-            if verbose:
-                print('Uploading %i/%i: %0.02fMB of %0.02fMB'%txt)
-
-            data_chunk = file_object.read(buffersize)
-            response = client.upload_part(Bucket=self.bucket_name,
-                                          Key=object_name,
-                                          UploadId=mpu['UploadId'],
-                                          PartNumber=part_number,
-                                          Body=data_chunk)
-
-            # store the part info
-            part_info = dict(PartNumber=part_number,
-                             ETag=response['ETag'])
-            mpu_info['Parts'].append(part_info)
-
-        # finalize
-        mpu_response = client.complete_multipart_upload(Bucket=self.bucket_name,
-                                                        Key=object_name,
-                                                        UploadId=mpu['UploadId'],
-                                                        MultipartUpload=mpu_info)
-        return mpu_response
+        """
+        return self.interface.upload_multipart(file_object, object_name, metadata)
 
     @clean_object_name
     def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, **metadata):
-        '''Upload a dict as a JSON using ``json.dumps``
+        """Upload a dict as a JSON using ``json.dumps``
 
         Parameters
         ----------
         object_name : str
-        ddict : dict
+        ddict : dict to upload
         metadata : dict, optional
-
-        Returns
-        -------
-        boto3_response
-        '''
+        """
         json_data = json.dumps(ddict)
-        obj = self.get_object(object_name)
-        return obj.put(Body=json_data, ACL=acl, Metadata=metadata)
+        return self.upload_object(object_name, StringIO(json_data), acl, **metadata)
 
     @clean_object_name
     def download_json(self, object_name):
-        '''Download a JSON object
+        """Download a JSON object
 
         Parameters
         ----------
@@ -579,26 +380,25 @@ class BasicInterface(InterfaceObject):
         -------
         json_data : dict
             Dictionary representation of JSON file
-        '''
+        """
         assert self.exists_object(object_name)
-        obj = self.get_object(object_name)
-        return json.loads(obj.get()['Body'].read().decode())
+        obj = self.download_object(object_name)
+        return json.loads(obj)
 
     @clean_object_name
     def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL):
-        '''Upload an object using pickle: ``pickle.dumps``
+        """Upload an object using pickle: ``pickle.dumps``
 
         Parameters
         ----------
         object_name : str
         data_object : object
-        '''
-        obj = self.get_object(object_name)
-        return obj.put(Body=pickle.dumps(data_object), ACL=acl)
+        """
+        return self.upload_object(object_name, StringIO(pickle.dumps(data_object)), acl)
 
     @clean_object_name
     def download_pickle(self, object_name):
-        '''Download a pickle object
+        """Download a pickle object
 
         Parameters
         ----------
@@ -607,15 +407,15 @@ class BasicInterface(InterfaceObject):
         Returns
         -------
         data_object : object
-        '''
+        """
         assert self.exists_object(object_name)
-        obj = self.get_object(object_name)
-        return pickle.loads(obj.get()['Body'].read())
-
+        obj = self.download_object(object_name)
+        return pickle.loads(obj)
 
 class ArrayInterface(BasicInterface):
-    '''Provides numpy.array concepts.
-    '''
+    """Provides numpy.array concepts.
+    """
+
     def __init__(self, *args, **kwargs):
         """
         Parameters
@@ -630,14 +430,14 @@ class ArrayInterface(BasicInterface):
 
         Returns
         -------
-        cci : cottoncandy interface object
+        cci : ccio
+            Cottoncandy interface object
         """
         super(ArrayInterface, self).__init__(*args, **kwargs)
 
     @clean_object_name
-    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL,
-                         **metadata):
-        '''Upload a np.ndarray using ``np.save``
+    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL, **metadata):
+        """Upload a np.ndarray using ``np.save``
 
         This method creates a copy of the array in memory
         before uploading since it relies on ``np.save`` to
@@ -657,15 +457,13 @@ class ArrayInterface(BasicInterface):
         See Also
         --------
         :func:`upload_raw_array` which is more efficient
-        '''
+        """
         # TODO: check array.dtype.hasobject
         arr_strio = StringIO()
         np.save(arr_strio, array)
         arr_strio.seek(0)
         try:
-            response =\
-             self.get_object(object_name).put(Body=arr_strio.read(),
-                                              ACL=acl, Metadata=metadata)
+            response = self.upload_object(object_name, arr_strio, acl, **metadata)
         except OverflowError:
             # TODO: replace with MAX_PUT_SIZE check
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
@@ -673,7 +471,7 @@ class ArrayInterface(BasicInterface):
 
     @clean_object_name
     def download_npy_array(self, object_name):
-        '''Download a np.ndarray uploaded using ``np.save`` with ``np.load``.
+        """Download a np.ndarray uploaded using ``np.save`` with ``np.load``.
 
         Parameters
         ----------
@@ -682,16 +480,14 @@ class ArrayInterface(BasicInterface):
         Returns
         -------
         array : np.ndarray
-        '''
+        """
         assert self.exists_object(object_name)
-        array_object = self.get_object(object_name)
-        array = np.load(StringIO(array_object.get()['Body'].read()))
+        array = np.load(StringIO(self.download_object(object_name)))
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, gzip=True,
-                         acl=DEFAULT_ACL, **metadata):
-        '''Upload a a binary representation of a np.ndarray
+    def upload_raw_array(self, object_name, array, gzip=True, acl=DEFAULT_ACL, **metadata):
+        """Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
         It does not have any overhead.
@@ -708,24 +504,23 @@ class ArrayInterface(BasicInterface):
 
         Notes
         -----
-        Uploads array ``dtype``, ``shape``, and ``gzip``
-        flags as metadata
-        '''
-        if array.nbytes >= 2**31:
+        This method also uploads the array ``dtype``, ``shape``, and ``gzip``
+        flag as metadata
+        """
+        if array.nbytes >= 2 ** 31:
             # avoid zlib issues
             gzip = False
 
         order = 'F' if array.flags.f_contiguous else 'C'
-        if not array.flags['%s_CONTIGUOUS'%order]:
-            print('array is a slice along a non-contiguous axis.'
-                  'copying the array '
-                  'before saving (will use extra memory)')
-            array = np.array(array, order=order)
+        if not array.flags['%s_CONTIGUOUS' % order]:
+            print ('array is a slice along a non-contiguous axis. copying the array '
+                   'before saving (will use extra memory)')
+            array = np.array(array, order = order)
 
-        meta = dict(dtype=array.dtype.str,
-                    shape=','.join(map(str, array.shape)),
-                    gzip=str(gzip),
-                    order=order)
+        meta = dict(dtype = array.dtype.str,
+                    shape = ','.join(map(str, array.shape)),
+                    gzip = str(gzip),
+                    order = order)
 
         # check for conflicts in metadata
         metadata_keys = []
@@ -737,26 +532,26 @@ class ArrayInterface(BasicInterface):
 
         if gzip:
             zipdata = StringIO()
-            gz = GzipFile(mode='wb', fileobj=zipdata)
+            gz = GzipFile(mode = 'wb', fileobj = zipdata)
             gz.write(array.data)
             gz.close()
             zipdata.seek(0)
-            fl = zipdata
-            data_nbytes = get_fileobject_size(fl)
+            filestream = zipdata
+            data_nbytes = get_fileobject_size(filestream)
         else:
             data_nbytes = array.nbytes
-            fl = StringIO(array.data)
+            filestream = StringIO(array.data)
 
         if data_nbytes > MPU_THRESHOLD:
-            response = self.mpu_fileobject(object_name, fl, **meta)
+            response = self.mpu_fileobject(object_name, filestream, metadata = meta)
         else:
-            response = self.get_object(object_name).put(Body=fl, ACL=acl, Metadata=meta)
+            response = self.upload_object(object_name, filestream, DEFAULT_ACL, **meta)
 
         return response
 
     @clean_object_name
     def download_raw_array(self, object_name, buffersize=2**16, **kwargs):
-        '''Download a binary np.ndarray and return an np.ndarray object
+        """Download a binary np.ndarray and return an np.ndarray object
         This method downloads an array without any disk or memory overhead.
 
         Parameters
@@ -770,32 +565,32 @@ class ArrayInterface(BasicInterface):
 
         Notes
         -----
-        The S3 object must have metadata containing: shape, dtype and gzip
-        flags. This is automatically handled by ``upload_raw_array``
-        '''
+        The object must have metadata containing: shape, dtype and a gzip
+        boolean flag. This is all automatically handled by ``upload_raw_array``.
+        """
         assert self.exists_object(object_name)
-        array_object = self.get_object(object_name)
+        arraystream = self.download_stream(object_name)
 
-        shape = array_object.metadata['shape']
-        shape = tuple(map(int, shape.split(','))) if shape else ()
-        dtype = np.dtype(array_object.metadata['dtype'])
-        order = array_object.metadata.get('order', 'C')
-        array = np.empty(shape, dtype=dtype, order=order)
+        shape = arraystream.metadata['shape']
+        shape = map(int, shape.split(',')) if shape else ()
+        dtype = np.dtype(arraystream.metadata['dtype'])
+        order = arraystream.metadata.get('order', 'C')
+        array = np.empty(shape, dtype = dtype, order = order)
 
-        body = array_object.get()['Body']
-        if 'gzip' in array_object.metadata and array_object.metadata['gzip'] == 'True':
+        body = arraystream.content
+        if 'gzip' in arraystream.metadata and arraystream.metadata['gzip'] == 'True':
             # gzipped!
             datastream = GzipInputStream(body)
         else:
             datastream = body
 
-        read_buffered(datastream, array, buffersize=buffersize)
+        read_buffered(datastream, array, buffersize = buffersize)
         return array
 
     @clean_object_name
     def dict2cloud(self, object_name, array_dict, acl=DEFAULT_ACL,
                    verbose=True, **metadata):
-        '''Upload an arbitrary depth dictionary containing arrays
+        """Upload an arbitrary depth dictionary containing arrays
 
         Parameters
         ----------
@@ -805,23 +600,23 @@ class ArrayInterface(BasicInterface):
             conceptualized as implementing an HDF-like group
         verbose : bool
             Whether to print object_name after completion
-        '''
-        for k,v in array_dict.items():
+        """
+        for k, v in array_dict.iteritems():
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
-                _ = self.dict2cloud(name, v, acl=acl, **metadata)
+                _ = self.dict2cloud(name, v, acl = acl, **metadata)
             elif isinstance(v, np.ndarray):
-                _ = self.upload_raw_array(name, v, acl=acl, **metadata)
-            else: # try converting to array
-                _ = self.upload_raw_array(name, np.asarray(v), acl=acl)
+                _ = self.upload_raw_array(name, v, acl = acl, **metadata)
+            else:  # try converting to array
+                _ = self.upload_raw_array(name, np.asarray(v), acl = acl)
 
         if verbose:
-            print('uploaded arrays in "%s"'%object_name)
+            print('uploaded arrays in "%s"' % object_name)
 
     @clean_object_name
     def cloud2dict(self, object_root, verbose=True, **metadata):
-        '''Download all the arrays of the object branch and return a dictionary.
+        """Download all the arrays of the object branch and return a dictionary.
         This is the complement to ``dict2cloud``
 
         Parameters
@@ -835,9 +630,11 @@ class ArrayInterface(BasicInterface):
         -------
         datadict  : dict
             An arbitrary depth dictionary.
-        '''
+        """
+
+        # TODO: gdrive compatibility?
         from cottoncandy.browser import S3Directory
-        ob = S3Directory(object_root, interface=self)
+        ob = S3Directory(object_root, interface = self)
 
         datadict = {}
         subdirs = ob._ls()
@@ -849,20 +646,20 @@ class ArrayInterface(BasicInterface):
                 try:
                     arr = self.download_raw_array(path)
                 except KeyError as e:
-                    print('could not download "%s: missing %s from metadata"'%(path, e))
+                    print('could not download "%s: missing %s from metadata"' % (path, e))
                     arr = None
                 datadict[subdir] = arr
             else:
                 datadict[subdir] = self.cloud2dict(path)
 
         if verbose:
-            print('downloaded arrays in "%s"'%object_root)
+            print('downloaded arrays in "%s"' % object_root)
 
         return datadict
 
     @clean_object_name
     def cloud2dataset(self, object_root, **metadata):
-        '''Get a dataset representation of the object branch.
+        """Get a dataset representation of the object branch.
 
         Parameters
         ----------
@@ -874,13 +671,13 @@ class ArrayInterface(BasicInterface):
         cc_dataset_object  : cottoncandy.BrowserObject
             This can be conceptualized as implementing an h5py/pytables
             object with ``load()`` and ``keys()`` methods.
-        '''
+        """
         from cottoncandy.browser import S3Directory
-        return S3Directory(object_root, interface=self)
+        return S3Directory(object_root, interface = self)
 
     @clean_object_name
     def upload_dask_array(self, object_name, arr, axis=-1, buffersize=DASK_CHUNKSIZE, **metakwargs):
-        '''Upload an array in chunks and store the metadata to reconstruct
+        """Upload an array in chunks and store the metadata to reconstruct
         the complete matrix with ``dask``.
 
         Parameters
@@ -908,22 +705,22 @@ class ArrayInterface(BasicInterface):
         * my_array_name/pt0000
         * my_array_name/pt0001
         * my_array_name/metadata.json
-        '''
-        metadata = dict(shape=arr.shape,
-                        dtype=arr.dtype.str,
-                        dask=[],
-                        chunk_sizes=[],
+        """
+        metadata = dict(shape = arr.shape,
+                        dtype = arr.dtype.str,
+                        dask = [],
+                        chunk_sizes = [],
                         )
 
-        generator = generate_ndarray_chunks(arr, axis=axis, buffersize=buffersize)
+        generator = generate_ndarray_chunks(arr, axis = axis, buffersize = buffersize)
         total_upload = 0.0
         for idx, (chunk_coord, chunk_arr) in enumerate(generator):
             chunk_arr = chunk_arr.copy()
             total_upload += chunk_arr.nbytes
-            txt = (idx+1, total_upload/MB, arr.nbytes/np.float(MB))
-            print('uploading %i: %0.02fMB/%0.02fMB'%txt)
+            txt = (idx + 1, total_upload / MB, arr.nbytes / np.float(MB))
+            print('uploading %i: %0.02fMB/%0.02fMB' % txt)
 
-            part_name = self.pathjoin(object_name, 'pt%04i'%idx)
+            part_name = self.pathjoin(object_name, 'pt%04i' % idx)
             metadata['dask'].append((chunk_coord, part_name))
             metadata['chunk_sizes'].append(chunk_arr.shape)
             self.upload_raw_array(part_name, chunk_arr)
@@ -936,7 +733,7 @@ class ArrayInterface(BasicInterface):
                 if chunk_idx not in dimension_sizes[dim]:
                     dimension_sizes[dim][chunk_idx] = metadata['chunk_sizes'][sample_idx][dim]
 
-        chunks = [[value for k,value in sorted(sizes.items())] for sizes in dimension_sizes]
+        chunks = [[value for k, value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
 
@@ -967,10 +764,10 @@ class ArrayInterface(BasicInterface):
         shape = metadata['shape']
         dtype = np.dtype(metadata['dtype'])
 
-        dask = {(dask_name,)+tuple(shape): (self.download_raw_array, part_name) \
+        dask = {(dask_name,) + tuple(shape): (self.download_raw_array, part_name) \
                 for shape, part_name in metadata['dask']}
 
-        return da.Array(dask, dask_name, chunks, shape=shape, dtype=dtype)
+        return da.Array(dask, dask_name, chunks, shape = shape, dtype = dtype)
 
     @clean_object_name
     def upload_sparse_array(self, object_name, arr):
@@ -999,7 +796,7 @@ class ArrayInterface(BasicInterface):
         elif isinstance(arr, dia_matrix):
             attrs = ['data', 'offsets']
             arrtype = 'dia'
-        else: # dok and lil: convert to csr and save
+        else:  # dok and lil: convert to csr and save
             # TODO: warn user here that matrix type will be changed?
             arr = arr.tocsr()
             attrs = ['data', 'indices', 'indptr']
@@ -1010,7 +807,7 @@ class ArrayInterface(BasicInterface):
             self.upload_raw_array(self.pathjoin(object_name, attr), getattr(arr, attr))
 
         # Upload metadata
-        metadata = dict(type=arrtype, attrs=attrs, shape=arr.shape)
+        metadata = dict(type = arrtype, attrs = attrs, shape = arr.shape)
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata)
 
     @clean_object_name
@@ -1039,24 +836,26 @@ class ArrayInterface(BasicInterface):
 
         if arrtype == 'csr':
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
-                             shape=shape)
+                             shape = shape)
         elif arrtype == 'coo':
             arr = coo_matrix((d['data'], (d['row'], d['col'])),
-                             shape=shape)
+                             shape = shape)
         elif arrtype == 'csc':
             arr = csc_matrix((d['data'], d['indices'], d['indptr']),
-                             shape=shape)
+                             shape = shape)
         elif arrtype == 'bsr':
             arr = bsr_matrix((d['data'], d['indices'], d['indptr']),
-                             shape=shape)
+                             shape = shape)
         elif arrtype == 'dia':
-            arr = dia_matrix((d['data'], d['offsets']), shape=shape)
+            arr = dia_matrix((d['data'], d['offsets']), shape = shape)
 
         return arr
 
+
 class FileSystemInterface(BasicInterface):
-    '''Emulate some file system functionality.
-    '''
+    """Emulate some file system functionality.
+    """
+
     def __init__(self, *args, **kwargs):
         """
         Parameters
@@ -1071,12 +870,13 @@ class FileSystemInterface(BasicInterface):
 
         Returns
         -------
-        cci : cottoncandy interface object
+        cci : ccio
+            Cottoncandy interface object
         """
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
     def lsdir(self, path='/', limit=10**3):
-        '''List the contents of a "directory"
+        """List the contents of a directory
 
         Parameters
         ----------
@@ -1086,33 +886,12 @@ class FileSystemInterface(BasicInterface):
         -------
         matches : list
             The children of the path.
-        '''
-        if has_real_magic(path):
-            raise ValueError('Use ``ls()`` when using search patterns: "%s"'%path)
-
-        if (path != '') and (path != '/'):
-            path = remove_root(path)
-        path = remove_trivial_magic(path)
-        path = mk_aws_path(path)
-
-        response = self.get_bucket().meta.client.list_objects(Bucket=self.bucket_name,
-                                                              Delimiter=SEPARATOR,
-                                                              Prefix=path,
-                                                              MaxKeys=limit)
-        object_names = []
-        if 'CommonPrefixes' in response:
-            # we got common paths
-            object_list = [list(t.values())
-                           for t in response['CommonPrefixes']]
-            object_names += reduce(lambda x,y: x+y, object_list)
-        if 'Contents' in response:
-            # we got objects on the leaf nodes
-            object_names += unquote_names([t['Key'] for t in response['Contents']])
-        return list(map(os.path.normpath, object_names))
+        """
+        return self.interface.list_directory(path, limit)
 
     @clean_object_name
     def ls(self, pattern, page_size=10**3, limit=10**3, verbose=False):
-        '''File-system like search for S3 objects
+        """File-system like search for S3 objects
 
         Parameters
         ----------
@@ -1131,7 +910,7 @@ class FileSystemInterface(BasicInterface):
         -----
         Increase ``page_size`` and ``limit`` if you have a lot of objects
         otherwise, the search might not return all matching objects in store.
-        '''
+        """
         pattern = remove_trivial_magic(pattern)
         pattern = os.path.normpath(pattern)
 
@@ -1143,11 +922,11 @@ class FileSystemInterface(BasicInterface):
 
         # get objects that match common prefix
         if not has_real_magic(pattern):
-            object_names = self.lsdir(prefix, limit=limit)
+            object_names = self.lsdir(prefix, limit = limit)
         else:
-            object_list = self.get_bucket_objects(filter=dict(Prefix=prefix),
-                                                  page_size=page_size,
-                                                  limit=limit)
+            object_list = self.get_objects(filter = dict(Prefix = prefix),
+                                                  page_size = page_size,
+                                                  limit = limit)
             object_names = objects2names(object_list)
 
         # remove trailing '/'
@@ -1156,7 +935,7 @@ class FileSystemInterface(BasicInterface):
         if has_real_magic(pattern):
             # get the unique sub-directories
             depth = len(pattern.split(SEPARATOR))
-            object_names = {SEPARATOR.join(t.split(SEPARATOR)[:depth]):1 for t in object_names}.keys()
+            object_names = {SEPARATOR.join(t.split(SEPARATOR)[:depth]): 1 for t in object_names}.keys()
             # filter the list with glob pattern
             object_names = fnmatch.filter(object_names, pattern)
         if verbose:
@@ -1165,7 +944,7 @@ class FileSystemInterface(BasicInterface):
 
     @clean_object_name
     def glob(self, pattern, **kwargs):
-        """Return a list of object names in the bucket
+        """Return a list of object names in the cloud storage
         that match the glob pattern.
 
         Parameters
@@ -1212,26 +991,69 @@ class FileSystemInterface(BasicInterface):
         If more than 10^6 objects, provide ``page_size=10**7`` kwarg.
         """
         # determine if we're globbing
-        magic_check = re.compile('[*?[]')
-        def has_magic(s):
-            return magic_check.search(s) is not None
 
-        # find the common prefix
-        prefix = magic_check.split(pattern)[0] \
-                 if has_magic(pattern) else pattern
+        if isinstance(self.interface, S3Client):
+            return self.glob_s3(pattern, **kwargs)
+        else:
+            return self.glob_google_drive(pattern)
+
+    def glob_google_drive(self, pattern):
+        """Globbing on google drive
+
+        Parameters
+        ----------
+        pattern
+
+        Returns
+        -------
+
+        """
+        matches = []
+        if '/' not in pattern:	# end tree, list all objects
+            return self.interface.list_objects(True)
+
+        nextFolderExp = r'^/?[^/]*/'
+        nextFolder = re.match(nextFolderExp, pattern).group(0)
+        pattern = re.sub(nextFolderExp, '', pattern)
+
+        if '*' not in nextFolder:	# no wildcard, simply cd into it
+            self.interface.cd(nextFolder)
+        else:						# find all wildcard matches and recursively glob them
+            files = self.interface.list_objects()
+            for f in files:
+                matches.append(self.glob_google_drive())
+
+        # TODO: finish this
+
+        return
+
+
+    def glob_s3(self, pattern, **kwargs):
+        """Globbing on S3
+
+        Parameters
+        ----------
+        pattern
+        kwargs
+
+        Returns
+        -------
+
+        """
+        prefix = MAGIC_CHECK.split(pattern)[0] if has_magic(pattern) else pattern
 
         page_size = kwargs.get('page_size', 1000000)
         limit = kwargs.get('limit', None)
 
-        object_list = self.get_bucket_objects(filter=dict(Prefix=prefix),
-                                              page_size=page_size,
-                                              limit=limit)
+        object_list = self.get_objects(filter = dict(Prefix = prefix),
+                                       page_size = page_size,
+                                       limit = limit)
 
-        mapper = {unquote(obj.key):obj for obj in object_list}
+        mapper = {unquote(obj.key): obj for obj in object_list}
         object_names = mapper.keys()
 
-        matches = fnmatch.filter(object_names, pattern)\
-                  if has_magic(pattern) else object_names
+        matches = fnmatch.filter(object_names, pattern) \
+            if has_magic(pattern) else object_names
         matches = sorted(matches)
 
         if kwargs.get('verbose', False):
@@ -1239,29 +1061,68 @@ class FileSystemInterface(BasicInterface):
             objects_found = [mapper[match] for match in matches]
             if len(objects_found):
                 print_objects(objects_found)
-            print('Found %i objects matching "%s"'%(len(objects_found), pattern))
+            print('Found %i objects matching "%s"' % (len(objects_found), pattern))
         return matches
 
     @clean_object_name
-    def search(self, pattern, **kwargs):
-        '''Print the objects matching the glob pattern
+    def download_directory(self, directory, disk_name):
+        """
+        Download an entire directory
+        NOTE: currently only tested on s3
 
-        See ``glob`` documentation for details.
-        '''
+        Parameters
+        ----------
+        self
+        directory : str
+            directory on s3 to download
+        disk_name :
+            name of directory on disk to download to
+
+        Returns
+        -------
+
+        """
+        if has_real_magic(directory):
+            raise NotImplementedError('Wildcards not implemented')
+
+        if (directory != '') and (directory != '/'):
+            directory = remove_root(directory)
+        directory = remove_trivial_magic(directory)
+        directory = mk_aws_path(directory)
+
+        if not os.path.exists(disk_name):
+            os.mkdir(disk_name)
+
+        files = self.glob(directory + '*')
+        for f in files:
+            if f[-1] == '/':
+                continue
+            subpath = re.sub(directory, '', f)
+            path = os.path.join(disk_name, subpath)
+            subfolder = re.match('.*\/', path).group(0)
+            if not os.path.exists(subfolder):
+                os.makedirs(subfolder)
+            self.download_to_file(f, path)
+
+    @clean_object_name
+    def search(self, pattern, **kwargs):
+        """Print the objects matching the glob pattern
+
+        See ``glob`` documentation for details
+        """
         matches = self.glob(pattern, verbose=True, **kwargs)
 
-
     def get_browser(self):
-        '''Return an object which can be tab-completed
+        """Return an object which can be tab-completed
         to browse the contents of the bucket as if it were a file-system
 
         See documentation for ``cottoncandy.get_browser``
-        '''
-        return cottoncandy.browser.S3Directory('', interface=self)
+        """
+        return cottoncandy.browser.S3Directory('', interface = self)
 
     def cp(self, source_name, dest_name,
            source_bucket=None, dest_bucket=None, overwrite=False):
-        '''Copy an object
+        """Copy an object
 
         Parameters
         ----------
@@ -1277,25 +1138,13 @@ class FileSystemInterface(BasicInterface):
             Defaults to ``source_bucket``
         overwrite : bool (defaults to False)
             Whether to overwrite the `dest_name` object if it already exists
-        '''
+        """
         # TODO: support directories
-        source_bucket = self._get_bucket_name(source_bucket)
-        dest_bucket = source_bucket if (dest_bucket is None) else dest_bucket
-        dest_bucket = self._get_bucket_name(dest_bucket)
-
-        assert self.exists_object(source_name, bucket_name=source_bucket)
-        ob_new = self.get_object(dest_name, bucket_name=dest_bucket)
-
-        if self.exists_object(ob_new.key, bucket_name=dest_bucket):
-            assert overwrite is True
-
-        fpath = self.pathjoin(source_bucket, source_name)
-        ob_new.copy_from(CopySource=fpath)
-        return ob_new
+        return self.interface.copy(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
     def mv(self, source_name, dest_name,
            source_bucket=None, dest_bucket=None, overwrite=False):
-        '''Move an object (make copy and delete old object)
+        """Move an object (make copy and delete old object)
 
         Parameters
         ----------
@@ -1311,17 +1160,11 @@ class FileSystemInterface(BasicInterface):
             Defaults to ``source_bucket``
         overwrite : bool (defaults to False)
             Whether to overwrite the `dest_name` object if it already exists.
-        '''
+        """
         # TODO: Support directories
-        new_ob = self.cp(source_name, dest_name,
-                         source_bucket=source_bucket,
-                         dest_bucket=dest_bucket,
-                         overwrite=overwrite)
-        old_ob = self.get_object(source_name, bucket_name=source_bucket)
-        old_ob.delete()
-        return new_ob
+        return self.interface.move(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
-    def rm(self, object_name, recursive=False):
+    def rm(self, object_name, recursive=False, delete=True):
         """Delete an object, or a subtree ('path/to/stuff').
 
         Parameters
@@ -1329,9 +1172,11 @@ class FileSystemInterface(BasicInterface):
         object_name : str
             The name of the object to delete. It can also
             be a subtree
-        recursive : str
+        recursive : bool
             When deleting a subtree, set ``recursive=True``. This is
             similar in behavior to 'rm -r /path/to/directory'.
+        delete : bool
+            When in google drive, actually delete the file or only trash it?
 
         Example
         -------
@@ -1343,22 +1188,27 @@ class FileSystemInterface(BasicInterface):
         >>> cci.rm('data/experiment', recursive=True)
         deleting 15 objects...
         """
-        if self.exists_object(object_name):
-            return self.get_object(object_name).delete()
 
-        has_objects = len(self.ls(object_name))>0
+        if isinstance(self.interface, GDriveClient):
+            return self.interface.delete(object_name, recursive, delete)
+
+        # not moving this to the basic S3Client because it depends on glob
+        if self.exists_object(object_name):
+            return self.interface.get_s3_object(object_name).delete()
+
+        has_objects = len(self.ls(object_name)) > 0
         if has_objects:
             if recursive:
                 all_objects = self.glob(object_name)
-                print('deleting %i objects...'%len(all_objects))
+                print('deleting %i objects...' % len(all_objects))
                 for obname in self.glob(object_name):
                     _ = self.get_object(obname).delete()
                 return
 
         msg = "cannot remove '%s': use `recursive` to remove branch" \
-              if has_objects else \
-              "nothing found under '%s"
-        print(msg%object_name)
+            if has_objects else \
+            "nothing found under '%s"
+        print(msg % object_name)
 
     def get_object_owner(self, object_name):
         assert self.exists_object(object_name)
@@ -1378,11 +1228,12 @@ class FileSystemInterface(BasicInterface):
 class DefaultInterface(FileSystemInterface,
                        ArrayInterface,
                        BasicInterface):
-    '''Default cottoncandy interface to S3
+    """Default cottoncandy interface to the cloud
 
     This includes numpy.array and file-system-like
     concepts for easy data I/O and bucket/object exploration.
-    '''
+    """
+
     def __init__(self, *args, **kwargs):
         """
         Parameters
@@ -1394,9 +1245,76 @@ class DefaultInterface(FileSystemInterface,
             The URL for the S3 gateway
         force_bucket_creation : bool
             Create requested bucket if it doesn't exist
+        backend : 's3'|'gdrive'
+            which backend to hook on to
 
         Returns
         -------
         cci  : cottoncandy.InterfaceObject
         """
         super(DefaultInterface, self).__init__(*args, **kwargs)
+
+class EncryptedInterface(DefaultInterface):
+    """
+    Interface that transparently encrypts everything uploaded to the cloud
+    """
+    def __init__(self, bucket, access, secret, url, encryption='AES', key=None, *args, **kwargs):
+        """
+
+        Parameters
+        ----------
+        bucket
+        access
+        secret
+        url
+        encryption : 'AES' | 'RSA'
+        key : str
+            if AES, key; if RSA, filename of .pem format key
+        backend : 's3'|'gdrive'
+            which backend to hook on to
+        args
+        kwargs
+        """
+        super(EncryptedInterface, self).__init__(bucket_name = bucket, ACCESS_KEY = access, SECRET_KEY = secret,
+                                                 url = url, *args, **kwargs)
+
+        if encryption not in ['AES', 'RSA']:
+            raise ValueError('Encryption type {} not recognised. Currently AES and RSA are available'.format(encryption))
+        self.encryption = encryption
+        if encryption == 'AES':
+            self.encryptor = AESEncryption(key)
+        else:
+            self.encryptor = RSAAESEncryption(key)
+
+    # File I/O methods that encrypt object streams before passing them to the backend
+    def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
+
+        if self.encryption == 'AES':
+            encrypted_stream = self.encryptor.encrypt_stream(body)
+            return self.interface.upload_stream(encrypted_stream, object_name, metadata, acl)
+        else:
+            encrypted_stream, encrypted_key = self.encryptor.encrypt_stream(body)
+            metadata['key'] = b64encode(encrypted_key)
+            return self.interface.upload_stream(encrypted_stream, object_name, metadata, acl)
+
+    def download_stream(self, object_name):
+
+        stream = self.interface.download_stream(object_name)
+        if self.encryption == 'AES':
+            stream.content = self.encryptor.decrypt_stream(stream.content)
+        else:
+            stream.content = self.encryptor.decrypt_stream(stream.content, b64decode(stream.metadata['key']))
+        return stream
+
+    def upload_from_file(self, local_file_name, object_name=None, ExtraArgs=dict(ACL = DEFAULT_ACL)):
+
+        if not object_name:
+            object_name = local_file_name
+        with open(local_file_name) as f:
+            return self.upload_object(object_name, f, ExtraArgs['ACL'])
+
+    def download_to_file(self, object_name, file_name):
+
+        with open(file_name, 'wb') as local_file:
+            stream = self.download_stream(object_name)
+            local_file.write(stream.content.read())
