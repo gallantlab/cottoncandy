@@ -13,10 +13,10 @@ import cottoncandy as cc
 prefix = 'testcc_py%s'%sys.version[:6]
 object_name = os.path.join(prefix, 'test')
 
-bucket_name = os.environ['DL_BUCKET_NAME']
-AK = os.environ['DL_ACCESS_KEY']
-SK = os.environ['DL_SECRET_KEY']
-URL = os.environ['DL_URL']
+bucket_name = cc.default_bucket
+AK = cc.ACCESS_KEY
+SK = cc.SECRET_KEY
+URL = cc.ENDPOINT_URL
 
 cci = cc.get_interface(bucket_name,
                        ACCESS_KEY=AK,

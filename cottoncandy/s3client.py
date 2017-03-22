@@ -354,7 +354,6 @@ class S3Client(CCBackEnd):
         assert os.path.exists(file_name)
         if file_name is None:
             file_name = os.path.abspath(file_name)
-        file_name = remove_root(file_name)
         s3_object = self.get_s3_object(cloud_name)
         return s3_object.upload_file(file_name, ExtraArgs = dict(ACL = acl))
 
