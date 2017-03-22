@@ -1,3 +1,6 @@
+'''
+'''
+
 from __future__ import absolute_import
 import os
 from base64 import b64decode
@@ -33,25 +36,21 @@ def get_interface(bucket_name=default_bucket,
     Parameters
     ----------
     bucket_name : str
-        Bucket to use
     ACCESS_KEY : str
-        The S3 access key
     SECRET_KEY : str
-        The S3 secret key
-    url : str
+    endpoint_url : str
         The URL for the S3 gateway
     backend : 's3'|'gdrive'
         What backend to hook on to
 
     Returns
     -------
-    cci  : cottoncandy.InterfaceObject
-        Cottoncandy interface object
-    '''
-    from .interfaces import DefaultInterface
+    cci : cottoncandy.InterfaceObject
+    """
+    from cottoncandy.interfaces import DefaultInterface
 
     if (ACCESS_KEY is False) and (SECRET_KEY is False):
-        from .utils import get_keys
+        from cottoncandy.utils import get_keys
         ACCESS_KEY, SECRET_KEY = get_keys()
 
     if backend == 'gdrive':
@@ -113,61 +112,37 @@ def get_browser(bucket_name=default_bucket,
                 ACCESS_KEY=ACCESS_KEY,
                 SECRET_KEY=SECRET_KEY,
                 endpoint_url=ENDPOINT_URL):
-    """Get an object that allows you to tab-complete your
+    """Browser object that allows you to tab-complete your
     way through your objects
 
     Parameters
     ----------
     bucket_name : str
-        Bucket to use
     ACCESS_KEY : str
-        The S3 access key
     SECRET_KEY : str
-        The S3 secret key
     endpoint_url : str
         The URL for the S3 gateway
 
     Returns
     -------
-    ccb  : cottoncandy.BrowserObject
-        Cottoncandy browser object
+    ccb : cottoncandy.BrowserObject
 
     Example
     -------
-    >>> browser = cloud.get_browser('anunez_raid')
-    >>> browser.auto.k<TAB-COMPLETION>
-    browser.auto.k1
-    browser.auto.k8
-
-    >>> browser.auto.k8.anunez.proj.deepnet.caffenet_<TAB-COMPLETION>
-    browser.auto.k8.anunez.proj.deepnet.caffenet_ANfs_performance_HDF
-    browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF
-
-    >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF
-    <h5py-like-group @anunez_raid bucket: caffenet_BGfs_performance.hdf (6 keys)>
-
-    >>> # We can also explore the contents of the HDF-like object
-    >>> browser.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.<TAB-COMPLETION>
-    browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc6
-    browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc7
-    browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8
-
-    >>> # let's look at one
-    >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8
-    <h5py-like-dataset @anunez_raid bucket: caffenet_conv3 [shape=(73221)]>
-
-    >>> # we can download the data as an array
-    >>> arr = browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8.load()
-    >>> arr.shape
-    (73221,)
-
-    >>> # we can also download the object. useful when no class for object exists
-    >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8()
-    s3.Object(bucket_name='anunez_raid', key='auto/k8/anunez/proj/deepnet/caffenet_BGfs_performance.hdf/caffenet_fc8')
+    >>> browser = cc.get_browser('my_bucket',
+                                 ACCESS_KEY='FAKEACCESSKEYTEXT',
+                                 SECRET_KEY='FAKESECRETKEYTEXT',
+                                 endpoint_url='https://s3.amazonaws.com')
+    >>> browser.sweet_project.sub<TAB>
+    browser.sweet_project.sub01_awesome_analysis_DOT_grp
+    browser.sweet_project.sub02_awesome_analysis_DOT_grp
+    >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp
+    <cottoncandy-group <bucket:my_bucket_name> (sub01_awesome_analysis.grp: 3 keys)>
+    >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01
+    <cottoncandy-dataset <bucket:my_bucket_name [1.00MB:shape=(10000)]>
     """
-    from .interfaces import DefaultInterface
-    from .browser import S3Directory
-
+    from cottoncandy.interfaces import DefaultInterface
+    from cottoncandy.browser import S3Directory
 
     if (ACCESS_KEY is False) and (SECRET_KEY is False):
         from .utils import get_keys

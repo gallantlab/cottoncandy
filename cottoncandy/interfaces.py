@@ -10,13 +10,18 @@ try:
 except ImportError:
     from urllib.parse import unquote
 
+try:
+    reduce
+except NameError:
+    from functools import reduce
+
 import fnmatch
 from gzip import GzipFile
 
 try:
     from cStringIO import StringIO
 except ImportError:
-    from io import StringIO
+    from io import BytesIO as StringIO
 
 from base64 import b64decode, b64encode
 
@@ -56,7 +61,6 @@ class BasicInterface(InterfaceObject):
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
             The S3 access key, or client secrets json file
         SECRET_KEY : str
@@ -130,6 +134,16 @@ class BasicInterface(InterfaceObject):
         """Create a new bucket"""
         self.interface.create_bucket(bucket_name, acl)
 
+    def rm_bucket(self, bucket_name):
+        '''Remove an empty bucket. Throws an exception when bucket is not empty.
+        '''
+        self.set_bucket(bucket_name)
+        bucket = self.get_bucket()
+        try:
+            bucket.delete()
+        except botocore.exceptions.ClientError as e:
+            print("Bucket not empty. To delete, first empty the bucket.")
+
     def set_bucket(self, bucket_name):
         """Bucket to use"""
         self.interface.set_current_bucket(bucket_name)
@@ -139,7 +153,8 @@ class BasicInterface(InterfaceObject):
         return self.interface.get_bucket()
 
     def get_bucket_objects(self, **kwargs):
-        """Get list of objects from the bucket
+        """Get list of objects from the bucket.
+
         This is a wrapper to ``self.get_bucket().bucket.objects``
 
         Parameters
@@ -151,9 +166,13 @@ class BasicInterface(InterfaceObject):
         filter : dict
             A dictionary with key 'Prefix', specifying a prefix
             string.  Only return objects matching this string.
-            Defaults to '/', all objects.
+            Defaults to '/' (i.e. all objects).
         kwargs : optional
             Dictionary of {method:value} for ``bucket.objects``
+
+        Returns
+        -------
+        objects_list : list (boto3 objects)
 
         Notes
         -----
@@ -182,9 +201,9 @@ class BasicInterface(InterfaceObject):
 
         Parameters
         ----------
-        limit : int, 1000
+        limit : int, 10^6
             Maximum number of items to return
-        page_size : int, 1000
+        page_size : int, 10^6
             The page size for pagination
 
         Returns
@@ -271,11 +290,13 @@ class BasicInterface(InterfaceObject):
 
         Parameters
         ----------
-        flname : str
+        file_name : str
             Absolute path of file to upload
         object_name : str, None
             Name of uploaded object. If None, use
             the full file name as the object name.
+        ExtraArgs : dict
+            Defaults ``dict(ACL=DEFAULT_ACL)``
 
         Returns
         -------
@@ -314,7 +335,7 @@ class BasicInterface(InterfaceObject):
     @clean_object_name
     def mpu_fileobject(self, object_name, file_object,
                        buffersize=MPU_CHUNKSIZE, verbose=True, **metadata):
-        """Multi-part upload for a python file-object.
+        """Multi-part upload for a file-object.
 
         This automatically creates a multipart upload of an object.
         Useful for large objects that are loaded in memory. This avoids
@@ -324,10 +345,9 @@ class BasicInterface(InterfaceObject):
         ----------
         object_name : str
         file_object :
-            file-like python object (e.g. StringIO, file, etc)
-        buffersize  : int
+            file-like object (e.g. StringIO, file, etc)
+        buffersize  : int, (defaults to 100MB)
             Byte size of the individual parts to create.
-            Defaults to 100MB
         verbose     : bool
             verbosity flag of whether to print mpu information to stdout
         **metadata  : optional
@@ -392,7 +412,6 @@ class BasicInterface(InterfaceObject):
         obj = self.download_object(object_name)
         return pickle.loads(obj)
 
-
 class ArrayInterface(BasicInterface):
     """Provides numpy.array concepts.
     """
@@ -402,13 +421,12 @@ class ArrayInterface(BasicInterface):
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
 
         Returns
         -------
@@ -429,6 +447,8 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : numpy.ndarray
+        acl : ACL for this object
+        **metadata : extra kwargs are uploaded to object metadata
 
         Returns
         -------
@@ -441,10 +461,11 @@ class ArrayInterface(BasicInterface):
         # TODO: check array.dtype.hasobject
         arr_strio = StringIO()
         np.save(arr_strio, array)
-        arr_strio.reset()
+        arr_strio.seek(0)
         try:
             response = self.upload_object(object_name, arr_strio, acl, **metadata)
         except OverflowError:
+            # TODO: replace with MAX_PUT_SIZE check
             response = self.mpu_fileobject(object_name, arr_strio, **metadata)
         return response
 
@@ -475,12 +496,11 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : np.ndarray
-        gzip  : bool, optional
-            Whether to gzip the array
+        gzip  : bool (defaults True)
+            Whether to gzip array content
         acl : str
-            "access control list", specifies permissions for s3 data.
-            default is "authenticated-read" (authenticated users can read)
-        metadata : dict, optional
+            ACL for the object
+        **metadata : optional
 
         Notes
         -----
@@ -503,7 +523,11 @@ class ArrayInterface(BasicInterface):
                     order = order)
 
         # check for conflicts in metadata
-        assert not any([key in meta for key in metadata.iterkeys()])
+        metadata_keys = []
+        for k in metadata.keys():
+            metadata_keys.append(k)
+
+        assert not any(metadata_keys)
         meta.update(metadata)
 
         if gzip:
@@ -533,7 +557,7 @@ class ArrayInterface(BasicInterface):
         Parameters
         ----------
         object_name : str
-        buffersize  : optional
+        buffersize  : optional (defaults 2^16)
 
         Returns
         -------
@@ -837,13 +861,12 @@ class FileSystemInterface(BasicInterface):
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
 
         Returns
         -------
@@ -852,7 +875,18 @@ class FileSystemInterface(BasicInterface):
         """
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
-    def lsdir(self, path = '/', limit = 10 ** 3):
+    def lsdir(self, path='/', limit=10**3):
+        """List the contents of a directory
+
+        Parameters
+        ----------
+        path : str (default: "/")
+
+        Returns
+        -------
+        matches : list
+            The children of the path.
+        """
         return self.interface.list_directory(path, limit)
 
     @clean_object_name
@@ -906,11 +940,11 @@ class FileSystemInterface(BasicInterface):
             object_names = fnmatch.filter(object_names, pattern)
         if verbose:
             print('\n'.join(sorted(object_names)))
-        return object_names
+        return list(object_names)
 
     @clean_object_name
     def glob(self, pattern, **kwargs):
-        """Return a list of object names in the bucket
+        """Return a list of object names in the cloud storage
         that match the glob pattern.
 
         Parameters
@@ -1034,6 +1068,7 @@ class FileSystemInterface(BasicInterface):
     def download_directory(self, directory, disk_name):
         """
         Download an entire directory
+        NOTE: currently only tested on s3
 
         Parameters
         ----------
@@ -1075,7 +1110,7 @@ class FileSystemInterface(BasicInterface):
 
         See ``glob`` documentation for details
         """
-        matches = self.glob(pattern, verbose = True, **kwargs)
+        matches = self.glob(pattern, verbose=True, **kwargs)
 
     def get_browser(self):
         """Return an object which can be tab-completed
@@ -1204,13 +1239,18 @@ class DefaultInterface(FileSystemInterface,
         Parameters
         ----------
         bucket_name : str
-            Bucket to use
         ACCESS_KEY : str
-            The S3 access key
         SECRET_KEY : str
-            The S3 secret key
-        url : str
+        endpoint_url : str
             The URL for the S3 gateway
+        force_bucket_creation : bool
+            Create requested bucket if it doesn't exist
+        backend : 's3'|'gdrive'
+            which backend to hook on to
+
+        Returns
+        -------
+        cci  : cottoncandy.InterfaceObject
         """
         super(DefaultInterface, self).__init__(*args, **kwargs)
 
@@ -1230,6 +1270,8 @@ class EncryptedInterface(DefaultInterface):
         encryption : 'AES' | 'RSA'
         key : str
             if AES, key; if RSA, filename of .pem format key
+        backend : 's3'|'gdrive'
+            which backend to hook on to
         args
         kwargs
         """
