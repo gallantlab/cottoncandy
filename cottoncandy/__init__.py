@@ -31,7 +31,7 @@ def get_interface(bucket_name=default_bucket,
                   force_bucket_creation=force_bucket_creation,
                   verbose=True,
                   backend='s3'):
-    '''Return an interface to the cloud.
+    """Return an interface to the cloud.
 
     Parameters
     ----------
