@@ -26,8 +26,7 @@ class S3Client(CCBackEnd):
 
     @staticmethod
     def connect(ACCESS_KEY, SECRET_KEY, url):
-        """
-        Connect to S3 using boto
+        """Connect to S3 using boto
 
         Parameters
         ----------
@@ -47,8 +46,7 @@ class S3Client(CCBackEnd):
         return s3
 
     def __init__(self, bucket, access_key, secret_key, s3url, force_bucket_creation=False):
-        """
-        Constructor
+        """Constructor
 
         Parameters
         ----------
@@ -97,8 +95,7 @@ class S3Client(CCBackEnd):
 
     @clean_object_name
     def check_file_exists(self, file_name, bucket_name=None):
-        """
-        Check whether object exists in bucket
+        """Check whether object exists in bucket
 
         Parameters
         ----------
@@ -121,8 +118,7 @@ class S3Client(CCBackEnd):
         return exists
 
     def check_bucket_exists(self, bucket_name):
-        """
-        Check whether the bucket exists
+        """Check whether the bucket exists
 
         Parameters
         ----------
@@ -144,8 +140,7 @@ class S3Client(CCBackEnd):
         return exists
 
     def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
-        """
-        Create a new bucket
+        """Create a new bucket
 
         Parameters
         ----------
@@ -164,8 +159,7 @@ class S3Client(CCBackEnd):
         self.set_current_bucket(bucket_name)
 
     def set_current_bucket(self, bucket_name):
-        """
-        Sets which bucket to use
+        """Sets which bucket to use
 
         Parameters
         ----------
@@ -180,8 +174,7 @@ class S3Client(CCBackEnd):
         self.bucket_name = bucket_name
 
     def get_bucket(self):
-        """
-        Get bucket boto3 object
+        """Get bucket boto3 object
 
         Returns
         -------
@@ -191,8 +184,7 @@ class S3Client(CCBackEnd):
         return s3_bucket
 
     def list_objects(self, **kwargs):
-        """
-        Get list of objects from the bucket
+        """Get list of objects from the bucket
         This is a wrapper to ``self.get_bucket().bucket.objects``
 
         Parameters
@@ -243,8 +235,7 @@ class S3Client(CCBackEnd):
         return self.get_current_bucket_size()
 
     def get_current_bucket_size(self, limit=10 ** 6, page_size=10 ** 6):
-        """
-        Counts the size of all objects in the current bucket.
+        """Counts the size of all objects in the current bucket.
 
         Parameters
         ----------
@@ -294,8 +285,7 @@ class S3Client(CCBackEnd):
 
     @clean_object_name
     def get_s3_object(self, file_name, bucket_name=None):
-        """
-        Get a boto3 object. Create it if it doesn't exist
+        """Get a boto3 object. Create it if it doesn't exist
 
         Parameters
         ----------
@@ -310,8 +300,7 @@ class S3Client(CCBackEnd):
         return self.connection.Object(bucket_name = bucket_name, key = file_name)
 
     def upload_stream(self, body, file_name, metadata, acl=DEFAULT_ACL):
-        """
-        Uploads a stream
+        """Uploads a stream
 
         Parameters
         ----------
@@ -328,8 +317,7 @@ class S3Client(CCBackEnd):
         return obj.put(Body = body, ACL = acl, Metadata = metadata)
 
     def download_stream(self, file_name):
-        """
-        Download object raw data.
+        """Download object raw data.
         This simply calls the object body ``read()`` method.
 
         Parameters

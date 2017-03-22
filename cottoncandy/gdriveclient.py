@@ -128,8 +128,7 @@ class GDriveClient(CCBackEnd):
 
     @property
     def current_directory_id(self):
-        """
-        ID of current directory
+        """ID of current directory
         Returns
         -------
         id : str
@@ -144,8 +143,7 @@ class GDriveClient(CCBackEnd):
 
     @property
     def pwd(self):
-        """
-        Prints current working directory
+        """Prints current working directory
 
         Returns
         -------
@@ -168,8 +166,7 @@ class GDriveClient(CCBackEnd):
         return list
 
     def ls(self, directory=None):
-        """
-        Prints contents of a folder
+        """Prints contents of a folder
 
         Parameters
         ----------
@@ -194,8 +191,7 @@ class GDriveClient(CCBackEnd):
             self.rebuild_current_path()
 
     def cd(self, directory=None, make_if_not_exist=False, isID=False):
-        """
-        Changes directory
+        """Changes directory
 
         Parameters
         ----------
@@ -415,8 +411,7 @@ class GDriveClient(CCBackEnd):
     #### File IO functions
 
     def upload_file(self, file_name, cloud_name=None, permissions=None):
-        """
-        Uploads from file on disk
+        """Uploads from file on disk
 
         Parameters
         ----------
@@ -473,8 +468,7 @@ class GDriveClient(CCBackEnd):
         return True
 
     def upload_stream(self, stream, name, properties=None, permissions=None):
-        """
-        Upload a stream with a .read() method
+        """Upload a stream with a .read() method
 
         Parameters
         ----------
@@ -534,8 +528,7 @@ class GDriveClient(CCBackEnd):
 
 
     def download_to_file(self, drive_file, local_file=None):
-        """
-        Download a file to disk
+        """Download a file to disk
 
         Parameters
         ----------
@@ -564,8 +557,7 @@ class GDriveClient(CCBackEnd):
         return True
 
     def download_stream(self, drive_file):
-        """
-        Downloads a file to memory
+        """Downloads a file to memory
 
         Parameters
         ----------
@@ -643,8 +635,7 @@ class GDriveClient(CCBackEnd):
 
 
     def rebuild_current_path(self):
-        """
-        After a cd, rebuilds the current working directory string
+        """After a cd, rebuilds the current working directory string
         """
         if self.current_directory_id == 'root':
             self.dir = '/'
@@ -659,8 +650,7 @@ class GDriveClient(CCBackEnd):
         self.dir = str(self.dir)
 
     def list_objects(self, namesOnly=False, trashed=False):
-        """
-        Gets a list of all files in current directory
+        """Gets a list of all files in current directory
 
         Parameters
         ----------
@@ -683,8 +673,7 @@ class GDriveClient(CCBackEnd):
         return self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.current_directory_id, str(trashed).lower())}).GetList()
 
     def get_file_by_name(self, name):
-        """
-        Gets the GoogleDriveFile for a file
+        """Gets the GoogleDriveFile for a file
         Parameters
         ----------
         name : str
@@ -698,8 +687,7 @@ class GDriveClient(CCBackEnd):
         return self.get_file_by_ID(self.get_ID_by_name(name))
 
     def get_file_by_ID(self, id):
-        """
-        Gets the GoogleDriveFile for a file
+        """Gets the GoogleDriveFile for a file
 
         Parameters
         ----------
@@ -721,8 +709,7 @@ class GDriveClient(CCBackEnd):
         return item
 
     def get_ID_by_name(self, file_name):
-        """
-        Gets the Google UUID for a file
+        """Gets the Google UUID for a file
 
         Parameters
         ----------
@@ -769,8 +756,7 @@ class GDriveClient(CCBackEnd):
             raise FileNotFoundError
 
     def insert_property(self, id, key, value, visibility='PUBLIC'):
-        """
-        Adds a custom property to a file
+        """Adds a custom property to a file
 
         Parameters
         ----------
@@ -807,8 +793,7 @@ class GDriveClient(CCBackEnd):
             return False
 
     def get_file_properties(self, id):
-        """
-        Gets the properties for a file
+        """Gets the properties for a file
 
         Parameters
         ----------
@@ -835,8 +820,7 @@ class GDriveClient(CCBackEnd):
             return None
 
     def store_encryption_key(self, fileID, key64, chunk_size=96):
-        """
-        Stores a base64-encoded encryption key
+        """Stores a base64-encoded encryption key
 
         Parameters
         ----------
@@ -866,8 +850,7 @@ class GDriveClient(CCBackEnd):
                 return
 
     def get_encryption_key(self, fileID):
-        """
-        Gets the encryption key from the properties for a file
+        """Gets the encryption key from the properties for a file
 
         Parameters
         ----------
@@ -891,8 +874,7 @@ class GDriveClient(CCBackEnd):
             return key64
 
     def update_metadata(self, file_name, metadata):
-        """
-        Updates the custom properties for a file
+        """Updates the custom properties for a file
 
         Parameters
         ----------
@@ -927,8 +909,7 @@ class GDriveClient(CCBackEnd):
         return sum(sizes)
 
     def completer(self, context, event):
-        """
-        Ipython autocomplete hook
+        """Ipython autocomplete hook
 
         Parameters
         ----------
@@ -980,8 +961,7 @@ class GDriveClient(CCBackEnd):
             return out
 
     def hook_ipython_completer(self):
-        """
-        Hooks the autocompleter into ipython
+        """Hooks the autocompleter into ipython
         """
         ipython = get_ipython()
         if ipython is None:

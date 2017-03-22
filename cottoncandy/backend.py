@@ -12,8 +12,7 @@ class CCBackEnd(object):
     ## Basic File IO
 
     def check_file_exists(self, file_name, bucket_name):
-        """
-        Checks whether a file exists on the cloud
+        """Checks whether a file exists on the cloud
 
         Parameters
         ----------
@@ -29,8 +28,7 @@ class CCBackEnd(object):
         raise NotImplementedError
 
     def upload_stream(self, stream, cloudName, metadata, permissions):
-        """
-        Uploads a stream object with a .read() function
+        """Uploads a stream object with a .read() function
 
         Parameters
         ----------
@@ -50,8 +48,7 @@ class CCBackEnd(object):
         raise NotImplementedError
 
     def upload_file(self, file_name, cloud_name, permissions):
-        """
-        Uploads a file from disk
+        """Uploads a file from disk
 
         Parameters
         ----------
@@ -69,8 +66,7 @@ class CCBackEnd(object):
         raise NotImplementedError
 
     def upload_multipart(self, stream, cloudName, metadata, permissions):
-        """
-        Multi-part upload for large stream objects
+        """Multi-part upload for large stream objects
 
         Parameters
         ----------
@@ -90,8 +86,7 @@ class CCBackEnd(object):
         raise NotImplementedError
 
     def download_stream(self, cloud_name):
-        """
-        Downloads a object to an in-memory stream
+        """Downloads a object to an in-memory stream
 
         Parameters
         ----------
@@ -105,8 +100,7 @@ class CCBackEnd(object):
         raise NotImplementedError
 
     def download_to_file(self, cloud_name, file_name):
-        """
-        Downloads an object directly to disk
+        """Downloads an object directly to disk
 
         Parameters
         ----------
@@ -124,8 +118,7 @@ class CCBackEnd(object):
     ## Basic File management
 
     def list_directory(self, path, limit):
-        """
-        Lists the content of a directory
+        """Lists the content of a directory
 
         Parameters
         ----------
@@ -139,16 +132,16 @@ class CCBackEnd(object):
         raise NotImplementedError
 
     def list_objects(self):
-        """
-        Gets all objects contained by backend
+        """Gets all objects contained by backend
+
         Returns
         -------
 
         """
+        raise NotImplementedError
 
     def copy(self, source, destination, source_bucket, destination_bucket, overwrite):
-        """
-        Copys an object
+        """Copies an object
 
         Parameters
         ----------
@@ -170,8 +163,7 @@ class CCBackEnd(object):
         raise NotImplementedError
 
     def move(self, source, destination, source_bucket, destination_bucket, overwrite):
-        """
-        Moves an object
+        """Moves an object
 
         Parameters
         ----------
@@ -187,9 +179,8 @@ class CCBackEnd(object):
         """
         raise NotImplementedError
 
-    def delete(self, file_name, recursive = False, delete = False):
-        """
-        Deletes an object
+    def delete(self, file_name, recursive=False, delete=False):
+        """Deletes an object
 
         Parameters
         ----------
@@ -208,8 +199,8 @@ class CCBackEnd(object):
 
     @property
     def size(self):
-        """
-        Size of stored cloud items in bytes
+        """Size of stored cloud items in bytes
+
         Returns
         -------
         int

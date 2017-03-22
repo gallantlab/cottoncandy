@@ -527,7 +527,7 @@ class ArrayInterface(BasicInterface):
         return response
 
     @clean_object_name
-    def download_raw_array(self, object_name, buffersize=2 ** 16, **kwargs):
+    def download_raw_array(self, object_name, buffersize=2**16, **kwargs):
         """Download a binary np.ndarray and return an np.ndarray object
         This method downloads an array without any disk or memory overhead.
 
@@ -857,7 +857,7 @@ class FileSystemInterface(BasicInterface):
         return self.interface.list_directory(path, limit)
 
     @clean_object_name
-    def ls(self, pattern, page_size=10 ** 3, limit=10 ** 3, verbose=False):
+    def ls(self, pattern, page_size=10**3, limit=10**3, verbose=False):
         """File-system like search for S3 objects
 
         Parameters
@@ -965,8 +965,8 @@ class FileSystemInterface(BasicInterface):
             return self.glob_google_drive(pattern)
 
     def glob_google_drive(self, pattern):
-        """
-        Globbing on google drive
+        """Globbing on google drive
+
         Parameters
         ----------
         pattern
@@ -996,8 +996,7 @@ class FileSystemInterface(BasicInterface):
 
 
     def glob_s3(self, pattern, **kwargs):
-        """
-        Globbing on S3
+        """Globbing on S3
 
         Parameters
         ----------
@@ -1161,7 +1160,7 @@ class FileSystemInterface(BasicInterface):
 
         # not moving this to the basic S3Client because it depends on glob
         if self.exists_object(object_name):
-            return self.get_object(object_name).delete()
+            return self.interface.get_s3_object(object_name).delete()
 
         has_objects = len(self.ls(object_name)) > 0
         if has_objects:
