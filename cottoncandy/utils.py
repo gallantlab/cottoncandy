@@ -67,7 +67,7 @@ def string2bool(mstring):
     '''
     '''
     truth_value = False
-    if truth_string in ['True','true', 'tru', 't',
+    if mstring in ['True','true', 'tru', 't',
                    'y','yes', '1']:
         truth_value = True
     return truth_value
