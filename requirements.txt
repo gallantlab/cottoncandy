@@ -4,4 +4,4 @@ boto3>=1.2.3
 dask>=0.8.1
 cloudpickle>=0.2.2
 toolz>=0.7.4
-Crypto>=2.6.1
+pycrypto>=2.6.1
