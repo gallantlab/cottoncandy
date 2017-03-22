@@ -45,7 +45,7 @@ class InterfaceObject(object):
 
 
 class BasicInterface(InterfaceObject):
-    """Basic cottoncandy interface to S3.
+    """Basic cottoncandy interface to the cloud.
     """
 
     def __init__(self, bucket_name,
@@ -223,7 +223,6 @@ class BasicInterface(InterfaceObject):
     @clean_object_name
     def get_object(self, object_name, bucket_name=None):
         """Get a boto3 object. Create it if it doesn't exist"""
-        # TODO: should this be here? this is an s3-specific action
         # NOTE: keeping this in case outside code is using this.
         return self.interface.get_s3_object(object_name, bucket_name)
 
@@ -268,7 +267,7 @@ class BasicInterface(InterfaceObject):
 
     def upload_from_file(self, flname, object_name=None,
                          ExtraArgs=dict(ACL = DEFAULT_ACL)):
-        """Upload a file to S3.
+        """Upload a file to the cloud.
 
         Parameters
         ----------
@@ -286,7 +285,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def download_to_file(self, object_name, file_name):
-        """Download S3 object to a file
+        """Download cloud object to a file
 
         Parameters
         ----------
@@ -1194,7 +1193,7 @@ class FileSystemInterface(BasicInterface):
 class DefaultInterface(FileSystemInterface,
                        ArrayInterface,
                        BasicInterface):
-    """Default cottoncandy interface to S3
+    """Default cottoncandy interface to the cloud
 
     This includes numpy.array and file-system-like
     concepts for easy data I/O and bucket/object exploration.
