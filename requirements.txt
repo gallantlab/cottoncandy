@@ -5,3 +5,4 @@ dask>=0.8.1
 cloudpickle>=0.2.2
 toolz>=0.7.4
 pycrypto>=2.6.1
+pydrive>=1.3.1
