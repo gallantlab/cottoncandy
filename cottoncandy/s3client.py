@@ -6,7 +6,7 @@ from io import BytesIO
 
 from botocore.utils import fix_s3_host
 from cottoncandy.utils import *
-from .backend import *
+from .backend import CCBackEnd, CloudStream
 
 try:
     from urllib import unquote

@@ -2,7 +2,7 @@ from __future__ import print_function
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from pydrive.files import GoogleDriveFile, FileNotUploadedError, ApiRequestError
-from .backend import *
+from .backend import CCBackEnd, FileNotFoundError, CloudStream
 import sys
 import re
 
@@ -159,7 +159,7 @@ class GDriveClient(CCBackEnd):
         if path is not None and len(path) > 0:
             if not self.cd(path):
                 return
-        list = self.list_objects(namesOnly = True)
+        list = self.list_objects(names_only = True)
         if path is not None:
             self.current_directory_object = current_directory
             self.rebuild_current_path()
@@ -649,12 +649,12 @@ class GDriveClient(CCBackEnd):
             self.dir = '/' + this_directory['title'] + self.dir
         self.dir = str(self.dir)
 
-    def list_objects(self, namesOnly=False, trashed=False):
+    def list_objects(self, names_only=False, trashed=False):
         """Gets a list of all files in current directory
 
         Parameters
         ----------
-        namesOnly : bool
+        names_only : bool
             Returns names only?
         trashed : bool
             Look in trash folder instead?
@@ -664,7 +664,7 @@ class GDriveClient(CCBackEnd):
         : list<str> | list<GoogleDriveFile>
             List of files
         """
-        if namesOnly:
+        if names_only:
             files = self.drive.ListFile({'q': "'{}' in parents and trashed={}".format(self.current_directory_id, str(trashed).lower())}).GetList()
             out = []
             for f in files:

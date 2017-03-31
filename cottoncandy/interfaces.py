@@ -33,12 +33,19 @@ from scipy.sparse import (coo_matrix,
                           dia_matrix)
 
 import cottoncandy.browser
+import os
+import re
 
-from .s3client import *
-from .gdriveclient import *
-from .utils import *
+from .s3client import S3Client, botocore
+from .gdriveclient import GDriveClient
 from warnings import warn
-from .Encryption import *
+from .Encryption import AESEncryption, RSAAESEncryption
+from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_size, read_buffered,
+                    generate_ndarray_chunks, remove_trivial_magic, has_real_magic, objects2names,
+                    has_magic, remove_root, mk_aws_path,
+                    GzipInputStream,
+                    DEFAULT_ACL, MPU_CHUNKSIZE, MPU_THRESHOLD, DASK_CHUNKSIZE, MB, SEPARATOR,
+                    MAGIC_CHECK)
 
 
 # ------------------
@@ -196,7 +203,7 @@ class BasicInterface(InterfaceObject):
         """
         return self.interface.list_objects(**kwargs)
 
-    def get_bucket_size(self, limit=10 ** 6, page_size=10 ** 6):
+    def get_bucket_size(self, limit=10**6, page_size=10**6):
         """Counts the size of all objects in the current bucket.
 
         Parameters
@@ -285,7 +292,7 @@ class BasicInterface(InterfaceObject):
         return self.interface.download_stream(object_name)
 
     def upload_from_file(self, flname, object_name=None,
-                         ExtraArgs=dict(ACL = DEFAULT_ACL)):
+                         ExtraArgs=dict(ACL=DEFAULT_ACL)):
         """Upload a file to the cloud.
 
         Parameters
@@ -1306,7 +1313,7 @@ class EncryptedInterface(DefaultInterface):
             stream.content = self.encryptor.decrypt_stream(stream.content, b64decode(stream.metadata['key']))
         return stream
 
-    def upload_from_file(self, local_file_name, object_name=None, ExtraArgs=dict(ACL = DEFAULT_ACL)):
+    def upload_from_file(self, local_file_name, object_name=None, ExtraArgs=dict(ACL=DEFAULT_ACL)):
 
         if not object_name:
             object_name = local_file_name
