@@ -39,7 +39,6 @@ import re
 from .s3client import S3Client, botocore
 from .gdriveclient import GDriveClient
 from warnings import warn
-from .Encryption import AESEncryption, RSAAESEncryption
 from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_size, read_buffered,
                     generate_ndarray_chunks, remove_trivial_magic, has_real_magic, objects2names,
                     has_magic, remove_root, mk_aws_path,
@@ -1282,6 +1281,8 @@ class EncryptedInterface(DefaultInterface):
         args
         kwargs
         """
+        from .Encryption import AESEncryption, RSAAESEncryption
+
         super(EncryptedInterface, self).__init__(bucket_name = bucket, ACCESS_KEY = access, SECRET_KEY = secret,
                                                  url = url, *args, **kwargs)
 
