@@ -1,5 +1,4 @@
 import os
-from Crypto import Random
 from base64 import b64decode, b64encode
 try:
     import configparser
@@ -63,6 +62,7 @@ if len(config.read(usercfg)) == 0:
 
     aesKey = config.get('encryption', 'key')
     if aesKey == 'auto':
+        from Crypto import Random
         newKey = Random.get_random_bytes(32)
         aesKey = b64encode(newKey)
         config.set("encryption", 'key', aesKey)
@@ -80,6 +80,7 @@ else:
             config.set("encryption", 'key', aesKey)
     except configparser.NoSectionError:
         config.add_section('encryption')
+        from Crypto import Random
         newKey = Random.get_random_bytes(32)
         aesKey = b64encode(newKey)
         config.set("encryption", 'key', aesKey)
