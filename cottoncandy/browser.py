@@ -1,6 +1,7 @@
 '''
 '''
 import os
+import re
 
 from cottoncandy.utils import (clean_object_name,
                                has_start_digit,
@@ -146,6 +147,8 @@ class S3Directory(S3FSLike):
                 # clean extension
                 fl, ext = os.path.splitext(sdir_copy)
                 kk = fl+'_DOT_'+ext[1:] if ext else sdir_copy
+                # clean fucking dashes
+                kk = re.sub('-', '_', kk) if '-' in kk else kk
                 self._subdirs[kk] = sdir
 
     def _ls(self):
