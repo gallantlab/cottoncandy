@@ -254,7 +254,7 @@ class BasicInterface(InterfaceObject):
     def show_objects(self, limit=1000, page_size=1000):
         """Print objects in the current bucket"""
         if isinstance(self.interface, S3Client):
-            object_list = self.interface.list_objects(limit, page_size)
+            object_list = self.interface.list_objects(limit=limit, page_size=page_size)
             try:
                 print_objects(object_list)
             except botocore.exceptions.PaginationError:
