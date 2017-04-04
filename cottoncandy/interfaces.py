@@ -310,6 +310,28 @@ class BasicInterface(InterfaceObject):
         """
         return self.interface.upload_file(flname, object_name, ExtraArgs['ACL'])
 
+    def upload_from_directory(self, disk_path, cloud_path=None,
+                              recursive=False, ExtraArgs=dict(ACL=DEFAULT_ACL)):
+        '''Upload a directory to the cloud
+        '''
+        import os
+        from glob import glob
+
+        filenames = sorted(os.listdir(disk_path))
+        if cloud_path is None:
+            cloud_path = disk_path
+        for flname in filenames:
+            flpath = os.path.join(disk_path, flname)
+            obname = self.pathjoin(cloud_path, flname)
+            if os.path.isfile(flpath):
+                self.upload_from_file(flpath, obname, ExtraArgs=ExtraArgs)
+            elif os.path.isdir(flpath):
+                if recursive:
+                    self.upload_from_directory(flpath, obname,
+                                               recursive=recursive,
+                                               ExtraArgs=ExtraArgs)
+        print('Uploaded "%s" to "%s"'%(disk_path, cloud_path))
+
     @clean_object_name
     def download_to_file(self, object_name, file_name):
         """Download cloud object to a file
