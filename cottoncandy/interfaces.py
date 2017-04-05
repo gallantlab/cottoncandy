@@ -381,7 +381,7 @@ class BasicInterface(InterfaceObject):
         **metadata  : optional
             Metadata to store along with MPU object
         """
-        return self.interface.upload_multipart(file_object, object_name, metadata)
+        return self.interface.upload_multipart(file_object, object_name, metadata, buffersize = buffersize, verbose = verbose)
 
     @clean_object_name
     def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, **metadata):

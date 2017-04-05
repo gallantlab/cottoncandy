@@ -523,7 +523,7 @@ class GDriveClient(CCBackEnd):
 
         return True
 
-    def upload_multipart(self, stream, cloud_name, properties=None, permissions=None):
+    def upload_multipart(self, stream, cloud_name, properties=None, permissions=None, buffersize = -1, verbose = False):
         return self.upload_stream(stream, cloud_name, properties, permissions)
 
 

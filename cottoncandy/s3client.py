@@ -370,8 +370,8 @@ class S3Client(CCBackEnd):
         s3_object = self.get_s3_object(file_name)
         return s3_object.download_file(local_name)
 
-    def upload_multipart(self, file_name, file_object,
-                         buffersize=MPU_CHUNKSIZE, verbose=True, **metadata):
+    def upload_multipart(self, file_object, file_name, metadata, permissions=None,
+                         buffersize=MPU_CHUNKSIZE, verbose=True, **kwargs):
         """Multi-part upload for a python file-object.
 
         This automatically creates a multipart upload of an object.
@@ -388,8 +388,10 @@ class S3Client(CCBackEnd):
             Defaults to 100MB
         verbose     : bool
             verbosity flag of whether to print mpu information to stdout
-        **metadata  : optional
+        metadata  : optional
             Metadata to store along with MPU object
+        permissions : str?
+            permissions for this file
         """
         client=self.connection.meta.client
         mpu = client.create_multipart_upload(Bucket = self.bucket_name,

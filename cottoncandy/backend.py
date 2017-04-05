@@ -65,19 +65,23 @@ class CCBackEnd(object):
         """
         raise NotImplementedError
 
-    def upload_multipart(self, stream, cloudName, metadata, permissions):
+    def upload_multipart(self, stream, cloud_name, metadata, permissions, buffersize, verbose):
         """Multi-part upload for large stream objects
 
         Parameters
         ----------
         stream : stream
             streaming object
-        cloudName : str
+        cloud_name : str
             name to use on cloud
         metadata : dict
             custom metadata
         permissions : str?
             permissions for this file
+        buffersize : int
+            s3 uploading buffersize
+        verbose : bool
+            s3 verbosity
 
         Returns
         -------
