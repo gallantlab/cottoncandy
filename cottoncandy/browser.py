@@ -61,7 +61,7 @@ class S3FSLike(BrowserObject):
         return os.path.join(self._parent, self._curdir)
 
     def __call__(self):
-        assert self.interface.check_file_exists(self._fullpath)
+        assert self.interface.exists_object(self._fullpath)
         return self.interface.get_object(self._fullpath)
 
 
