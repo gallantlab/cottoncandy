@@ -97,6 +97,7 @@ class BasicInterface(InterfaceObject):
             if backend == 's3':
                 print('Available buckets:')
                 self.show_buckets()
+                print('Current bucket: {}'.format(self.interface.bucket_name))
             else:
                 print('Google drive backend instantiated.')
 
@@ -571,7 +572,7 @@ class ArrayInterface(BasicInterface):
             filestream = StringIO(array.data)
 
         if data_nbytes > MPU_THRESHOLD:
-            response = self.mpu_fileobject(object_name, filestream, metadata = meta)
+            response = self.mpu_fileobject(object_name, filestream, **meta)
         else:
             response = self.upload_object(object_name, filestream, DEFAULT_ACL, **meta)
 
