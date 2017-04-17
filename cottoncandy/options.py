@@ -75,6 +75,7 @@ else:
     try:	# encryption section
         aesKey = config.get('encryption', 'key')
         if aesKey == 'auto':
+            from Crypto import Random
             newKey = Random.get_random_bytes(32)
             aesKey = b64encode(newKey)
             config.set("encryption", 'key', aesKey)
