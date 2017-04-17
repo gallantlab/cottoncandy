@@ -46,7 +46,8 @@ config.readfp(open(os.path.join(cwd, 'defaults.cfg')))
 
 # case no user config file
 if len(config.read(usercfg)) == 0:
-    os.makedirs(userdir)
+    if not os.path.exists(userdir):
+        os.makedirs(userdir)
 
     # write keys to user config file
     ak = config.get("login", "access_key")
