@@ -40,14 +40,14 @@ class BrowserObject(object):
     pass
 
 class S3FSLike(BrowserObject):
-    '''Base class for file-system-like interface to S3
+    '''Base class for file-system-like backend_interface to S3
     '''
     @clean_object_name
     def __init__(self, path, interface):
         '''
         path: str
             The path to start naviation from
-        interface:
+        backend_interface:
             A `cottoncandy.InterfaceObject` instance
         '''
 
@@ -187,7 +187,7 @@ class S3Directory(S3FSLike):
         else:
             # allow user-provided paths. useful when >1000 objects
             child_path = os.path.join(self._fullpath, attr)
-            assert (self.interface.check_file_exists(child_path) or \
+            assert (self.interface.exists_object(child_path) or \
                     self.interface.lsdir(child_path))
 
         try:

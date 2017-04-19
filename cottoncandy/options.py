@@ -35,6 +35,25 @@ def get_keys():
     result = resultb if (resulta is None) else resulta
     return result
 
+def generate_AES_key(bytes = 32):
+    """Generates a new AES key
+
+    Parameters
+    ----------
+    bytes : int
+        number of bytes in key
+
+    Returns
+    -------
+    key : str
+    """
+    try:
+        from Crypto import Random
+        return Random.get_random_bytes(bytes)
+    except ImportError:
+        print('PyCrypto not install. Reading from /dev/random instead')
+        with open('/dev/random', 'r') as rand:
+            return rand.read(bytes)
 
 cwd = os.path.split(os.path.abspath(__file__))[0]
 userdir = appdirs.user_data_dir("cottoncandy", "aone")
@@ -63,8 +82,7 @@ if len(config.read(usercfg)) == 0:
 
     aesKey = config.get('encryption', 'key')
     if aesKey == 'auto':
-        from Crypto import Random
-        newKey = Random.get_random_bytes(32)
+        newKey = generate_AES_key()
         aesKey = b64encode(newKey)
         config.set("encryption", 'key', aesKey)
 
@@ -73,20 +91,20 @@ if len(config.read(usercfg)) == 0:
 
 # add things to old versions of config if needed
 else:
+    needs_update = False
     try:	# encryption section
         aesKey = config.get('encryption', 'key')
         if aesKey == 'auto':
-            from Crypto import Random
-            newKey = Random.get_random_bytes(32)
-            aesKey = b64encode(newKey)
+            aesKey = b64encode(generate_AES_key())
             config.set("encryption", 'key', aesKey)
+            needs_update = True
     except configparser.NoSectionError:
         config.add_section('encryption')
-        from Crypto import Random
-        newKey = Random.get_random_bytes(32)
+        newKey = generate_AES_key()
         aesKey = b64encode(newKey)
         config.set("encryption", 'key', aesKey)
         config.set('encryption', 'method', 'AES')
+        needs_update = True
 
     try:	# gdrive section
         secrets = config.get('gdrive', 'secrets')
@@ -95,6 +113,8 @@ else:
         config.add_section('gdrive')
         config.set('gdrive', 'secrets', 'client_secrets.json')
         config.set('gdrive', 'credentials', 'credentials.txt')
+        needs_update = True
 
-    with open(usercfg, 'w') as configfile:
-        config.write(configfile)
+    if needs_update :
+        with open(usercfg, 'w') as configfile:
+            config.write(configfile)

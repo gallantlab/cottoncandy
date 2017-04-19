@@ -87,9 +87,9 @@ class BasicInterface(InterfaceObject):
         """
 
         if backend == 's3':
-            self.interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url, force_bucket_creation)
+            self.backend_interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url, force_bucket_creation)
         elif backend == 'gdrive':
-            self.interface = GDriveClient(ACCESS_KEY, SECRET_KEY)
+            self.backend_interface = GDriveClient(ACCESS_KEY, SECRET_KEY)
         else:
             raise ValueError('Bad backend')
 
@@ -97,27 +97,27 @@ class BasicInterface(InterfaceObject):
             if backend == 's3':
                 print('Available buckets:')
                 self.show_buckets()
-                print('Current bucket: {}'.format(self.interface.bucket_name))
+                print('Current bucket: {}'.format(self.backend_interface.bucket_name))
             else:
                 print('Google drive backend instantiated.')
 
     def __repr__(self):
-        if isinstance(self.interface, S3Client):
-            details = (__package__, self.bucket_name, self.interface.url)
-            return '%s.interface <bucket:%s on %s>' % details
+        if isinstance(self.backend_interface, S3Client):
+            details = (__package__, self.bucket_name, self.backend_interface.url)
+            return '%s.backend_interface <bucket:%s on %s>' % details
         else:
-            return '{}.interface on Google Drive'.format(__package__)
+            return '{}.backend_interface on Google Drive'.format(__package__)
 
     def _get_bucket_name(self, bucket_name):
-        return self.interface._get_bucket_name(bucket_name)
+        return self.backend_interface._get_bucket_name(bucket_name)
 
     def pathjoin(self, a, *p):
         return pathjoin(a, *p)
 
     @property
     def bucket_name(self):
-        if isinstance(self.interface, S3Client):
-            return self.interface.bucket_name
+        if isinstance(self.backend_interface, S3Client):
+            return self.backend_interface.bucket_name
         else:
             print('Google drive has no concept of buckets')
             return None
@@ -131,15 +131,15 @@ class BasicInterface(InterfaceObject):
         object_name : str
             The object name
         """
-        return self.interface.check_file_exists(object_name, bucket_name)
+        return self.backend_interface.check_file_exists(object_name, bucket_name)
 
     def exists_bucket(self, bucket_name):
         """Check whether the bucket exists"""
-        return self.interface.check_bucket_exists(bucket_name)
+        return self.backend_interface.check_bucket_exists(bucket_name)
 
     def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
         """Create a new bucket"""
-        self.interface.create_bucket(bucket_name, acl)
+        self.backend_interface.create_bucket(bucket_name, acl)
 
     def rm_bucket(self, bucket_name):
         '''Remove an empty bucket. Throws an exception when bucket is not empty.
@@ -153,11 +153,11 @@ class BasicInterface(InterfaceObject):
 
     def set_bucket(self, bucket_name):
         """Bucket to use"""
-        self.interface.set_current_bucket(bucket_name)
+        self.backend_interface.set_current_bucket(bucket_name)
 
     def get_bucket(self):
         """Get bucket boto3 object"""
-        return self.interface.get_bucket()
+        return self.backend_interface.get_bucket()
 
     def get_bucket_objects(self, **kwargs):
         """Get list of objects from the bucket.
@@ -187,7 +187,7 @@ class BasicInterface(InterfaceObject):
         a lot of items on your bucket and should increase ``page_size``
         """
         warn('Deprecated. Use get_objects() instead', DeprecationWarning)
-        return self.interface.list_objects(**kwargs)
+        return self.backend_interface.list_objects(**kwargs)
 
     def get_objects(self, **kwargs):
         """
@@ -201,7 +201,7 @@ class BasicInterface(InterfaceObject):
         -------
 
         """
-        return self.interface.list_objects(**kwargs)
+        return self.backend_interface.list_objects(**kwargs)
 
     def get_bucket_size(self, limit=10**6, page_size=10**6):
         """Counts the size of all objects in the current bucket.
@@ -227,7 +227,7 @@ class BasicInterface(InterfaceObject):
         TODO(anunez): Remove this note when the bug is fixed.
         """
         warn('Deprecated, use get_size() instead', DeprecationWarning)
-        return self.interface.size
+        return self.backend_interface.size
 
     def get_size(self):
         """
@@ -240,30 +240,30 @@ class BasicInterface(InterfaceObject):
         -------
 
         """
-        return self.interface.size
+        return self.backend_interface.size
 
     def show_buckets(self):
         """Show available buckets"""
-        self.interface.show_all_buckets()
+        self.backend_interface.show_all_buckets()
 
     @clean_object_name
     def get_object(self, object_name, bucket_name=None):
         """Get a boto3 object. Create it if it doesn't exist"""
         # NOTE: keeping this in case outside code is using this.
-        return self.interface.get_s3_object(object_name, bucket_name)
+        return self.backend_interface.get_s3_object(object_name, bucket_name)
 
     def show_objects(self, limit=1000, page_size=1000):
         """Print objects in the current bucket"""
-        if isinstance(self.interface, S3Client):
-            object_list = self.interface.list_objects(limit=limit, page_size=page_size)
+        if isinstance(self.backend_interface, S3Client):
+            object_list = self.backend_interface.list_objects(limit=limit, page_size=page_size)
             try:
                 print_objects(object_list)
             except botocore.exceptions.PaginationError:
                 print('Loads of objects in "%s". Increasing page_size by 100x...' % self.bucket_name)
-                object_list = self.interface.list_objects(limit = limit, page_size = page_size * 100)
+                object_list = self.backend_interface.list_objects(limit = limit, page_size = page_size * 100)
                 print_objects(object_list)
         else:
-            drivefiles = self.interface.drive.ListFile({'q': "trashed=false"}).GetList()
+            drivefiles = self.backend_interface.drive.ListFile({'q': "trashed=false"}).GetList()
             object_list = [df['title'] for df in drivefiles]
             for obj in object_list:
                 # TODO: also print last modified date and whatever else to match s3
@@ -275,7 +275,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
-        self.interface.upload_stream(body, object_name, metadata, acl)
+        self.backend_interface.upload_stream(body, object_name, metadata, acl)
 
     def download_stream(self, object_name):
         """
@@ -289,7 +289,7 @@ class BasicInterface(InterfaceObject):
         -------
         CloudStream object
         """
-        return self.interface.download_stream(object_name)
+        return self.backend_interface.download_stream(object_name)
 
     def upload_from_file(self, flname, object_name=None,
                          ExtraArgs=dict(ACL=DEFAULT_ACL)):
@@ -309,7 +309,7 @@ class BasicInterface(InterfaceObject):
         -------
         response : boto3 response
         """
-        return self.interface.upload_file(flname, object_name, ExtraArgs['ACL'])
+        return self.backend_interface.upload_file(flname, object_name, ExtraArgs['ACL'])
 
     def upload_from_directory(self, disk_path, cloud_path=None,
                               recursive=False, ExtraArgs=dict(ACL=DEFAULT_ACL)):
@@ -343,7 +343,7 @@ class BasicInterface(InterfaceObject):
         file_name : str
             Absolute path where the data will be downloaded on disk
         """
-        return self.interface.download_to_file(object_name, file_name)
+        return self.backend_interface.download_to_file(object_name, file_name)
 
     @clean_object_name
     def download_object(self, object_name):
@@ -382,7 +382,7 @@ class BasicInterface(InterfaceObject):
         **metadata  : optional
             Metadata to store along with MPU object
         """
-        return self.interface.upload_multipart(file_object, object_name, metadata, buffersize = buffersize, verbose = verbose)
+        return self.backend_interface.upload_multipart(file_object, object_name, metadata, buffersize = buffersize, verbose = verbose)
 
     @clean_object_name
     def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, **metadata):
@@ -916,7 +916,7 @@ class FileSystemInterface(BasicInterface):
         matches : list
             The children of the path.
         """
-        return self.interface.list_directory(path, limit)
+        return self.backend_interface.list_directory(path, limit)
 
     @clean_object_name
     def ls(self, pattern, page_size=10**3, limit=10**3, verbose=False):
@@ -1021,7 +1021,7 @@ class FileSystemInterface(BasicInterface):
         """
         # determine if we're globbing
 
-        if isinstance(self.interface, S3Client):
+        if isinstance(self.backend_interface, S3Client):
             return self.glob_s3(pattern, **kwargs)
         else:
             return self.glob_google_drive(pattern)
@@ -1039,16 +1039,16 @@ class FileSystemInterface(BasicInterface):
         """
         matches = []
         if '/' not in pattern:	# end tree, list all objects
-            return self.interface.list_objects(True)
+            return self.backend_interface.list_objects(True)
 
         nextFolderExp = r'^/?[^/]*/'
         nextFolder = re.match(nextFolderExp, pattern).group(0)
         pattern = re.sub(nextFolderExp, '', pattern)
 
         if '*' not in nextFolder:	# no wildcard, simply cd into it
-            self.interface.cd(nextFolder)
+            self.backend_interface.cd(nextFolder)
         else:						# find all wildcard matches and recursively glob them
-            files = self.interface.list_objects()
+            files = self.backend_interface.list_objects()
             for f in files:
                 matches.append(self.glob_google_drive())
 
@@ -1169,7 +1169,7 @@ class FileSystemInterface(BasicInterface):
             Whether to overwrite the `dest_name` object if it already exists
         """
         # TODO: support directories
-        return self.interface.copy(source_name, dest_name, source_bucket, dest_bucket, overwrite)
+        return self.backend_interface.copy(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
     def mv(self, source_name, dest_name,
            source_bucket=None, dest_bucket=None, overwrite=False):
@@ -1191,7 +1191,7 @@ class FileSystemInterface(BasicInterface):
             Whether to overwrite the `dest_name` object if it already exists.
         """
         # TODO: Support directories
-        return self.interface.move(source_name, dest_name, source_bucket, dest_bucket, overwrite)
+        return self.backend_interface.move(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
     def rm(self, object_name, recursive=False, delete=True):
         """Delete an object, or a subtree ('path/to/stuff').
@@ -1218,12 +1218,12 @@ class FileSystemInterface(BasicInterface):
         deleting 15 objects...
         """
 
-        if isinstance(self.interface, GDriveClient):
-            return self.interface.delete(object_name, recursive, delete)
+        if isinstance(self.backend_interface, GDriveClient):
+            return self.backend_interface.delete(object_name, recursive, delete)
 
         # not moving this to the basic S3Client because it depends on glob
         if self.exists_object(object_name):
-            return self.interface.get_s3_object(object_name).delete()
+            return self.backend_interface.get_s3_object(object_name).delete()
 
         has_objects = len(self.ls(object_name)) > 0
         if has_objects:
@@ -1322,15 +1322,15 @@ class EncryptedInterface(DefaultInterface):
 
         if self.encryption == 'AES':
             encrypted_stream = self.encryptor.encrypt_stream(body)
-            return self.interface.upload_stream(encrypted_stream, object_name, metadata, acl)
+            return self.backend_interface.upload_stream(encrypted_stream, object_name, metadata, acl)
         else:
             encrypted_stream, encrypted_key = self.encryptor.encrypt_stream(body)
             metadata['key'] = b64encode(encrypted_key)
-            return self.interface.upload_stream(encrypted_stream, object_name, metadata, acl)
+            return self.backend_interface.upload_stream(encrypted_stream, object_name, metadata, acl)
 
     def download_stream(self, object_name):
 
-        stream = self.interface.download_stream(object_name)
+        stream = self.backend_interface.download_stream(object_name)
         if self.encryption == 'AES':
             stream.content = self.encryptor.decrypt_stream(stream.content)
         else:
