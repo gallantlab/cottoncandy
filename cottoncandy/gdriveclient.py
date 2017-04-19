@@ -454,11 +454,13 @@ class GDriveClient(CCBackEnd):
         newfile = self.drive.CreateFile(metadata)
         newfile.Upload()
         try:
-            newfile.SetContentFile(file_name)
+            # Something in these lines does not work for empty files 
+            # (perhaps a rare case, can be used as tests of this system tho)
+            newfile.SetContentFile(file_name) 
             newfile.Upload()
         except Exception as e:
             print('Error uploading file_name:\n{}'.format(e.__str__()))
-            newfile.delete()
+            newfile.delete() # Does not work; no 'delete' method of this class, whatever it is.
             return False
 
         if current_directory is not None:
