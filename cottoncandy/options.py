@@ -65,7 +65,7 @@ if len(config.read(usercfg)) == 0:
     if aesKey == 'auto':
         from Crypto import Random
         newKey = Random.get_random_bytes(32)
-        aesKey = b64encode(newKey)
+        aesKey = b64encode(newKey).decode()
         config.set("encryption", 'key', aesKey)
 
     with open(usercfg, 'w') as fp:
@@ -78,13 +78,13 @@ else:
         if aesKey == 'auto':
             from Crypto import Random
             newKey = Random.get_random_bytes(32)
-            aesKey = b64encode(newKey)
+            aesKey = b64encode(newKey).decode()
             config.set("encryption", 'key', aesKey)
     except configparser.NoSectionError:
         config.add_section('encryption')
         from Crypto import Random
         newKey = Random.get_random_bytes(32)
-        aesKey = b64encode(newKey)
+        aesKey = b64encode(newKey).decode()
         config.set("encryption", 'key', aesKey)
         config.set('encryption', 'method', 'AES')
 
