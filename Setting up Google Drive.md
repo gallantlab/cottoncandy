@@ -13,13 +13,12 @@ You need to have `pydrive` and `pycrypto` installed.
 #### Google Oauth Setup
 1. On the same page, click on "Credentials" on the left.
 2. Click "Create credentials" and select "OAuth client ID" from the drop-down menu
-3. For "Application Type," choose "Web Application"
+3. For "Application Type," choose "Other"
 4. Give it whatever name you want
-5. For "Authorized Javascript origins," use "http://localhost:8080", and for "Authorized redirect URIs," use "http://localhost:8080/" (the slash at the end here is important).
-6. Click "Create"
-7. On the next page, a message box will show you the Oauth ID and secrets. Dismiss the box.
-8. On this page, download the client secrets file for the new Oauth client. (Right side of the screen). Save that to your ~/.config/cottoncandy/ folder with a name.
-9. Edit your ~/.config/cottoncandy/options.cfg file and edit the "client_secrets" field to the name of the file you just downloaded.
+5. Click "Create"
+6. On the next page, a message box will show you the Oauth ID and secrets. Dismiss the box.
+7. On this page, download the client secrets file for the new Oauth client. (Right side of the screen). Save that to your ~/.config/cottoncandy/ folder with a name.
+8. Edit your ~/.config/cottoncandy/options.cfg file and edit the "client_secrets" field to the name of the file you just downloaded.
 
 #### First time-use
 1. In python, do `cc.get_interface(backed = 'gdrive')`
