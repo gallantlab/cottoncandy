@@ -412,7 +412,7 @@ class BasicInterface(InterfaceObject):
         """
         assert self.exists_object(object_name)
         obj = self.download_object(object_name)
-        return json.loads(obj)
+        return json.loads(obj.decode())
 
     @clean_object_name
     def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL):
