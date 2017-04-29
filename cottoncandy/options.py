@@ -83,7 +83,7 @@ if len(config.read(usercfg)) == 0:
     aesKey = config.get('encryption', 'key')
     if aesKey == 'auto':
         newKey = generate_AES_key()
-        aesKey = b64encode(newKey)
+        aesKey = str(b64encode(newKey))
         config.set("encryption", 'key', aesKey)
 
     with open(usercfg, 'w') as fp:
