@@ -644,7 +644,7 @@ class ArrayInterface(BasicInterface):
             print('uploaded arrays in "%s"' % object_name)
 
     @clean_object_name
-    def cloud2dict(self, object_root, verbose=True, **metadata):
+    def cloud2dict(self, object_root, verbose=True, keys=None, **metadata):
         """Download all the arrays of the object branch and return a dictionary.
         This is the complement to ``dict2cloud``
 
@@ -654,6 +654,8 @@ class ArrayInterface(BasicInterface):
             The branch to create the dictionary from
         verbose : bool
             Whether to print object_root after completion
+        keys : A list of strings
+            Specify which keys to download
 
         Returns
         -------
@@ -667,9 +669,12 @@ class ArrayInterface(BasicInterface):
 
         datadict = {}
         subdirs = ob._ls()
+        if keys is not None:
+            subdirs = keys
 
         for subdir in subdirs:
             path = self.pathjoin(object_root, subdir)
+
             if self.exists_object(path):
                 # TODO: allow non-array things
                 try:
@@ -680,6 +685,7 @@ class ArrayInterface(BasicInterface):
                 datadict[subdir] = arr
             else:
                 datadict[subdir] = self.cloud2dict(path)
+
 
         if verbose:
             print('downloaded arrays in "%s"' % object_root)
