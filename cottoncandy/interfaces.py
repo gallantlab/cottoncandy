@@ -670,6 +670,8 @@ class ArrayInterface(BasicInterface):
         datadict = {}
         subdirs = ob._ls()
         if keys is not None:
+            if isinstance(keys, str):
+                keys = [keys]
             subdirs = keys
 
         for subdir in subdirs:
