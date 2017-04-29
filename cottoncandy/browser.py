@@ -1,24 +1,25 @@
 '''
 '''
 import os
+import re
 
-from utils import (clean_object_name,
-                   has_start_digit,
-                   has_magic,
-                   has_real_magic,
-                   has_trivial_magic,
-                   remove_trivial_magic,
-                   remove_root,
-                   mk_aws_path,
-                   objects2names,
-                   unquote_names,
-                   print_objects,
-                   get_fileobject_size,
-                   get_object_size,
-                   read_buffered,
-                   GzipInputStream,
-                   generate_ndarray_chunks,
-                   )
+from cottoncandy.utils import (clean_object_name,
+                               has_start_digit,
+                               has_magic,
+                               has_real_magic,
+                               has_trivial_magic,
+                               remove_trivial_magic,
+                               remove_root,
+                               mk_aws_path,
+                               objects2names,
+                               unquote_names,
+                               print_objects,
+                               get_fileobject_size,
+                               get_object_size,
+                               read_buffered,
+                               GzipInputStream,
+                               generate_ndarray_chunks,
+                               )
 
 
 
@@ -26,7 +27,7 @@ from utils import (clean_object_name,
 # globals
 ##############################
 
-HDFEXT = ['.hdf', '.h5', '.hf5', '.hdf5', '.h5py']
+HDFEXT = ['.hdf', '.h5', '.hf5', '.hdf5', '.h5py', '.grp', '.arr', '.dar']
 NPYEXT = ['.npy']
 JSONEXT = ['.json']
 
@@ -39,14 +40,14 @@ class BrowserObject(object):
     pass
 
 class S3FSLike(BrowserObject):
-    '''Base class for file-system-like interface to S3
+    '''Base class for file-system-like backend_interface to S3
     '''
     @clean_object_name
     def __init__(self, path, interface):
         '''
         path: str
             The path to start naviation from
-        interface:
+        backend_interface:
             A `cottoncandy.InterfaceObject` instance
         '''
 
@@ -67,7 +68,7 @@ class S3FSLike(BrowserObject):
 class S3Directory(S3FSLike):
     """Get an object that allows you to tab-complete your
     way through your objects.
-    One also has access to ``_ls()`` and ``_glob()`` methods.
+    One also has access to ``_ls()`` and ``_fullpath()`` methods.
     """
     @clean_object_name
     def __init__(self, path, interface):
@@ -86,39 +87,50 @@ class S3Directory(S3FSLike):
 
         Examples
         --------
-        >>> browser = cloud.get_browser('anunez_raid')
-        >>> browser.auto.k<TAB-COMPLETION>
-        browser.auto.k1
-        browser.auto.k8
+        >>> import cottoncandy as cc
+        >>> browser = cc.get_browser('my_bucket_name')
+        >>> browser.s<TAB>
+        browser.sweet_project
+        >>> browser.sweet_project
+        cottoncandy-path <bucket:my_bucket_name> sweet_project
 
-        >>> browser.auto.k8
-        <directory-like-object @anunez_raid bucket: auto/k8>
+        >>> browser.sweet_project.sub<TAB>
+        browser.sweet_project.sub01_awesome_analysis_DOT_grp
+        browser.sweet_project.sub02_awesome_analysis_DOT_grp
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp
+        <cottoncandy-group <bucket:my_bucket_name> (sub01_awesome_analysis.grp: 3 keys)>
 
-        >>> browser.auto.k8.anunez.proj.deepnet.caffenet_<TAB-COMPLETION>
-        browser.auto.k8.anunez.proj.deepnet.caffenet_ANfs_performance_HDF
-        browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF
+        We can also explore the contents of the ``grp`` object
 
-        >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF
-        <h5py-like-group @anunez_raid bucket: caffenet_BGfs_performance.hdf (6 keys)>
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.<TAB>
+        browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01
+        browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model02
+        browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model03
 
-        >>> # We can also explore the contents of the 'HDF' file
-        >>> browser.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.<TAB-COMPLETION>
-        browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc6
-        browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc7
-        browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8
+        Let's look at one
 
-        >>> # let's look at one
-        >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8
-        <h5py-like-dataset @anunez_raid bucket: caffenet_conv3 [shape=(73221)]>
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01
+        <cottoncandy-dataset <bucket:my_bucket_name [1.00MB:shape=(10000)]>
 
-        >>> # we can download the data as an array
-        >>> arr = browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8.load()
+        We can download the data
+
+        >>> arr = browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01.load()
         >>> arr.shape
-        (73221,)
+        (10000,)
 
-        >>> # we can also download the object. useful when no class for object exists
-        >>> browser.auto.k8.anunez.proj.deepnet.caffenet_BGfs_performance_HDF.caffenet_fc8()
-        s3.Object(bucket_name='anunez_raid', key='auto/k8/anunez/proj/deepnet/caffenet_BGfs_performance.hdf/caffenet_fc8')
+        We can also ask for the object name in the bucket
+
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp._fullpath
+        'sweet_project/sub01_awesome_analysis.grp/result_model01'
+
+        We can also download the object. Useful when dealing with other object types
+
+        >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01()
+        s3.Object(bucket_name='my_bucket_name', key='sweet_project/sub01_awesome_analysis.grp/result_model01')
+
+
+
+
         """
         super(S3Directory, self).__init__(path, interface=interface)
 
@@ -135,6 +147,8 @@ class S3Directory(S3FSLike):
                 # clean extension
                 fl, ext = os.path.splitext(sdir_copy)
                 kk = fl+'_DOT_'+ext[1:] if ext else sdir_copy
+                # clean fucking dashes
+                kk = re.sub('-', '_', kk) if '-' in kk else kk
                 self._subdirs[kk] = sdir
 
     def _ls(self):
