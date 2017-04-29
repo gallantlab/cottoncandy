@@ -1,5 +1,6 @@
 # cottoncandy
 sugar for s3
+http://gallantlab.github.io/cottoncandy/
 
 This is a python scientific library for storing and accessing numpy array data on S3. This is achieved by reading arrays from memory and downloading arrays directly into memory. This means that you don't have to download your array directly to disk, and then load it from disk into your python session.
 
@@ -14,4 +15,14 @@ arr = np.random.randn(100)
 cci.upload_raw_array('myarray', arr)
 arr_down = cci.download_raw_array('myarray')
 assert np.allclose(arr, arr_down)
+```
+
+now with (limited) google drive support. requires a `client_secrets.json` file in your cottoncandy config folder and the pydrive package.
+```
+cci = cc.get_interface(backend = 'gdrive')
+```
+
+and also transparent encryption of cloud files. requires the pycrypto package
+```
+cci = cc.get_encrypted_interface()
 ```

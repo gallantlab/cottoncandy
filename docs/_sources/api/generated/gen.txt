@@ -1,0 +1,7 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+.. toctree::
+
+   generated/cottoncandy.browser
+   generated/cottoncandy.interfaces
+   generated/cottoncandy.utils
