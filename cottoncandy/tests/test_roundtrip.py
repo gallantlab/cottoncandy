@@ -25,6 +25,8 @@ cci = cc.get_interface(bucket_name,
                        verbose=False)
 
 
+
+
 ##############################
 # tests
 ##############################
@@ -61,6 +63,7 @@ def test_upload_from_file():
         fl.write(content)
 
     print(cci.upload_from_file(flname, object_name=object_name))
+    time.sleep(1.0)
     dat = cci.download_object(os.path.join(prefix, 'test'))
     assert dat == content
 
@@ -71,6 +74,7 @@ def test_upload_from_file():
         fl.write(content)
 
     print(cci.upload_from_file(flname, object_name=object_name))
+    time.sleep(1.0)
     dat = cci.download_object(os.path.join(prefix, 'test')).decode()
     assert dat == content
 
@@ -81,6 +85,7 @@ def test_upload_json():
                    )
 
     print(cci.upload_json(object_name, content))
+    time.sleep(1.0)
     dat = cci.download_json(object_name)
     assert dat == content
     cci.rm(object_name, recursive=True)
@@ -91,6 +96,7 @@ def test_pickle_upload():
                    bye='bye?')
 
     print(cci.upload_pickle(object_name, content))
+    time.sleep(1.0)
     dat = cci.download_pickle(object_name)
     assert dat == content
     cci.rm(object_name, recursive=True)
@@ -98,26 +104,28 @@ def test_pickle_upload():
 def test_upload_npy_upload():
     for content in content_generator():
         print(cci.upload_npy_array(object_name, content))
+        time.sleep(1.0)
         dat = cci.download_npy_array(object_name)
         assert np.allclose(dat, content)
 
 def test_upload_raw_array():
     for content in content_generator():
         print(cci.upload_raw_array(object_name, content))
+        time.sleep(1.0)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
-        time.sleep(1.0)
+
 
 
 def test_upload_dask_array():
     for content in content_generator():
         print(cci.upload_dask_array(object_name, content))
+        time.sleep(1.0)
         dat = cci.download_dask_array(object_name)
         dat = np.asarray(dat)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
-        time.sleep(1.0)
 
 
 def test_dict2cloud():
@@ -129,6 +137,7 @@ def test_dict2cloud():
                        )
 
         print(cci.dict2cloud(object_name, content))
+        time.sleep(1.0)
         dat = cci.cloud2dict(object_name)
         assert np.allclose(dat['arr1'], content['arr1'])
         for k,v in content['deep'].items():
