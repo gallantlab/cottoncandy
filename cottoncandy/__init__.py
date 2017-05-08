@@ -12,7 +12,6 @@ from .utils import string2bool
 
 from . import options
 
-
 ACCESS_KEY = options.config.get('login', 'access_key')
 SECRET_KEY = options.config.get('login', 'secret_key')
 ENDPOINT_URL = options.config.get('login', 'endpoint_url')
