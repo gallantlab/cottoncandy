@@ -45,7 +45,7 @@ def generate_AES_key(bytes = 32):
 
     Returns
     -------
-    key : str
+    key : bytes
     """
     try:
         from Crypto import Random
@@ -95,13 +95,13 @@ else:
     try:	# encryption section
         aesKey = config.get('encryption', 'key')
         if aesKey == 'auto':
-            aesKey = b64encode(generate_AES_key())
+            aesKey = str(b64encode(generate_AES_key()))
             config.set("encryption", 'key', aesKey)
             needs_update = True
     except configparser.NoSectionError:
         config.add_section('encryption')
         newKey = generate_AES_key()
-        aesKey = b64encode(newKey)
+        aesKey = str(b64encode(newKey))
         config.set("encryption", 'key', aesKey)
         config.set('encryption', 'method', 'AES')
         needs_update = True

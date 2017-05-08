@@ -554,7 +554,8 @@ class ArrayInterface(BasicInterface):
         # check for conflicts in metadata
         metadata_keys = []
         for k in metadata.keys():
-            metadata_keys.append(k)
+            # check for conflicts in metadata
+            metadata_keys.append(k in meta)
 
         assert not any(metadata_keys)
         meta.update(metadata)
