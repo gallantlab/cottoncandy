@@ -46,12 +46,7 @@ from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_s
                     DEFAULT_ACL, MPU_CHUNKSIZE, MPU_THRESHOLD, DASK_CHUNKSIZE, MB, SEPARATOR,
                     MAGIC_CHECK)
 
-# ------------------
-# Exceptions
-# ------------------
 
-class S3ObjectNotFoundException(Exception):
-    pass
 
 # ------------------
 # Cloud Interfaces
@@ -417,7 +412,7 @@ class BasicInterface(InterfaceObject):
             Dictionary representation of JSON file
         """
         if not self.exists_object(object_name):
-            raise S3ObjectNotFoundException('Object not found: ' + object_name)
+            raise FileNotFoundError('Object not found: ' + object_name)
         obj = self.download_object(object_name)
         return json.loads(obj.decode())
 
@@ -445,7 +440,7 @@ class BasicInterface(InterfaceObject):
         data_object : object
         """
         if not self.exists_object(object_name):
-            raise S3ObjectNotFoundException('Object not found: ' + object_name)
+            raise FileNotFoundError('Object not found: ' + object_name)
         obj = self.download_object(object_name)
         return pickle.loads(obj)
 
@@ -519,7 +514,7 @@ class ArrayInterface(BasicInterface):
         array : np.ndarray
         """
         if not self.exists_object(object_name):
-            raise S3ObjectNotFoundException('Object not found: ' + object_name)
+            raise FileNotFoundError('Object not found: ' + object_name)
         array = np.load(StringIO(self.download_object(object_name)))
         return array
 
@@ -608,8 +603,8 @@ class ArrayInterface(BasicInterface):
         boolean flag. This is all automatically handled by ``upload_raw_array``.
         """
         if not self.exists_object(object_name):
-            raise S3ObjectNotFoundException('Object not found: ' + object_name)
-        
+            raise FileNotFoundError('Object not found: ' + object_name)
+
         arraystream = self.download_stream(object_name)
 
         shape = arraystream.metadata['shape']
@@ -1261,7 +1256,7 @@ class FileSystemInterface(BasicInterface):
 
     def get_object_owner(self, object_name):
         if not self.exists_object(object_name):
-            raise S3ObjectNotFoundException('Object not found: ' + object_name)
+            raise FileNotFoundError('Object not found: ' + object_name)
         ob = self.get_object(object_name)
         try:
             acl = ob.Acl()

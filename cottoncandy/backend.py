@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 
 class FileNotFoundError(RuntimeError):
     """File not found error"""
@@ -6,11 +7,12 @@ class CCBackEnd(object):
     """
     Interface for cottoncandy backends
     """
+    __metaclass__ = ABCMeta
     def __init__(self):
         pass
 
     ## Basic File IO
-
+    @abstractmethod
     def check_file_exists(self, file_name, bucket_name):
         """Checks whether a file exists on the cloud
 
@@ -25,8 +27,9 @@ class CCBackEnd(object):
         -------
         bool
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def upload_stream(self, stream, cloudName, metadata, permissions):
         """Uploads a stream object with a .read() function
 
@@ -45,8 +48,9 @@ class CCBackEnd(object):
         -------
         bool, upload success
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def upload_file(self, file_name, cloud_name, permissions):
         """Uploads a file from disk
 
@@ -63,8 +67,9 @@ class CCBackEnd(object):
         -------
         bool, upload success
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def upload_multipart(self, stream, cloud_name, metadata, permissions, buffersize, verbose):
         """Multi-part upload for large stream objects
 
@@ -87,8 +92,9 @@ class CCBackEnd(object):
         -------
         bool, upload success
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def download_stream(self, cloud_name):
         """Downloads a object to an in-memory stream
 
@@ -101,8 +107,9 @@ class CCBackEnd(object):
         -------
         CloudStream object
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def download_to_file(self, cloud_name, file_name):
         """Downloads an object directly to disk
 
@@ -117,10 +124,11 @@ class CCBackEnd(object):
         -------
         bool, download success
         """
-        raise NotImplementedError
+        pass
 
     ## Basic File management
 
+    @abstractmethod
     def list_directory(self, path, limit):
         """Lists the content of a directory
 
@@ -133,8 +141,9 @@ class CCBackEnd(object):
         -------
 
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def list_objects(self):
         """Gets all objects contained by backend
 
@@ -142,8 +151,9 @@ class CCBackEnd(object):
         -------
 
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def copy(self, source, destination, source_bucket, destination_bucket, overwrite):
         """Copies an object
 
@@ -164,8 +174,9 @@ class CCBackEnd(object):
         -------
         bool, copy success
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def move(self, source, destination, source_bucket, destination_bucket, overwrite):
         """Moves an object
 
@@ -181,8 +192,9 @@ class CCBackEnd(object):
         -------
 
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def delete(self, file_name, recursive=False, delete=False):
         """Deletes an object
 
@@ -199,9 +211,10 @@ class CCBackEnd(object):
         -------
 
         """
-        raise NotImplementedError
+        pass
 
     @property
+    @abstractmethod
     def size(self):
         """Size of stored cloud items in bytes
 
@@ -209,7 +222,7 @@ class CCBackEnd(object):
         -------
         int
         """
-        raise NotImplementedError
+        pass
 
 class CloudStream(object):
     """
