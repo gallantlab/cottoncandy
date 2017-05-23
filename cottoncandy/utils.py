@@ -193,7 +193,6 @@ def get_keys():
     return access_key, secret_key
 
 
-
 ##############################
 # object display
 ##############################
