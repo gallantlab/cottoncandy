@@ -37,7 +37,6 @@ import os
 import re
 
 from .s3client import S3Client, botocore
-from .gdriveclient import GDriveClient
 from warnings import warn
 from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_size, read_buffered,
                     generate_ndarray_chunks, remove_trivial_magic, has_real_magic, objects2names,
@@ -89,6 +88,7 @@ class BasicInterface(InterfaceObject):
         if backend == 's3':
             self.backend_interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url, force_bucket_creation)
         elif backend == 'gdrive':
+            from .gdriveclient import GDriveClient
             self.backend_interface = GDriveClient(ACCESS_KEY, SECRET_KEY)
         else:
             raise ValueError('Bad backend')
@@ -1227,12 +1227,13 @@ class FileSystemInterface(BasicInterface):
         deleting 15 objects...
         """
 
-        if isinstance(self.backend_interface, GDriveClient):
-            return self.backend_interface.delete(object_name, recursive, delete)
-
         # not moving this to the basic S3Client because it depends on glob
         if self.exists_object(object_name):
             return self.backend_interface.get_s3_object(object_name).delete()
+
+        if not isinstance(self.backend_interface, S3Client):
+            from .gdriveclient import GDriveClient
+            return self.backend_interface.delete(object_name, recursive, delete)
 
         has_objects = len(self.ls(object_name)) > 0
         if has_objects:
