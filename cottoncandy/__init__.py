@@ -29,7 +29,8 @@ def get_interface(bucket_name=default_bucket,
                   endpoint_url=ENDPOINT_URL,
                   force_bucket_creation=force_bucket_creation,
                   verbose=True,
-                  backend='s3'):
+                  backend='s3',
+                  **kwargs):
     """Return an interface to the cloud.
 
     Parameters
@@ -41,6 +42,11 @@ def get_interface(bucket_name=default_bucket,
         The URL for the S3 gateway
     backend : 's3'|'gdrive'
         What backend to hook on to
+    kwargs :
+        S3 only. kwargs passed to botocore. For example,
+        >>> from botocore.client import Config
+        >>> config = Config(connect_timeout=50, read_timeout=10*60)
+        >>> cci = cc.get_interface('my_bucket', config=config)
 
     Returns
     -------
@@ -62,7 +68,8 @@ def get_interface(bucket_name=default_bucket,
                                  endpoint_url,
                                  force_bucket_creation,
                                  verbose=verbose,
-                                 backend = backend)
+                                 backend = backend,
+                                 **kwargs)
     return interface
 
 

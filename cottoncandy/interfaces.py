@@ -37,7 +37,6 @@ import os
 import re
 
 from .s3client import S3Client, botocore
-from .gdriveclient import GDriveClient
 from warnings import warn
 from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_size, read_buffered,
                     generate_ndarray_chunks, remove_trivial_magic, has_real_magic, objects2names,
@@ -63,7 +62,7 @@ class BasicInterface(InterfaceObject):
     def __init__(self, bucket_name,
                  ACCESS_KEY, SECRET_KEY, url=None,
                  force_bucket_creation=False,
-                 verbose=True, backend='s3'):
+                 verbose=True, backend='s3', **kwargs):
         """
         Parameters
         ----------
@@ -80,6 +79,8 @@ class BasicInterface(InterfaceObject):
             print things?
         backend: 's3'|'gdrive'
             Access s3 or google drive?
+        kwargs : dict,
+            S3 only. Passed to backend.
 
         Returns
         -------
@@ -88,8 +89,11 @@ class BasicInterface(InterfaceObject):
         """
 
         if backend == 's3':
-            self.backend_interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url, force_bucket_creation)
+            self.backend_interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url,
+                                              force_bucket_creation,
+                                              **kwargs)
         elif backend == 'gdrive':
+            from .gdriveclient import GDriveClient
             self.backend_interface = GDriveClient(ACCESS_KEY, SECRET_KEY)
         else:
             raise ValueError('Bad backend')
@@ -637,7 +641,7 @@ class ArrayInterface(BasicInterface):
         verbose : bool
             Whether to print object_name after completion
         """
-        for k, v in array_dict.iteritems():
+        for k, v in array_dict.items():
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
@@ -777,7 +781,7 @@ class ArrayInterface(BasicInterface):
                 if chunk_idx not in dimension_sizes[dim]:
                     dimension_sizes[dim][chunk_idx] = metadata['chunk_sizes'][sample_idx][dim]
 
-        chunks = [[value for k, value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
+        chunks = [[value for k, value in sorted(sizes.items())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
 
@@ -1233,12 +1237,13 @@ class FileSystemInterface(BasicInterface):
         deleting 15 objects...
         """
 
-        if isinstance(self.backend_interface, GDriveClient):
-            return self.backend_interface.delete(object_name, recursive, delete)
-
         # not moving this to the basic S3Client because it depends on glob
         if self.exists_object(object_name):
             return self.backend_interface.get_s3_object(object_name).delete()
+
+        if not isinstance(self.backend_interface, S3Client):
+            from .gdriveclient import GDriveClient
+            return self.backend_interface.delete(object_name, recursive, delete)
 
         has_objects = len(self.ls(object_name)) > 0
         if has_objects:

@@ -442,13 +442,13 @@ class GzipInputStream(object):
     Adapted from: http://effbot.org/librarybook/zlib-example-4.py
     """
 
-    def __init__(self, fileobj):
+    def __init__(self, fileobj, block_size=16384):
         """
         Initialize with the given file-like object.
 
         @param fileobj: file-like object,
         """
-        self.BLOCK_SIZE = 16384                       # Read block size
+        self.BLOCK_SIZE = block_size                       # Read block size
         # zlib window buffer size, set to gzip's format
         self.WINDOW_BUFFER_SIZE = 16 + zlib.MAX_WBITS
 

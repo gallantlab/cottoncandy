@@ -26,7 +26,7 @@ class S3Client(CCBackEnd):
     """
 
     @staticmethod
-    def connect(ACCESS_KEY, SECRET_KEY, url):
+    def connect(ACCESS_KEY, SECRET_KEY, url, **kwargs):
         """Connect to S3 using boto
 
         Parameters
@@ -34,6 +34,8 @@ class S3Client(CCBackEnd):
         ACCESS_KEY
         SECRET_KEY
         url
+        kwargs : dict
+            Extra keyword arguments to `boto3.resource`
 
         Returns
         -------
@@ -42,11 +44,12 @@ class S3Client(CCBackEnd):
         s3 = boto3.resource('s3',
                             endpoint_url = url,
                             aws_access_key_id = ACCESS_KEY,
-                            aws_secret_access_key = SECRET_KEY)
+                            aws_secret_access_key = SECRET_KEY,
+                            **kwargs)
         s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
         return s3
 
-    def __init__(self, bucket, access_key, secret_key, s3url, force_bucket_creation=False):
+    def __init__(self, bucket, access_key, secret_key, s3url, force_bucket_creation=False, **kwargs):
         """Constructor
 
         Parameters
@@ -59,7 +62,7 @@ class S3Client(CCBackEnd):
         """
         super(S3Client, self).__init__()
 
-        self.connection = S3Client.connect(access_key, secret_key, s3url)
+        self.connection = S3Client.connect(access_key, secret_key, s3url, **kwargs)
         self.url = s3url
         if self.check_bucket_exists(bucket):
             self.set_current_bucket(bucket)
@@ -219,7 +222,7 @@ class S3Client(CCBackEnd):
         else:
             request = bucket.objects.filter(**prefix)
 
-        for method_name, value in defaults.iteritems():
+        for method_name, value in defaults.items():
             if value is None:
                 continue
             method = getattr(request, method_name)
