@@ -426,10 +426,14 @@ def read_buffered(frm, to, buffersize=64):
         Array to which the contents will be put
     '''
     nbytes_total = to.size * to.dtype.itemsize
+    to_ravelled = to.view()
+    to_ravelled.shape = -1,
+    to_ravelled.dtype = 'uint8'
+
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize
         end = min(nbytes_total, (ci + 1) * buffersize)
-        to.data[start:end] = frm.read(end - start)
+        to_ravelled.data[start:end] = frm.read(end - start)
 
 
 class GzipInputStream(object):
