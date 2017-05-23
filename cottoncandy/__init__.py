@@ -43,6 +43,11 @@ def get_interface(bucket_name=default_bucket,
         The URL for the S3 gateway
     backend : 's3'|'gdrive'
         What backend to hook on to
+    kwargs :
+        S3 only. kwargs passed to botocore. For example,
+        >>> from botocore.client import Config
+        >>> config = Config(connect_timeout=50, read_timeout=10*60)
+        >>> cci = cc.get_interface('my_bucket', config=config)
 
     Returns
     -------
