@@ -635,7 +635,7 @@ class ArrayInterface(BasicInterface):
         verbose : bool
             Whether to print object_name after completion
         """
-        for k, v in array_dict.iteritems():
+        for k, v in array_dict.items():
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
@@ -775,7 +775,7 @@ class ArrayInterface(BasicInterface):
                 if chunk_idx not in dimension_sizes[dim]:
                     dimension_sizes[dim][chunk_idx] = metadata['chunk_sizes'][sample_idx][dim]
 
-        chunks = [[value for k, value in sorted(sizes.iteritems())] for sizes in dimension_sizes]
+        chunks = [[value for k, value in sorted(sizes.items())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
 

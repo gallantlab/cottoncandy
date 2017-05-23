@@ -221,7 +221,7 @@ class S3Client(CCBackEnd):
         else:
             request = bucket.objects.filter(**prefix)
 
-        for method_name, value in defaults.iteritems():
+        for method_name, value in defaults.items():
             if value is None:
                 continue
             method = getattr(request, method_name)
