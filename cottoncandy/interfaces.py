@@ -46,6 +46,7 @@ from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_s
                     MAGIC_CHECK)
 
 
+
 # ------------------
 # Cloud Interfaces
 # ------------------
@@ -127,15 +128,22 @@ class BasicInterface(InterfaceObject):
             return None
 
     @clean_object_name
-    def exists_object(self, object_name, bucket_name=None):
+    def exists_object(self, object_name, bucket_name=None, raise_err=False):
         """Check whether object exists in bucket
 
         Parameters
         ----------
         object_name : str
             The object name
+        raise_err : boolean
+            If set to True, this function will throw an exception if the
+            object does not exist.
         """
-        return self.backend_interface.check_file_exists(object_name, bucket_name)
+        exists = self.backend_interface.check_file_exists(object_name, bucket_name)
+        if raise_err and not exists:
+            raise FileNotFoundError('Object not found: ' + object_name)
+        else:
+            return exists
 
     def exists_bucket(self, bucket_name):
         """Check whether the bucket exists"""
@@ -414,7 +422,7 @@ class BasicInterface(InterfaceObject):
         json_data : dict
             Dictionary representation of JSON file
         """
-        assert self.exists_object(object_name)
+        self.exists_object(object_name, raise_err=True)
         obj = self.download_object(object_name)
         return json.loads(obj.decode())
 
@@ -441,7 +449,7 @@ class BasicInterface(InterfaceObject):
         -------
         data_object : object
         """
-        assert self.exists_object(object_name)
+        self.exists_object(object_name, raise_err=True)
         obj = self.download_object(object_name)
         return pickle.loads(obj)
 
@@ -514,7 +522,7 @@ class ArrayInterface(BasicInterface):
         -------
         array : np.ndarray
         """
-        assert self.exists_object(object_name)
+        self.exists_object(object_name, raise_err=True)
         array = np.load(StringIO(self.download_object(object_name)))
         return array
 
@@ -602,7 +610,8 @@ class ArrayInterface(BasicInterface):
         The object must have metadata containing: shape, dtype and a gzip
         boolean flag. This is all automatically handled by ``upload_raw_array``.
         """
-        assert self.exists_object(object_name)
+        self.exists_object(object_name, raise_err=True)
+
         arraystream = self.download_stream(object_name)
 
         shape = arraystream.metadata['shape']
@@ -1254,7 +1263,7 @@ class FileSystemInterface(BasicInterface):
         print(msg % object_name)
 
     def get_object_owner(self, object_name):
-        assert self.exists_object(object_name)
+        self.exists_object(object_name, raise_err=True)
         ob = self.get_object(object_name)
         try:
             acl = ob.Acl()

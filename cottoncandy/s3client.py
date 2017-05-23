@@ -1,4 +1,5 @@
 from __future__ import print_function
+from functools import reduce
 import boto3
 import botocore
 import logging
