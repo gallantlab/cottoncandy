@@ -61,7 +61,7 @@ class BasicInterface(InterfaceObject):
     def __init__(self, bucket_name,
                  ACCESS_KEY, SECRET_KEY, url=None,
                  force_bucket_creation=False,
-                 verbose=True, backend='s3'):
+                 verbose=True, backend='s3', **kwargs):
         """
         Parameters
         ----------
@@ -78,6 +78,8 @@ class BasicInterface(InterfaceObject):
             print things?
         backend: 's3'|'gdrive'
             Access s3 or google drive?
+        kwargs : dict,
+            S3 only. Passed to backend.
 
         Returns
         -------
@@ -86,7 +88,9 @@ class BasicInterface(InterfaceObject):
         """
 
         if backend == 's3':
-            self.backend_interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url, force_bucket_creation)
+            self.backend_interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url,
+                                              force_bucket_creation,
+                                              **kwargs)
         elif backend == 'gdrive':
             from .gdriveclient import GDriveClient
             self.backend_interface = GDriveClient(ACCESS_KEY, SECRET_KEY)

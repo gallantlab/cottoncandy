@@ -30,7 +30,8 @@ def get_interface(bucket_name=default_bucket,
                   endpoint_url=ENDPOINT_URL,
                   force_bucket_creation=force_bucket_creation,
                   verbose=True,
-                  backend='s3'):
+                  backend='s3',
+                  **kwargs):
     """Return an interface to the cloud.
 
     Parameters
@@ -63,7 +64,8 @@ def get_interface(bucket_name=default_bucket,
                                  endpoint_url,
                                  force_bucket_creation,
                                  verbose=verbose,
-                                 backend = backend)
+                                 backend = backend,
+                                 **kwargs)
     return interface
 
 
