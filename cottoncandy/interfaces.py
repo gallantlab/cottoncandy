@@ -36,6 +36,8 @@ import cottoncandy.browser
 import os
 import re
 
+from cottoncandy.backend import FileNotFoundError
+
 from .s3client import S3Client, botocore
 from warnings import warn
 from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_size, read_buffered,
