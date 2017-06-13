@@ -437,7 +437,13 @@ class BasicInterface(InterfaceObject):
         object_name : str
         data_object : object
         """
-        return self.upload_object(object_name, StringIO(pickle.dumps(data_object)), acl)
+        object_to_upload = StringIO(pickle.dumps(data_object))
+        object_size = get_fileobject_size(object_to_upload)
+        if object_size > MPU_THRESHOLD:
+            response = self.mpu_fileobject(object_name, object_to_upload, acl)
+        else:
+            response = self.upload_object(object_name, object_to_upload, acl)
+        return response
 
     @clean_object_name
     def download_pickle(self, object_name):
