@@ -289,7 +289,11 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
-        self.backend_interface.upload_stream(body, object_name, metadata, acl)
+        # First check size of object to see if MPU is necessary
+        if get_fileobject_size(body) > MPU_THRESHOLD:
+            self.mpu_fileobject(object_name, body, acl=acl)
+        else:
+            self.backend_interface.upload_stream(body, object_name, metadata, acl)
 
     def download_stream(self, object_name):
         """
@@ -438,11 +442,7 @@ class BasicInterface(InterfaceObject):
         data_object : object
         """
         object_to_upload = StringIO(pickle.dumps(data_object))
-        object_size = get_fileobject_size(object_to_upload)
-        if object_size > MPU_THRESHOLD:
-            response = self.mpu_fileobject(object_name, object_to_upload, acl)
-        else:
-            response = self.upload_object(object_name, object_to_upload, acl)
+        response = self.upload_object(object_name, object_to_upload, acl)
         return response
 
     @clean_object_name
@@ -511,11 +511,7 @@ class ArrayInterface(BasicInterface):
         arr_strio = StringIO()
         np.save(arr_strio, array)
         arr_strio.seek(0)
-        try:
-            response = self.upload_object(object_name, arr_strio, acl, **metadata)
-        except OverflowError:
-            # TODO: replace with MAX_PUT_SIZE check
-            response = self.mpu_fileobject(object_name, arr_strio, **metadata)
+        response = self.upload_object(object_name, arr_strio, acl, **metadata)
         return response
 
     @clean_object_name
@@ -592,10 +588,7 @@ class ArrayInterface(BasicInterface):
             data_nbytes = array.nbytes
             filestream = StringIO(array.data)
 
-        if data_nbytes > MPU_THRESHOLD:
-            response = self.mpu_fileobject(object_name, filestream, **meta)
-        else:
-            response = self.upload_object(object_name, filestream, DEFAULT_ACL, **meta)
+        response = self.upload_object(object_name, filestream, DEFAULT_ACL, **meta)
 
         return response
 
