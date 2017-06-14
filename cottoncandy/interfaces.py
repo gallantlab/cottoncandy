@@ -291,9 +291,9 @@ class BasicInterface(InterfaceObject):
     def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
         # First check size of object to see if MPU is necessary
         if get_fileobject_size(body) > MPU_THRESHOLD:
-            self.mpu_fileobject(object_name, body, acl=acl)
+            self.mpu_fileobject(object_name, body, metadata, acl=acl)
         else:
-            self.backend_interface.upload_stream(body, object_name, metadata, acl)
+            self.backend_interface.upload_stream(body, object_name, metadata, acl=acl)
 
     def download_stream(self, object_name):
         """
