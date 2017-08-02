@@ -20,7 +20,7 @@ object_name = os.path.join(prefix, 'test')
 # login
 ##############################
 
-if False:
+if True:
     # for travis testing on AWS.
     bucket_name = os.environ['DL_BUCKET_NAME']
     AK = os.environ['DL_ACCESS_KEY']
