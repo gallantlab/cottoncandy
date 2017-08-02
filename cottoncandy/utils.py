@@ -2,6 +2,7 @@
 '''
 import os
 import re
+import six
 import zlib
 import string
 import urllib
@@ -425,11 +426,24 @@ def read_buffered(frm, to, buffersize=64):
         Array to which the contents will be put
     '''
     nbytes_total = to.size * to.dtype.itemsize
+    if six.PY3:
+        if to.flags['F_CONTIGUOUS']:
+            vw = to.T.view()
+        else:
+            vw = to.view()
+        vw.shape = (-1,) # Must be a ravel-able object
+        vw.dtype = np.dtype('uint8') # 256 values in each byte
+
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize
         end = min(nbytes_total, (ci + 1) * buffersize)
-        to.data[start:end] = frm.read(end - start)
-
+        chunk = frm.read(end - start)
+        if six.PY2:
+            to.data[start:end] = chunk
+        elif six.PY3:
+            vw.data[start:end] = chunk
+        else:
+            raise("Unknown python version")
 
 class GzipInputStream(object):
     """Simple class that allow streaming reads from GZip files

@@ -3,6 +3,7 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from pydrive.files import GoogleDriveFile, FileNotUploadedError, ApiRequestError
 from .backend import CCBackEnd, FileNotFoundError, CloudStream
+import six
 import sys
 import re
 
@@ -428,7 +429,7 @@ class GDriveClient(CCBackEnd):
         if cloud_name is None:
             cloud_name = file_name
 
-        if type(file_name) != str:
+        if not isinstance(file_name, six.string_types): #type(file_name) != str:
             # assume this is a file_name-like object
             self.upload_stream(file_name, cloud_name)
 
