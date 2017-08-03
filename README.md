@@ -1,4 +1,6 @@
 # cottoncandy
+[![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=master)](https://travis-ci.org/gallantlab/cottoncandy)
+
 sugar for s3
 http://gallantlab.github.io/cottoncandy/
 
