@@ -563,8 +563,6 @@ class ArrayInterface(BasicInterface):
                    'before saving (will use extra memory)')
             array = np.array(array, order = order)
 
-
-
         meta = dict(dtype = array.dtype.str,
                     shape = ','.join(map(str, array.shape)),
                     gzip = str(gzip),
@@ -580,12 +578,11 @@ class ArrayInterface(BasicInterface):
         meta.update(metadata)
 
         if gzip:
-            if six.PY3:
+            if six.PY3 and array.flags['F_CONTIGUOUS']:
                 # eventually, array.data below should be changed to np.getbuffer(array)
                 # (not yet working in python3 numpy)
-                if array.flags['F_CONTIGUOUS']:
-                    # F-contiguous arrays break gzip in python 3
-                    array = array.T
+                # F-contiguous arrays break gzip in python 3
+                array = array.T
             zipdata = StringIO()
             gz = GzipFile(mode = 'wb', fileobj = zipdata)
             gz.write(array.data)

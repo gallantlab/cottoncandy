@@ -431,19 +431,18 @@ def read_buffered(frm, to, buffersize=64):
             vw = to.T.view()
         else:
             vw = to.view()
-        vw.shape = (-1,) # Must be a ravel-able object
-        vw.dtype = np.dtype('uint8') # 256 values in each byte
+        vw.shape = (-1,)                # Must be a ravel-able object
+        vw.dtype = np.dtype('uint8')    # 256 values in each byte
 
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize
         end = min(nbytes_total, (ci + 1) * buffersize)
-        chunk = frm.read(end - start)
         if six.PY2:
-            to.data[start:end] = chunk
+            to.data[start:end] = frm.read(end - start)
         elif six.PY3:
-            vw.data[start:end] = chunk
+            vw.data[start:end] = frm.read(end - start)
         else:
-            raise("Unknown python version")
+            raise("Unknown python version") # not sure six will ever do anything here (6=2x3)
 
 class GzipInputStream(object):
     """Simple class that allow streaming reads from GZip files

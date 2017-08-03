@@ -13,7 +13,7 @@ import cottoncandy as cc
 
 DATE = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 
-prefix = 'testcc/%s/py%s'%(DATE, sys.version[:sys.version.find(' ')])
+prefix = 'testcc/%s/py%s'%(DATE, sys.version[:6])
 object_name = os.path.join(prefix, 'test')
 
 

@@ -429,7 +429,7 @@ class GDriveClient(CCBackEnd):
         if cloud_name is None:
             cloud_name = file_name
 
-        if not isinstance(file_name, six.string_types): #type(file_name) != str:
+        if not isinstance(file_name, six.string_types):
             # assume this is a file_name-like object
             self.upload_stream(file_name, cloud_name)
 
