@@ -1,4 +1,5 @@
 import json
+import six
 
 try:
     import cPickle as pickle
@@ -413,7 +414,7 @@ class BasicInterface(InterfaceObject):
         metadata : dict, optional
         """
         json_data = json.dumps(ddict)
-        return self.upload_object(object_name, StringIO(json_data), acl, **metadata)
+        return self.upload_object(object_name, StringIO(json_data.encode()), acl, **metadata)
 
     @clean_object_name
     def download_json(self, object_name):
@@ -577,6 +578,11 @@ class ArrayInterface(BasicInterface):
         meta.update(metadata)
 
         if gzip:
+            if six.PY3 and array.flags['F_CONTIGUOUS']:
+                # eventually, array.data below should be changed to np.getbuffer(array)
+                # (not yet working in python3 numpy)
+                # F-contiguous arrays break gzip in python 3
+                array = array.T
             zipdata = StringIO()
             gz = GzipFile(mode = 'wb', fileobj = zipdata)
             gz.write(array.data)
@@ -619,7 +625,7 @@ class ArrayInterface(BasicInterface):
         shape = map(int, shape.split(',')) if shape else ()
         dtype = np.dtype(arraystream.metadata['dtype'])
         order = arraystream.metadata.get('order', 'C')
-        array = np.empty(shape, dtype = dtype, order = order)
+        array = np.empty(tuple(shape), dtype = dtype, order = order)
 
         body = arraystream.content
         if 'gzip' in arraystream.metadata and arraystream.metadata['gzip'] == 'True':

@@ -20,7 +20,7 @@ object_name = os.path.join(prefix, 'test')
 # login
 ##############################
 
-if 1:
+if True:
     # for travis testing on AWS.
     bucket_name = os.environ['DL_BUCKET_NAME']
     AK = os.environ['DL_ACCESS_KEY']
@@ -64,7 +64,7 @@ def content_generator():
                 if kind == 'raw':
                     yield data
                 elif kind == 'slice':
-                    yield data[data.shape[0]/2:]
+                    yield data[int(data.shape[0]/2):]
                 elif kind == 'nonco':
                     yield data[np.random.randint(0,data.shape[0],10)]
 
@@ -125,8 +125,8 @@ def test_upload_npy_upload():
         assert np.allclose(dat, content)
 
 def test_upload_raw_array():
-    for content in content_generator():
-        print(cci.upload_raw_array(object_name, content))
+    for i, content in enumerate(content_generator()):
+        print(i, cci.upload_raw_array(object_name, content))
         time.sleep(1.0)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)

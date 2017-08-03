@@ -57,7 +57,7 @@ def content_generator():
     for kind in kinds:
         for order in orders:
             for dtype in types:
-                data = np.random.randn(1 + 200*(2**20)/8)
+                data = np.random.randn(int(1 + 200*(2**20)/8))
                 data = np.asarray(data, order=order).astype(dtype)
 
                 if kind == 'raw':
