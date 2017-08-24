@@ -303,14 +303,14 @@ class S3Client(CCBackEnd):
         bucket_name = self.get_bucket_name(bucket_name)
         return self.connection.Object(bucket_name = bucket_name, key = file_name)
 
-    def upload_stream(self, body, file_name, metadata, acl=DEFAULT_ACL):
+    def upload_stream(self, body, file_name, metadata, permissions=DEFAULT_ACL):
         """Uploads a stream
 
         Parameters
         ----------
         file_name
         body : stream
-        acl
+        permissions
         metadata
 
         Returns
@@ -318,7 +318,7 @@ class S3Client(CCBackEnd):
 
         """
         obj = self.get_s3_object(file_name)
-        return obj.put(Body = body, ACL = acl, Metadata = metadata)
+        return obj.put(Body = body, ACL = permissions, Metadata = metadata)
 
     def download_stream(self, file_name):
         """Download object raw data.
@@ -338,7 +338,7 @@ class S3Client(CCBackEnd):
         s3_object = self.get_s3_object(file_name)
         return CloudStream(BytesIO(s3_object.get()['Body'].read()), s3_object.metadata)
 
-    def upload_file(self, file_name, cloud_name=None, acl=DEFAULT_ACL):
+    def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL):
         """Upload a file to S3.
 
         Parameters
@@ -348,7 +348,7 @@ class S3Client(CCBackEnd):
         cloud_name : str, None
             Name of uploaded object. If None, use
             the full file name as the object name.
-        acl: ???
+        permissions: ???
             S3 permissions
 
         Returns
@@ -359,7 +359,7 @@ class S3Client(CCBackEnd):
         if file_name is None:
             file_name = os.path.abspath(file_name)
         s3_object = self.get_s3_object(cloud_name)
-        return s3_object.upload_file(file_name, ExtraArgs = dict(ACL = acl))
+        return s3_object.upload_file(file_name, ExtraArgs = dict(ACL = permissions))
 
     def download_to_file(self, file_name, local_name):
         """Download S3 object to a file

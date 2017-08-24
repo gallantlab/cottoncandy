@@ -294,7 +294,7 @@ class BasicInterface(InterfaceObject):
         if get_fileobject_size(body) > MPU_THRESHOLD:
             self.mpu_fileobject(object_name, body, acl=acl, **metadata)
         else:
-            self.backend_interface.upload_stream(body, object_name, metadata, acl=acl)
+            self.backend_interface.upload_stream(body, object_name, metadata, permissions=acl)
 
     def download_stream(self, object_name):
         """
