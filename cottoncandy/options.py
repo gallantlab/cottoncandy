@@ -61,7 +61,10 @@ userdir = appdirs.user_data_dir("cottoncandy", "aone")
 usercfg = os.path.join(userdir, "options.cfg")
 
 config = configparser.ConfigParser()
-config.read_file(open(os.path.join(cwd, 'defaults.cfg')))
+try:
+    config.read_file(open(os.path.join(cwd, 'defaults.cfg')))
+except AttributeError as e:
+    config.read_fp(open(os.path.join(cwd, 'defaults.cfg')))
 
 
 # case no user config file
