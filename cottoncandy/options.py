@@ -1,5 +1,6 @@
 import os
 from base64 import b64decode, b64encode
+import sys
 try:
     import configparser
 except ImportError:
@@ -60,11 +61,14 @@ userdir = appdirs.user_data_dir("cottoncandy", "aone")
 usercfg = os.path.join(userdir, "options.cfg")
 
 config = configparser.ConfigParser()
-config.readfp(open(os.path.join(cwd, 'defaults.cfg')))
+try:
+    config.read_file(open(os.path.join(cwd, 'defaults.cfg')))
+except AttributeError as e:
+    config.readfp(open(os.path.join(cwd, 'defaults.cfg')))
 
 
 # case no user config file
-if len(config.read(usercfg)) == 0:
+if not os.path.exists(usercfg):
     if not os.path.exists(userdir):
         os.makedirs(userdir)
 
@@ -95,8 +99,14 @@ else:
     try:	# encryption section
         aesKey = config.get('encryption', 'key')
         if aesKey == 'auto':
+            key = 'key'
             aesKey = str(b64encode(generate_AES_key()))
-            config.set("encryption", 'key', aesKey)
+
+            if sys.version[0] == '2':
+                key = key.decode('utf8')
+                aesKey = aesKey.decode('utf8')
+
+            config.set("encryption", key, aesKey)
             needs_update = True
     except configparser.NoSectionError:
         config.add_section('encryption')
