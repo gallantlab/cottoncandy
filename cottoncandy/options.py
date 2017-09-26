@@ -64,7 +64,7 @@ config = configparser.ConfigParser()
 try:
     config.read_file(open(os.path.join(cwd, 'defaults.cfg')))
 except AttributeError as e:
-    config.read_fp(open(os.path.join(cwd, 'defaults.cfg')))
+    config.readfp(open(os.path.join(cwd, 'defaults.cfg')))
 
 
 # case no user config file
