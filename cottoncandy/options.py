@@ -61,14 +61,12 @@ userdir = appdirs.user_data_dir("cottoncandy", "aone")
 usercfg = os.path.join(userdir, "options.cfg")
 
 config = configparser.ConfigParser()
-try:
-    config.read_file(open(os.path.join(cwd, 'defaults.cfg')))
-except AttributeError as e:
-    config.readfp(open(os.path.join(cwd, 'defaults.cfg')))
+config.readfp(open(os.path.join(cwd, 'defaults.cfg')))
+
 
 
 # case no user config file
-if not os.path.exists(usercfg):
+if len(config.read(usercfg)) == 0:
     if not os.path.exists(userdir):
         os.makedirs(userdir)
 
@@ -99,14 +97,8 @@ else:
     try:	# encryption section
         aesKey = config.get('encryption', 'key')
         if aesKey == 'auto':
-            key = 'key'
             aesKey = str(b64encode(generate_AES_key()))
-
-            if sys.version[0] == '2':
-                key = key.decode('utf8')
-                aesKey = aesKey.decode('utf8')
-
-            config.set("encryption", key, aesKey)
+            config.set("encryption", 'key', aesKey)
             needs_update = True
     except configparser.NoSectionError:
         config.add_section('encryption')
@@ -125,6 +117,6 @@ else:
         config.set('gdrive', 'credentials', 'credentials.txt')
         needs_update = True
 
-    if needs_update :
+    if needs_update:
         with open(usercfg, 'w') as configfile:
             config.write(configfile)
