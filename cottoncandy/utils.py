@@ -323,6 +323,18 @@ def remove_trivial_magic(s):
     return s[:-1] # remove '*' at end
 
 
+def split_uri(uri, pattern='s3://', separator='/'):
+    """Convert a URI to a bucket, object name tuple.
+
+    's3://bucket/path/to/thing' -> ('bucket', 'path/to/thing')
+    """
+    assert pattern in uri
+    parts = uri[len(pattern):].split(separator)
+    bucket = parts[0]
+    path = separator.join(parts[1:])
+    return bucket, path
+
+
 def mk_aws_path(path):
     """Make the `path` behave as expected when querying S3 with
     `list_objects`.
