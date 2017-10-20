@@ -1,8 +1,10 @@
 # cottoncandy
 [![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=master)](https://travis-ci.org/gallantlab/cottoncandy)
+[![DOI](https://zenodo.org/badge/58677370.svg)](https://zenodo.org/badge/latestdoi/58677370)
 
 sugar for s3
 http://gallantlab.github.io/cottoncandy/
+
 
 This is a python scientific library for storing and accessing numpy array data on S3. This is achieved by reading arrays from memory and downloading arrays directly into memory. This means that you don't have to download your array directly to disk, and then load it from disk into your python session.
 
@@ -24,7 +26,11 @@ now with (limited) google drive support. requires a `client_secrets.json` file i
 cci = cc.get_interface(backend = 'gdrive')
 ```
 
-and also transparent encryption of cloud files. requires the pycrypto package
+and also transparent encryption of cloud files. requires the pycrypto package. HIGHLY EXPERIMENTAL
 ```
 cci = cc.get_encrypted_interface()
 ```
+
+## cite as
+Anwar O Nunez-Elizalde, Tianjiao Zhang, Alexander G Huth, James Gao, ..., Jack L Gallant. (2017, October 20). cottoncandy: scientific python package for easy cloud storage. Zenodo. http://doi.org/10.5281/zenodo.1034342
+
