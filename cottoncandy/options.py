@@ -104,7 +104,7 @@ else:
 				keyfile.write(aesKey)
 			config.set("encryption", 'key', 'cloud-encryption-key.txt')
 			needs_update = True
-		elif aesKey[:-4] != '.txt':			# key is still directly stored in cottoncandy config
+		elif aesKey[-4:] != '.txt':			# key is still directly stored in cottoncandy config
 			with open(os.path.join(userdir, 'cloud-encryption-key.txt'), 'w') as keyfile:
 				keyfile.write(aesKey)
 			config.set("encryption", 'key', 'cloud-encryption-key.txt')
