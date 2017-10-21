@@ -23,7 +23,7 @@ force_bucket_creation = string2bool(force_bucket_creation)
 encryption = options.config.get('encryption', 'method')
 key = options.config.get('encryption', 'key')
 if key[-4:] == '.txt':
-    with open(key, 'r') as keyfile:
+    with open(os.path.join(options.userdir, key), 'r') as keyfile:
         encryptionKey = b64decode(keyfile.readline())
 else:
     encryptionKey = b64decode(key)
