@@ -5,6 +5,9 @@ import botocore
 import logging
 from io import BytesIO
 
+from botocore.client import Config
+s3config = Config(s3={'addressing_style': 'path'}, signature_version='s3')
+
 from botocore.utils import fix_s3_host
 from cottoncandy.utils import *
 from .backend import CCBackEnd, CloudStream
@@ -62,7 +65,7 @@ class S3Client(CCBackEnd):
         """
         super(S3Client, self).__init__()
 
-        self.connection = S3Client.connect(access_key, secret_key, s3url, **kwargs)
+        self.connection = S3Client.connect(access_key, secret_key, s3url, config = s3config, **kwargs)
         self.url = s3url
         if self.check_bucket_exists(bucket):
             self.set_current_bucket(bucket)
