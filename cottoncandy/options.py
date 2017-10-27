@@ -56,13 +56,22 @@ def generate_AES_key(bytes = 32):
         with open('/dev/random', 'r') as rand:
             return rand.read(bytes)
 
+
+def get_config():
+    config = configparser.ConfigParser()
+    defaults_file = open(os.path.join(cwd, 'defaults.cfg'), 'r')
+    if sys.version_info.major == 2:
+        config.readfp(defaults_file)
+    else:
+        config.read_file(defaults_file)
+    return config
+
+
+
 cwd = os.path.split(os.path.abspath(__file__))[0]
 userdir = appdirs.user_data_dir("cottoncandy", "aone")
 usercfg = os.path.join(userdir, "options.cfg")
-
-config = configparser.ConfigParser()
-defaults_file = open(os.path.join(cwd, 'defaults.cfg'), 'r')
-config.read_file(defaults_file)
+config = get_config()
 
 # case no user config file
 if len(config.read(usercfg)) == 0:
