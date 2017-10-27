@@ -61,9 +61,8 @@ userdir = appdirs.user_data_dir("cottoncandy", "aone")
 usercfg = os.path.join(userdir, "options.cfg")
 
 config = configparser.ConfigParser()
-config.readfp(open(os.path.join(cwd, 'defaults.cfg')))
-
-
+defaults_file = open(os.path.join(cwd, 'defaults.cfg'), 'r')
+config.read_file(defaults_file)
 
 # case no user config file
 if len(config.read(usercfg)) == 0:
