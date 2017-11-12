@@ -356,8 +356,8 @@ class S3Client(CCBackEnd):
         response : boto3 response
         """
         assert os.path.exists(file_name)
-        if file_name is None:
-            file_name = os.path.abspath(file_name)
+        if cloud_name is None:
+            cloud_name = file_name
         s3_object = self.get_s3_object(cloud_name)
         return s3_object.upload_file(file_name, ExtraArgs = dict(ACL = permissions))
 
