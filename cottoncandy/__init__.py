@@ -21,7 +21,11 @@ force_bucket_creation = options.config.get('basic', 'force_bucket_creation')
 force_bucket_creation = string2bool(force_bucket_creation)
 
 encryption = options.config.get('encryption', 'method')
-encryptionKey = b64decode(options.config.get('encryption', 'key'))
+doencryption = options.config.get('encryption', 'key')
+if string2bool(doencryption):
+    encryptionKey = b64decode()
+else:
+    encryptionKey = False
 
 def get_interface(bucket_name=default_bucket,
                   ACCESS_KEY=ACCESS_KEY,
