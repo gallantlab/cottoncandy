@@ -97,12 +97,15 @@ browser.sweet_project.sub02_awesome_analysis_DOT_grp
 <cottoncandy-dataset <bucket:my_bucket_name [1.00MB:shape=(10000)]>
 ```
 
-### Google Drive (experimental)
+### Google Drive backend (experimental)
 
-Requires a client_secrets.json file in your `~/.config/cottoncandy` folder and the [pydrive](https://github.com/googledrive/PyDrive) package. See the [Google Drive setup instructions](https://github.com/gallantlab/cottoncandy/blob/master/google_drive_setup_instructions.md) for more details.
+`cottoncandy` can also use Google Drive as a back-end. This equires a `client_secrets.json` file in your `~/.config/cottoncandy` folder and the [pydrive](https://github.com/googledrive/PyDrive) package. 
+
+See the [Google Drive setup instructions](https://github.com/gallantlab/cottoncandy/blob/master/google_drive_setup_instructions.md) for more details.
 
 ```python
-cci = cc.get_interface(backend='gdrive')
+>>> import cottoncandy as cc
+>>> cci = cc.get_interface(backend='gdrive')
 ```
 
 ### Encryption (highly experimental)
@@ -110,10 +113,11 @@ cci = cc.get_interface(backend='gdrive')
 `cottoncandy`provides a transparent encryption interface for AWS S3 and Google Drive. This requires the `pycrypto` package. This is HIGHLY EXPERIMENTAL.
 
 ```python
-cci = cc.get_encrypted_interface('my_bucket_name',
-                                  ACCESS_KEY='FAKEACCESSKEYTEXT',
-                                  SECRET_KEY='FAKESECRETKEYTEXT',
-                                  endpoint_url='https://s3.amazonaws.com')                               
+>>> import cottoncandy as cc
+>>> cci = cc.get_encrypted_interface('my_bucket_name',
+                                      ACCESS_KEY='FAKEACCESSKEYTEXT',
+                                      SECRET_KEY='FAKESECRETKEYTEXT',
+                                      endpoint_url='https://s3.amazonaws.com')                               
 ```
 
 
