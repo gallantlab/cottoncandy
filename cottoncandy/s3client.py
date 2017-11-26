@@ -98,17 +98,17 @@ class S3Client(CCBackEnd):
         return bucket_name
 
     @clean_object_name
-    def check_file_exists(self, file_name, bucket_name=None):
+    def check_file_exists(self, object_name, bucket_name=None):
         """Check whether object exists in bucket
 
         Parameters
         ----------
-        file_name : str
+        object_name : str
             The object name
         bucket_name
         """
         bucket_name = self.get_bucket_name(bucket_name)
-        ob = self.connection.Object(key = file_name, bucket_name = bucket_name)
+        ob = self.connection.Object(key = object_name, bucket_name = bucket_name)
 
         try:
             ob.load()
@@ -288,12 +288,12 @@ class S3Client(CCBackEnd):
         print('\n'.join(info))
 
     @clean_object_name
-    def get_s3_object(self, file_name, bucket_name=None):
+    def get_s3_object(self, object_name, bucket_name=None):
         """Get a boto3 object. Create it if it doesn't exist
 
         Parameters
         ----------
-        file_name
+        object_name
         bucket_name
 
         Returns
@@ -301,14 +301,14 @@ class S3Client(CCBackEnd):
 
         """
         bucket_name = self.get_bucket_name(bucket_name)
-        return self.connection.Object(bucket_name = bucket_name, key = file_name)
+        return self.connection.Object(bucket_name = bucket_name, key = object_name)
 
-    def upload_stream(self, body, file_name, metadata, permissions=DEFAULT_ACL):
+    def upload_stream(self, body, object_name, metadata, permissions=DEFAULT_ACL):
         """Uploads a stream
 
         Parameters
         ----------
-        file_name
+        object_name
         body : stream
         permissions
         metadata
@@ -317,25 +317,25 @@ class S3Client(CCBackEnd):
         -------
 
         """
-        obj = self.get_s3_object(file_name)
+        obj = self.get_s3_object(object_name)
         return obj.put(Body=body, ACL=permissions, Metadata=metadata)
 
-    def download_stream(self, file_name):
+    def download_stream(self, object_name):
         """Download object raw data.
         This simply calls the object body ``read()`` method.
 
         Parameters
         ---------
-        file_name : str
+        object_name : str
 
         Returns
         -------
         stream
             file-like stream of object data
         """
-        if not self.check_file_exists(file_name):
-            raise IOError('Object "%s" does not exist' % file_name)
-        s3_object = self.get_s3_object(file_name)
+        if not self.check_file_exists(object_name):
+            raise IOError('Object "%s" does not exist' % object_name)
+        s3_object = self.get_s3_object(object_name)
         return CloudStream(BytesIO(s3_object.get()['Body'].read()), s3_object.metadata)
 
     def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL):
@@ -361,20 +361,20 @@ class S3Client(CCBackEnd):
         s3_object = self.get_s3_object(cloud_name)
         return s3_object.upload_file(file_name, ExtraArgs = dict(ACL = permissions))
 
-    def download_to_file(self, file_name, local_name):
+    def download_to_file(self, object_name, local_name):
         """Download S3 object to a file
 
         Parameters
         ----------
-        file_name : str
+        object_name : str
         local_name : str
             Absolute path where the data will be downloaded on disk
         """
-        assert self.check_file_exists(file_name)  # make sure object exists
-        s3_object = self.get_s3_object(file_name)
+        assert self.check_file_exists(object_name)  # make sure object exists
+        s3_object = self.get_s3_object(object_name)
         return s3_object.download_file(local_name)
 
-    def upload_multipart(self, file_object, file_name, metadata, permissions=None,
+    def upload_multipart(self, file_object, object_name, metadata, permissions=None,
                          buffersize=MPU_CHUNKSIZE, verbose=True, **kwargs):
         """Multi-part upload for a python file-object.
 
@@ -384,7 +384,7 @@ class S3Client(CCBackEnd):
 
         Parameters
         ----------
-        file_name : str
+        object_name : str
         file_object :
             file-like python object (e.g. StringIO, file, etc)
         buffersize  : int
@@ -399,7 +399,7 @@ class S3Client(CCBackEnd):
         """
         client=self.connection.meta.client
         mpu = client.create_multipart_upload(Bucket = self.bucket_name,
-                                             Key = file_name,
+                                             Key = object_name,
                                              Metadata = metadata)
 
         # get size
@@ -440,7 +440,7 @@ class S3Client(CCBackEnd):
 
             data_chunk = file_object.read(buffersize)
             response = client.upload_part(Bucket = self.bucket_name,
-                                          Key = file_name,
+                                          Key = object_name,
                                           UploadId = mpu['UploadId'],
                                           PartNumber = part_number,
                                           Body = data_chunk)
@@ -452,7 +452,7 @@ class S3Client(CCBackEnd):
 
         # finalize
         mpu_response = client.complete_multipart_upload(Bucket = self.bucket_name,
-                                                        Key = file_name,
+                                                        Key = object_name,
                                                         UploadId = mpu['UploadId'],
                                                         MultipartUpload = mpu_info)
         return mpu_response
@@ -512,5 +512,5 @@ class S3Client(CCBackEnd):
             object_names += unquote_names([t['Key'] for t in response['Contents']])
         return map(os.path.normpath, object_names)
 
-    def delete(self, file_name, recursive=False, delete=False):
+    def delete(self, object_name, recursive=False, delete=False):
         raise RuntimeError('Deleting on S3 backend is implemented by cottoncandy interface object')
