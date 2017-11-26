@@ -318,7 +318,7 @@ class S3Client(CCBackEnd):
 
         """
         obj = self.get_s3_object(file_name)
-        return obj.put(Body = body, ACL = permissions, Metadata = metadata)
+        return obj.put(Body=body, ACL=permissions, Metadata=metadata)
 
     def download_stream(self, file_name):
         """Download object raw data.

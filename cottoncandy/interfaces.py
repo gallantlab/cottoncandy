@@ -594,7 +594,7 @@ class ArrayInterface(BasicInterface):
             data_nbytes = array.nbytes
             filestream = StringIO(array.data)
 
-        response = self.upload_object(object_name, filestream, DEFAULT_ACL, **meta)
+        response = self.upload_object(object_name, filestream, acl=acl, **meta)
 
         return response
 
@@ -655,11 +655,11 @@ class ArrayInterface(BasicInterface):
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
-                _ = self.dict2cloud(name, v, acl = acl, **metadata)
+                _ = self.dict2cloud(name, v, acl=acl, **metadata)
             elif isinstance(v, np.ndarray):
-                _ = self.upload_raw_array(name, v, acl = acl, **metadata)
+                _ = self.upload_raw_array(name, v, acl=acl, **metadata)
             else:  # try converting to array
-                _ = self.upload_raw_array(name, np.asarray(v), acl = acl)
+                _ = self.upload_raw_array(name, np.asarray(v), acl=acl)
 
         if verbose:
             print('uploaded arrays in "%s"' % object_name)
