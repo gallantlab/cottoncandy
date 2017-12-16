@@ -334,7 +334,6 @@ class BasicInterface(InterfaceObject):
                               recursive=False, ExtraArgs=dict(ACL=DEFAULT_ACL)):
         '''Upload a directory to the cloud
         '''
-        import os
         from glob import glob
 
         filenames = sorted(os.listdir(disk_path))
@@ -683,17 +682,20 @@ class ArrayInterface(BasicInterface):
         datadict  : dict
             An arbitrary depth dictionary.
         """
-
         # TODO: gdrive compatibility?
-        from cottoncandy.browser import S3Directory
-        ob = S3Directory(object_root, interface = self)
-
         datadict = {}
-        subdirs = ob._ls()
+
         if keys is not None:
             if isinstance(keys, str):
                 keys = [keys]
             subdirs = keys
+        else:
+            subdirs = self.lsdir(object_root)
+            subdirs = [os.path.split(t)[-1] for t in subdirs]
+
+        if not subdirs:
+            print('Nothing found in "%s"' % object_root)
+            return
 
         for subdir in subdirs:
             path = self.pathjoin(object_root, subdir)
@@ -703,15 +705,14 @@ class ArrayInterface(BasicInterface):
                 try:
                     arr = self.download_raw_array(path)
                 except KeyError as e:
-                    print('could not download "%s: missing %s from metadata"' % (path, e))
+                    print('Could not download "%s: missing %s from metadata"' % (path, e))
                     arr = None
                 datadict[subdir] = arr
             else:
                 datadict[subdir] = self.cloud2dict(path)
 
-
         if verbose:
-            print('downloaded arrays in "%s"' % object_root)
+            print('Downloaded arrays in "%s"' % object_root)
 
         return datadict
 
