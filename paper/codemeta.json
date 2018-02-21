@@ -1,0 +1,17 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+
+  ],
+  "identifier": "https://doi.org/10.5281/zenodo.1034342",
+  "codeRepository": "https://github.com/gallantlab/cottoncandy",
+  "datePublished": "2018-02-20",
+  "dateModified": "2018-02-20",
+  "dateCreated": "2018-02-20",
+  "description": "sugar for the cloud",
+  "keywords": "s3, cloud storage",
+  "license": "BSD-2-Clause",
+  "title": "cottoncandy",
+  "version": "v0.0.2"
+}
