@@ -381,7 +381,7 @@ class BasicInterface(InterfaceObject):
 
     @clean_object_name
     def mpu_fileobject(self, object_name, file_object,
-                       buffersize=MPU_CHUNKSIZE, verbose=True, **metadata):
+                       buffersize=MPU_CHUNKSIZE, verbose=True, acl=DEFAULT_ACL, **metadata):
         """Multi-part upload for a file-object.
 
         This automatically creates a multipart upload of an object.
@@ -400,7 +400,12 @@ class BasicInterface(InterfaceObject):
         **metadata  : optional
             Metadata to store along with MPU object
         """
-        return self.backend_interface.upload_multipart(file_object, object_name, metadata, buffersize = buffersize, verbose = verbose)
+        return self.backend_interface.upload_multipart(file_object, object_name, metadata,
+                                                       buffersize=buffersize,
+                                                       permissions=acl,
+                                                       verbose=verbose)
+
+
 
     @clean_object_name
     def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, **metadata):
@@ -594,7 +599,6 @@ class ArrayInterface(BasicInterface):
             filestream = StringIO(array.data)
 
         response = self.upload_object(object_name, filestream, acl=acl, **meta)
-
         return response
 
     @clean_object_name

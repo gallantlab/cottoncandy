@@ -1,3 +1,5 @@
+# emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
+# vi: set ft=python sts=4 ts=4 sw=4 et:
 from __future__ import print_function
 from functools import reduce
 import boto3
@@ -42,9 +44,9 @@ class S3Client(CCBackEnd):
 
         """
         s3 = boto3.resource('s3',
-                            endpoint_url = url,
-                            aws_access_key_id = ACCESS_KEY,
-                            aws_secret_access_key = SECRET_KEY,
+                            endpoint_url=url,
+                            aws_access_key_id=ACCESS_KEY,
+                            aws_secret_access_key=SECRET_KEY,
                             **kwargs)
         s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
         return s3
@@ -374,7 +376,7 @@ class S3Client(CCBackEnd):
         s3_object = self.get_s3_object(object_name)
         return s3_object.download_file(local_name)
 
-    def upload_multipart(self, file_object, object_name, metadata, permissions=None,
+    def upload_multipart(self, file_object, object_name, metadata, permissions=DEFAULT_ACL,
                          buffersize=MPU_CHUNKSIZE, verbose=True, **kwargs):
         """Multi-part upload for a python file-object.
 
@@ -398,9 +400,11 @@ class S3Client(CCBackEnd):
             permissions for this file
         """
         client=self.connection.meta.client
-        mpu = client.create_multipart_upload(Bucket = self.bucket_name,
-                                             Key = object_name,
-                                             Metadata = metadata)
+
+        mpu = client.create_multipart_upload(Bucket=self.bucket_name,
+                                             ACL=permissions,
+                                             Key=object_name,
+                                             Metadata=metadata)
 
         # get size
         nbytes_total = get_fileobject_size(file_object)
