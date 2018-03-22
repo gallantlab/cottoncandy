@@ -509,12 +509,12 @@ class S3Client(CCBackEnd):
         object_names = []
         if 'CommonPrefixes' in response:
             # we got common paths
-            object_list = [t.values() for t in response['CommonPrefixes']]
+            object_list = [list(t.values()) for t in response['CommonPrefixes']]
             object_names += reduce(lambda x, y: x + y, object_list)
         if 'Contents' in response:
             # we got objects on the leaf nodes
             object_names += unquote_names([t['Key'] for t in response['Contents']])
-        return map(os.path.normpath, object_names)
+        return [os.path.normpath(n) for n in object_names]
 
     def delete(self, object_name, recursive=False, delete=False):
         raise RuntimeError('Deleting on S3 backend is implemented by cottoncandy interface object')
