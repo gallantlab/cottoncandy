@@ -50,7 +50,7 @@ try:
                             csc_matrix,
                             bsr_matrix,
                             dia_matrix)
-except ImportError
+except ImportError:
     warn('numpy/scipy not available')
 
 
