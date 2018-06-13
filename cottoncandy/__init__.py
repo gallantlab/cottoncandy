@@ -15,6 +15,7 @@ from . import options
 ACCESS_KEY = options.config.get('login', 'access_key')
 SECRET_KEY = options.config.get('login', 'secret_key')
 ENDPOINT_URL = options.config.get('login', 'endpoint_url')
+DEFAULT_SIGNATURE_VERSION = options.config.get('basic', 'signature_version')
 
 default_bucket = options.config.get('basic', 'default_bucket')
 force_bucket_creation = options.config.get('basic', 'force_bucket_creation')
@@ -65,6 +66,17 @@ def get_interface(bucket_name=default_bucket,
     if backend == 'gdrive':
         ACCESS_KEY = os.path.join(options.userdir, options.config.get('gdrive', 'secrets'))
         SECRET_KEY = os.path.join(options.userdir, options.config.get('gdrive', 'credentials'))
+
+
+    if 'config' in kwargs:
+        # user provided config
+        if not kwargs['config'].signature_version:
+            # config does not specify signature
+            kwargs['config'].signature_version = DEFAULT_SIGNATURE_VERSION
+    elif DEFAULT_SIGNATURE_VERSION:
+        # no config but default signature exists
+        from botocore.client import Config
+        kwargs['config'] = Config(signature_version=DEFAULT_SIGNATURE_VERSION)
 
     interface = DefaultInterface(bucket_name,
                                  ACCESS_KEY,

@@ -443,7 +443,7 @@ class BasicInterface(InterfaceObject):
         return json.loads(obj.decode())
 
     @clean_object_name
-    def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL):
+    def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL, **metadata):
         """Upload an object using pickle: ``pickle.dumps``
 
         Parameters
@@ -452,7 +452,7 @@ class BasicInterface(InterfaceObject):
         data_object : object
         """
         object_to_upload = StringIO(pickle.dumps(data_object))
-        response = self.upload_object(object_name, object_to_upload, acl)
+        response = self.upload_object(object_name, object_to_upload, acl=acl, **metadata)
         return response
 
     @clean_object_name
