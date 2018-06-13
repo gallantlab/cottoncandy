@@ -26,12 +26,7 @@ except ImportError:
 
 from base64 import b64decode, b64encode
 
-import numpy as np
-from scipy.sparse import (coo_matrix,
-                          csr_matrix,
-                          csc_matrix,
-                          bsr_matrix,
-                          dia_matrix)
+
 
 import cottoncandy.browser
 import os
@@ -47,6 +42,16 @@ from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_s
                     GzipInputStream,
                     DEFAULT_ACL, MPU_CHUNKSIZE, MPU_THRESHOLD, DASK_CHUNKSIZE, MB, SEPARATOR,
                     MAGIC_CHECK)
+
+try:
+    import numpy as np
+    from scipy.sparse import (coo_matrix,
+                            csr_matrix,
+                            csc_matrix,
+                            bsr_matrix,
+                            dia_matrix)
+except ImportError
+    warn('numpy/scipy not available')
 
 
 
