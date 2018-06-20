@@ -10,7 +10,7 @@ from .browser import BrowserObject
 from .interfaces import InterfaceObject
 from .utils import string2bool
 
-from . import options
+from cottoncandy import options
 
 ACCESS_KEY = options.config.get('login', 'access_key')
 SECRET_KEY = options.config.get('login', 'secret_key')

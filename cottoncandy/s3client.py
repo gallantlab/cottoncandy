@@ -66,18 +66,22 @@ class S3Client(CCBackEnd):
 
         self.connection = S3Client.connect(access_key, secret_key, s3url, **kwargs)
         self.url = s3url
-        if self.check_bucket_exists(bucket):
-            self.set_current_bucket(bucket)
-        else:
-            print('* Bucket "%s" does not exist' % bucket)
-            if force_bucket_creation:
+        self.bucket_name = None
+
+        if bucket:
+            # bucket given
+            if self.check_bucket_exists(bucket):
+                self.set_current_bucket(bucket)
+            elif force_bucket_creation:
                 print('* Creating "%s" bucket...\n' % bucket)
                 self.create_bucket(bucket)
             else:
-                print('* cottoncandy instantiated without bucket...\n' \
-                      '* Use with caution!\n' \
-                      '* Many features will not work!!!\n')
-                self.bucket_name = None
+                print('* BUCKET "%s" DOES NOT EXIST...\n' % bucket)
+
+        if self.bucket_name is None:
+            print('* cottoncandy instantiated without bucket...\n' \
+                  '* Use with caution!\n' \
+                  '* Many features will not work!!!\n')
 
         if string2bool(ISBOTO_VERBOSE) is False:
             logging.getLogger('boto3').setLevel(logging.WARNING)
