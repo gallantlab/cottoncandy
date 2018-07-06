@@ -648,6 +648,13 @@ class ArrayInterface(BasicInterface):
         array = np.empty(tuple(shape), dtype = dtype, order = order)
 
         body = arraystream.content
+        # Backward compatibility
+        if 'gzip' in arraystream.metadata:
+            # Assume old file; over-write "compression" value
+            if arraystream.metadata['gzip']:
+                arraystream['compression'] = 'gzip'
+            else:
+                arraystream['compression'] = 'None'
         if 'compression' in arraystream.metadata and arraystream.metadata['compression'] != "None":
             if arraystream.metadata['compression'] == 'gzip':
                 # gzipped!
