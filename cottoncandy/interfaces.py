@@ -53,6 +53,11 @@ try:
 except ImportError:
     warn('numpy/scipy not available')
 
+try:
+    import numcodecs
+except ImportError:
+    warn('numcodecs python library not available')
+
 
 
 # ------------------
@@ -541,7 +546,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, gzip=True, acl=DEFAULT_ACL, **metadata):
+    def upload_raw_array(self, object_name, array, compression="gzip", acl=DEFAULT_ACL, **metadata):
         """Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -562,9 +567,9 @@ class ArrayInterface(BasicInterface):
         This method also uploads the array ``dtype``, ``shape``, and ``gzip``
         flag as metadata
         """
-        if array.nbytes >= 2 ** 31:
+        if array.nbytes >= 2 ** 31 and compression == "gzip":
             # avoid zlib issues
-            gzip = False
+            compression = None
 
         order = 'F' if array.flags.f_contiguous else 'C'
         if not array.flags['%s_CONTIGUOUS' % order]:
@@ -574,7 +579,7 @@ class ArrayInterface(BasicInterface):
 
         meta = dict(dtype = array.dtype.str,
                     shape = ','.join(map(str, array.shape)),
-                    gzip = str(gzip),
+                    compression = str(compression),
                     order = order)
 
         # check for conflicts in metadata
@@ -586,7 +591,7 @@ class ArrayInterface(BasicInterface):
         assert not any(metadata_keys)
         meta.update(metadata)
 
-        if gzip:
+        if compression=="gzip":
             if six.PY3 and array.flags['F_CONTIGUOUS']:
                 # eventually, array.data below should be changed to np.getbuffer(array)
                 # (not yet working in python3 numpy)
@@ -599,6 +604,10 @@ class ArrayInterface(BasicInterface):
             zipdata.seek(0)
             filestream = zipdata
             data_nbytes = get_fileobject_size(filestream)
+        elif hasattr(numcodecs, compression.lower()): # if the mentioned compression type is in numcodecs
+            data_nbytes = array.nbytes
+            compressor = eval("numcodecs.{1}.{2}()".format(compression.lower(), compression)) #TODO: this errors if the compression name is not properly formatted. Please handle it
+            filestream = compressor.encode(array)
         else:
             data_nbytes = array.nbytes
             filestream = StringIO(array.data)
@@ -636,9 +645,13 @@ class ArrayInterface(BasicInterface):
         array = np.empty(tuple(shape), dtype = dtype, order = order)
 
         body = arraystream.content
-        if 'gzip' in arraystream.metadata and arraystream.metadata['gzip'] == 'True':
-            # gzipped!
-            datastream = GzipInputStream(body)
+        if 'compression' in arraystream.metadata and arraystream.metadata['compression'] != "None":
+            if arraystream.metadata['compression'] == 'gzip':
+                # gzipped!
+                datastream = GzipInputStream(body)
+            else:
+                decompressor = eval("numcodecs.{1}.{2}()".format(arraystream.metadata['compression'].lower(), arraystream.metadata['compression']))
+                datastream = decompressor.decode(body)
         else:
             datastream = body
 
