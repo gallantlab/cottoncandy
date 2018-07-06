@@ -605,7 +605,7 @@ class ArrayInterface(BasicInterface):
             filestream = zipdata
             data_nbytes = get_fileobject_size(filestream)
         elif hasattr(numcodecs, compression.lower()): # if the mentioned compression type is in numcodecs
-            orig_nbytes = get_fileobject_size(filestream)
+            orig_nbytes = array.nbytes
             compressor = eval("numcodecs.{}.{}()".format(compression.lower(), compression)) #TODO: this errors if the compression name is not properly formatted. Please handle it
             filestream = StringIO(compressor.encode(array))
             data_nbytes = get_fileobject_size(filestream)
