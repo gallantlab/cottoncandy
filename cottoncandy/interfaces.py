@@ -571,6 +571,15 @@ class ArrayInterface(BasicInterface):
         This method also uploads the array ``dtype``, ``shape``, and ``gzip``
         flag as metadata
         """
+        # Backward compatibility
+        if 'gzip' in metadata:
+            warn('Deprecated keyword argument `gzip`. Use `compression="gzip"` instead', DeprecationWarning)
+            gz = metadata.pop('gzip')
+            if gz:
+                compression = 'gzip'
+            else:
+                compression = None
+                
         if array.nbytes >= 2 ** 31 and compression == "gzip":
             # avoid zlib issues
             compression = None
