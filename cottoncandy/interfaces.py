@@ -653,8 +653,13 @@ class ArrayInterface(BasicInterface):
                 # gzipped!
                 datastream = GzipInputStream(body)
             else:
+                # numcodecs compression
                 decompressor = eval("numcodecs.{}.{}()".format(arraystream.metadata['compression'].lower(), arraystream.metadata['compression']))
-                datastream = decompressor.decode(body)
+                # Can't decode stream; must read in file. Memory hungry?
+                bits_compr = body.read()
+                bits = decompressor.decode(bits_compr)
+                array.data = bits
+                return array
         else:
             datastream = body
 
