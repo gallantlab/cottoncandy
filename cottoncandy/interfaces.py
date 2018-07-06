@@ -606,12 +606,13 @@ class ArrayInterface(BasicInterface):
             data_nbytes = get_fileobject_size(filestream)
         elif hasattr(numcodecs, compression.lower()): # if the mentioned compression type is in numcodecs
             data_nbytes = array.nbytes
-            compressor = eval("numcodecs.{1}.{2}()".format(compression.lower(), compression)) #TODO: this errors if the compression name is not properly formatted. Please handle it
+            compressor = eval("numcodecs.{}.{}()".format(compression.lower(), compression)) #TODO: this errors if the compression name is not properly formatted. Please handle it
             filestream = compressor.encode(array)
-        else:
+        elif compression is None:
             data_nbytes = array.nbytes
             filestream = StringIO(array.data)
-
+        else:
+            raise ValueError("Unknown compression scheme: %s"%compression)
         response = self.upload_object(object_name, filestream, acl=acl, **meta)
         return response
 
@@ -650,7 +651,7 @@ class ArrayInterface(BasicInterface):
                 # gzipped!
                 datastream = GzipInputStream(body)
             else:
-                decompressor = eval("numcodecs.{1}.{2}()".format(arraystream.metadata['compression'].lower(), arraystream.metadata['compression']))
+                decompressor = eval("numcodecs.{}.{}()".format(arraystream.metadata['compression'].lower(), arraystream.metadata['compression']))
                 datastream = decompressor.decode(body)
         else:
             datastream = body
