@@ -29,6 +29,7 @@ from base64 import b64decode, b64encode
 
 
 import cottoncandy.browser
+import importlib
 import os
 import re
 
@@ -556,8 +557,11 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : np.ndarray
-        gzip  : bool (defaults True)
-            Whether to gzip array content
+        compression  : str
+            Type of compression to use. 'gzip' uses gzip module, None is no compression,
+            other strings specify a codec from numcodecs. Available options are:
+            'LZ4', 'Zlib', 'Zstd', 'BZ2' (note: attend to caps). Zstd appears to be
+            the only one that will work with large (> 2GB) arrays.
         acl : str
             ACL for the object
         **metadata : optional
@@ -567,6 +571,15 @@ class ArrayInterface(BasicInterface):
         This method also uploads the array ``dtype``, ``shape``, and ``gzip``
         flag as metadata
         """
+        # Backward compatibility
+        if 'gzip' in metadata:
+            warn('Deprecated keyword argument `gzip`. Use `compression="gzip"` instead', DeprecationWarning)
+            gz = metadata.pop('gzip')
+            if gz:
+                compression = 'gzip'
+            else:
+                compression = None
+                
         if array.nbytes >= 2 ** 31 and compression == "gzip":
             # avoid zlib issues
             compression = None
@@ -605,8 +618,8 @@ class ArrayInterface(BasicInterface):
             filestream = zipdata
             data_nbytes = get_fileobject_size(filestream)
         elif hasattr(numcodecs, compression.lower()): # if the mentioned compression type is in numcodecs
-            orig_nbytes = get_fileobject_size(filestream)
-            compressor = eval("numcodecs.{}.{}()".format(compression.lower(), compression)) #TODO: this errors if the compression name is not properly formatted. Please handle it
+            orig_nbytes = array.nbytes
+            compressor = getattr(importlib.import_module('numcodecs.{}'.format(compression.lower())), compression)()
             filestream = StringIO(compressor.encode(array))
             data_nbytes = get_fileobject_size(filestream)
             print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
@@ -660,8 +673,17 @@ class ArrayInterface(BasicInterface):
                 # gzipped!
                 datastream = GzipInputStream(body)
             else:
-                decompressor = eval("numcodecs.{}.{}()".format(arraystream.metadata['compression'].lower(), arraystream.metadata['compression']))
-                datastream = decompressor.decode(body)
+                # numcodecs compression
+                compr = arraystream.metadata['compression']
+                decompressor = getattr(importlib.import_module('numcodecs.{}'.format(compr.lower())), compr)()
+                # Can't decode stream; must read in file. Memory hungry?
+                bits_compr = body.read()
+                bits = decompressor.decode(bits_compr)
+                # Doesn't work directly...
+                # array.data = bits
+                # return array
+                # ... so: (This feels like it's missing the point, but works)
+                datastream = StringIO(bits)
         else:
             datastream = body
 
