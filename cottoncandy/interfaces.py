@@ -665,9 +665,9 @@ class ArrayInterface(BasicInterface):
         if 'gzip' in arraystream.metadata:
             # Assume old file; over-write "compression" value
             if arraystream.metadata['gzip']:
-                arraystream['compression'] = 'gzip'
+                arraystream.metadata['compression'] = 'gzip'
             else:
-                arraystream['compression'] = 'None'
+                arraystream.metadata['compression'] = 'None'
         if 'compression' in arraystream.metadata and arraystream.metadata['compression'] != "None":
             if arraystream.metadata['compression'] == 'gzip':
                 # gzipped!
