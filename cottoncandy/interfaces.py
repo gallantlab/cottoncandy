@@ -677,13 +677,11 @@ class ArrayInterface(BasicInterface):
                 compr = arraystream.metadata['compression']
                 decompressor = getattr(importlib.import_module('numcodecs.{}'.format(compr.lower())), compr)()
                 # Can't decode stream; must read in file. Memory hungry?
-                bits_compr = body.read()
+                bits_compr = arraystream.content.read()
                 bits = decompressor.decode(bits_compr)
-                # Doesn't work directly...
-                # array.data = bits
-                # return array
-                # ... so: (This feels like it's missing the point, but works)
-                datastream = StringIO(bits)
+                array = np.frombuffer(bits, dtype=dtype)
+                array = array.reshape(shape)
+                return array
         else:
             datastream = body
 
