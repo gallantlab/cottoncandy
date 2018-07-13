@@ -29,6 +29,7 @@ from base64 import b64decode, b64encode
 
 
 import cottoncandy.browser
+import importlib
 import os
 import re
 
@@ -52,6 +53,11 @@ try:
                             dia_matrix)
 except ImportError:
     warn('numpy/scipy not available')
+
+try:
+    import numcodecs
+except ImportError:
+    warn('numcodecs python library not available')
 
 
 
@@ -541,7 +547,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, gzip=True, acl=DEFAULT_ACL, **metadata):
+    def upload_raw_array(self, object_name, array, compression="gzip", acl=DEFAULT_ACL, **metadata):
         """Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -551,8 +557,11 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : np.ndarray
-        gzip  : bool (defaults True)
-            Whether to gzip array content
+        compression  : str
+            Type of compression to use. 'gzip' uses gzip module, None is no compression,
+            other strings specify a codec from numcodecs. Available options are:
+            'LZ4', 'Zlib', 'Zstd', 'BZ2' (note: attend to caps). Zstd appears to be
+            the only one that will work with large (> 2GB) arrays.
         acl : str
             ACL for the object
         **metadata : optional
@@ -562,9 +571,18 @@ class ArrayInterface(BasicInterface):
         This method also uploads the array ``dtype``, ``shape``, and ``gzip``
         flag as metadata
         """
-        if array.nbytes >= 2 ** 31:
+        # Backward compatibility
+        if 'gzip' in metadata:
+            warn('Deprecated keyword argument `gzip`. Use `compression="gzip"` instead', DeprecationWarning)
+            gz = metadata.pop('gzip')
+            if gz:
+                compression = 'gzip'
+            else:
+                compression = None
+                
+        if array.nbytes >= 2 ** 31 and compression == "gzip":
             # avoid zlib issues
-            gzip = False
+            compression = None
 
         order = 'F' if array.flags.f_contiguous else 'C'
         if not array.flags['%s_CONTIGUOUS' % order]:
@@ -574,7 +592,7 @@ class ArrayInterface(BasicInterface):
 
         meta = dict(dtype = array.dtype.str,
                     shape = ','.join(map(str, array.shape)),
-                    gzip = str(gzip),
+                    compression = str(compression),
                     order = order)
 
         # check for conflicts in metadata
@@ -586,7 +604,7 @@ class ArrayInterface(BasicInterface):
         assert not any(metadata_keys)
         meta.update(metadata)
 
-        if gzip:
+        if compression=="gzip":
             if six.PY3 and array.flags['F_CONTIGUOUS']:
                 # eventually, array.data below should be changed to np.getbuffer(array)
                 # (not yet working in python3 numpy)
@@ -599,10 +617,17 @@ class ArrayInterface(BasicInterface):
             zipdata.seek(0)
             filestream = zipdata
             data_nbytes = get_fileobject_size(filestream)
-        else:
+        elif hasattr(numcodecs, compression.lower()): # if the mentioned compression type is in numcodecs
+            orig_nbytes = array.nbytes
+            compressor = getattr(importlib.import_module('numcodecs.{}'.format(compression.lower())), compression)()
+            filestream = StringIO(compressor.encode(array))
+            data_nbytes = get_fileobject_size(filestream)
+            print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
+        elif compression is None:
             data_nbytes = array.nbytes
             filestream = StringIO(array.data)
-
+        else:
+            raise ValueError("Unknown compression scheme: %s"%compression)
         response = self.upload_object(object_name, filestream, acl=acl, **meta)
         return response
 
@@ -636,9 +661,27 @@ class ArrayInterface(BasicInterface):
         array = np.empty(tuple(shape), dtype = dtype, order = order)
 
         body = arraystream.content
-        if 'gzip' in arraystream.metadata and arraystream.metadata['gzip'] == 'True':
-            # gzipped!
-            datastream = GzipInputStream(body)
+        # Backward compatibility
+        if 'gzip' in arraystream.metadata:
+            # Assume old file; over-write "compression" value
+            if arraystream.metadata['gzip']:
+                arraystream.metadata['compression'] = 'gzip'
+            else:
+                arraystream.metadata['compression'] = 'None'
+        if 'compression' in arraystream.metadata and arraystream.metadata['compression'] != "None":
+            if arraystream.metadata['compression'] == 'gzip':
+                # gzipped!
+                datastream = GzipInputStream(body)
+            else:
+                # numcodecs compression
+                compr = arraystream.metadata['compression']
+                decompressor = getattr(importlib.import_module('numcodecs.{}'.format(compr.lower())), compr)()
+                # Can't decode stream; must read in file. Memory hungry?
+                bits_compr = arraystream.content.read()
+                bits = decompressor.decode(bits_compr)
+                array = np.frombuffer(bits, dtype=dtype)
+                array = array.reshape(shape)
+                return array
         else:
             datastream = body
 
