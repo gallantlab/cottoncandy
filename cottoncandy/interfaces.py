@@ -29,7 +29,6 @@ from base64 import b64decode, b64encode
 
 
 import cottoncandy.browser
-import importlib
 import os
 import re
 
@@ -611,15 +610,16 @@ class ArrayInterface(BasicInterface):
                 # F-contiguous arrays break gzip in python 3
                 array = array.T
             zipdata = StringIO()
-            gz = GzipFile(mode = 'wb', fileobj = zipdata)
+            gz = GzipFile(mode='wb', fileobj=zipdata)
             gz.write(array.data)
             gz.close()
             zipdata.seek(0)
             filestream = zipdata
             data_nbytes = get_fileobject_size(filestream)
-        elif hasattr(numcodecs, compression.lower()): # if the mentioned compression type is in numcodecs
+        elif hasattr(numcodecs, compression.lower()):
+            # If the specified compression type is in numcodecs, use numcodecs
             orig_nbytes = array.nbytes
-            compressor = getattr(importlib.import_module('numcodecs.{}'.format(compression.lower())), compression)()
+            compressor = numcodecs.get_codec(dict(id=compression.lower()))()
             filestream = StringIO(compressor.encode(array))
             data_nbytes = get_fileobject_size(filestream)
             print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
@@ -675,7 +675,7 @@ class ArrayInterface(BasicInterface):
             else:
                 # numcodecs compression
                 compr = arraystream.metadata['compression']
-                decompressor = getattr(importlib.import_module('numcodecs.{}'.format(compr.lower())), compr)()
+                decompressor = numcodecs.get_codec(dict(id=compression.lower()))()
                 # Can't decode stream; must read in file. Memory hungry?
                 bits_compr = arraystream.content.read()
                 bits = decompressor.decode(bits_compr)
