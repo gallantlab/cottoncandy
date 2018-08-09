@@ -33,6 +33,10 @@ Modern big data storage solutions typically revolve around cloud-based object st
 
 cottoncandy works by directly streaming arrays to and from memory during download and upload while minimizing memory requirements. This feature makes cottoncandy an ideal solution for data science workflows that rely on cloud-based storage. cottoncandy is optimized for accessing and storing numpy[@oliphant2006guide] array data and provides support for other data formats widely used in data science (e.g. json, pickle, sparse arrays[jones2014scipy]). cottoncandy also allows users to seamlessly encrypt and compress data according to their needs. Finally, cottoncandy provides a single API that supports different cloud-storage solutions as back-ends (S3 and Google Drive currently). cottoncandy can thus be used as an abstraction layer to avoid vendor lock-in. 
 
+# Acknowledgments
+This work was supported by grants from the the Office of Naval Research (N00014-15-1-2861), the National Science Foundation (NSF; IIS1208203) and the National Eye Institute (EY019684 and EY022454).
+
 # References
 
 [boto3](https://aws.amazon.com/sdk-for-python)
+
