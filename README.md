@@ -28,7 +28,12 @@ $ cd cottoncandy
 $ sudo python setup.py install
 ```
 
-A configuration file will be saved under `~/.config/cottoncandy/options.cfg`. Upon installation cottoncandy will try to find your AWS keys and store them in this file. See the [default file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg) for more configuration options.
+The cottoncandy configuration file will be saved under:
+* Linux: `~/.config/cottoncandy/options.cfg` 
+* MAC OS: `~/Library/Application Support/cottoncandy/options.cfg`
+* Windows (sorry not tested, nor supported): `C:\Users\<username>\AppData\Local\<AppAuthor>\cottoncandy\options.cfg`
+
+Upon installation cottoncandy will try to find your AWS keys and store them in this file. See the [default file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg) for more configuration options.
 
 Object and bucket permissions are set to ``authenticated-read`` by default. If you wish to keep all your objects private, modify the configuration file and set ``default_acl = private``. See [AWS ACL overview](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) for more information on S3 permissions.
 
@@ -130,6 +135,10 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
                                       endpoint_url='https://s3.amazonaws.com')                               
 ```
 
+
+### Contributing
+* If you find any issues with `cottoncandy`, please report it by submitting an issue on GitHub.
+* If you wish to contribute, please submit a pull request. Include information as to how you ran the tests and the full output log if possible. Running tests on AWS can incur costs. 
 
 ## Cite as
 
