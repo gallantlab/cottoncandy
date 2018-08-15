@@ -34,10 +34,10 @@ if True:
                            verbose=False)
 else:
     ##############################
-    # USE THIS AT YOUR OWN RISK.
+    # Warning
     ##############################
-    # It will use your defaults to run the tests on.
-    # If you use AWS, you might incurr costs.
+    # This will use your defaults to run the tests on.
+    # If you use AWS, you might incur costs.
     cci = cc.get_interface()
 
 
