@@ -7,7 +7,7 @@ except ImportError:
     import ConfigParser as configparser
 
 
-if len(set(('develop', 'bdist_egg', 'bdist_rpm', 'bdist', 'bdist_dumb',
+if len(set(('develop', 'bdist_wheel', 'bdist_egg', 'bdist_rpm', 'bdist', 'bdist_dumb',
             'bdist_wininst', 'install_egg_info', 'egg_info', 'easy_install',
             )).intersection(sys.argv)) > 0:
     from setuptools import setup
@@ -39,15 +39,15 @@ if not 'extra_setuptools_args' in globals():
 
 
 long_description = """
-"""
+A python scientific library for storing and accessing numpy array data on S3. This is achieved by reading arrays from memory and downloading arrays directly into memory. This means that you don't have to download your array to disk, and then load it from disk into your python session."""
 
 def main(**kwargs):
     setup(name="""cottoncandy""",
-          version='0.01',
+          version='0.2.0',
           description="""sugar for S3""",
           author='Anwar O. Nunez-Elizalde',
           author_email='anwarnunez@gmail.com',
-          url='gallantlab.github.io/cottoncandy/',
+          url='http://gallantlab.github.io/cottoncandy/',
           packages=['cottoncandy',
                     ],
           package_data={
