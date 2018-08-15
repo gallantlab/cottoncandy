@@ -104,7 +104,7 @@ browser.sweet_project.sub02_awesome_analysis_DOT_grp
 <cottoncandy-dataset <bucket:my_bucket_name [1.00MB:shape=(10000)]>
 ```
 
-### Google Drive backend (experimental)
+### Google Drive backend
 
 `cottoncandy` can also use Google Drive as a back-end. This equires a `client_secrets.json` file in your `~/.config/cottoncandy` folder and the [pydrive](https://github.com/googledrive/PyDrive) package. 
 
