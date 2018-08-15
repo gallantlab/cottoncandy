@@ -1,3 +1,10 @@
+<p align="center">
+<img src="https://user-images.githubusercontent.com/17423004/43179059-9f1ca3b0-8f85-11e8-8f75-587062e75339.png"
+     alt="cottoncandy logo"
+     width=50%
+/>
+</p>  
+
 # Welcome to cottoncandy!
 [![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=master)](https://travis-ci.org/gallantlab/cottoncandy)
 [![DOI](https://zenodo.org/badge/58677370.svg)](https://zenodo.org/badge/latestdoi/58677370)
