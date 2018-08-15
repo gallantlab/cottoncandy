@@ -136,6 +136,10 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
 ```
 
 
+### Contributing
+* If you find any issues with `cottoncandy`, please report it by submitting an issue on GitHub.
+* If you wish to contribute, please submit a pull request. Include information as to how you ran the tests and the full output log if possible. Running tests on AWS can incur costs. 
+
 ## Cite as
 
 Nunez-Elizalde AO, Zhang T, Huth AG, Gao JS, Slivkoff, Lescroart MD, Deniz F, McNeil C, Gibboni R, Popham SF, Rokem A, Oliver MD and Gallant JL. cottoncandy: scientific python package for easy cloud storage. Zenodo. 2017. http://doi.org/10.5281/zenodo.1034342
