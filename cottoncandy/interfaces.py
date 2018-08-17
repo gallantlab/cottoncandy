@@ -45,7 +45,7 @@ from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_s
 from .options import config
 
 DO_COMPRESSION = config.get('compression', 'do_compression').lower() in ('true', 't', 'y','yes')
-COMPRESSION_SMALL = config.get('compresssion', 'small_array')
+COMPRESSION_SMALL = config.get('compression', 'small_array')
 COMPRESSION_LARGE = config.get('compression', 'large_array')
 
 try:
@@ -583,9 +583,8 @@ class ArrayInterface(BasicInterface):
                 compression = 'gzip'
             else:
                 compression = None
-        if array.nbytes >= 2 ** 31:
-            # Array is >= 2 GB
-            large_array = True
+        # Test whether array is >= 2 GB
+        large_array = array.nbytes > 2 ** 31
         if compression is True:
             # Select default from config file
             if large_array:
@@ -638,7 +637,7 @@ class ArrayInterface(BasicInterface):
         elif hasattr(numcodecs, compression.lower()):
             # If the specified compression type is in numcodecs, use numcodecs
             orig_nbytes = array.nbytes
-            compressor = numcodecs.get_codec(dict(id=compression.lower()))()
+            compressor = numcodecs.get_codec(dict(id=compression.lower()))
             filestream = StringIO(compressor.encode(array))
             data_nbytes = get_fileobject_size(filestream)
             print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
@@ -693,8 +692,8 @@ class ArrayInterface(BasicInterface):
                 datastream = GzipInputStream(body)
             else:
                 # numcodecs compression
-                compr = arraystream.metadata['compression']
-                decompressor = numcodecs.get_codec(dict(id=compression.lower()))()
+                compression = arraystream.metadata['compression']
+                decompressor = numcodecs.get_codec(dict(id=compression.lower()))
                 # Can't decode stream; must read in file. Memory hungry?
                 bits_compr = arraystream.content.read()
                 bits = decompressor.decode(bits_compr)
