@@ -42,6 +42,11 @@ from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_s
                     GzipInputStream,
                     DEFAULT_ACL, MPU_CHUNKSIZE, MPU_THRESHOLD, DASK_CHUNKSIZE, MB, SEPARATOR,
                     MAGIC_CHECK)
+from .options import config
+
+DO_COMPRESSION = config.get('compression', 'do_compression').lower() in ('true', 't', 'y','yes')
+COMPRESSION_SMALL = config.get('compresssion', 'small_array')
+COMPRESSION_LARGE = config.get('compression', 'large_array')
 
 try:
     import numpy as np
@@ -546,7 +551,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, compression="gzip", acl=DEFAULT_ACL, **metadata):
+    def upload_raw_array(self, object_name, array, compression=DO_COMPRESSION, acl=DEFAULT_ACL, **metadata):
         """Upload a a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -578,10 +583,24 @@ class ArrayInterface(BasicInterface):
                 compression = 'gzip'
             else:
                 compression = None
-                
-        if array.nbytes >= 2 ** 31 and compression == "gzip":
-            # avoid zlib issues
-            compression = None
+        if array.nbytes >= 2 ** 31:
+            # Array is >= 2 GB
+            large_array = True
+        if compression is True:
+            # Select default from config file
+            if large_array:
+                compression = COMPRESSION_LARGE
+            else:
+                compression = COMPRESSION_SMALL
+        elif compression is None:
+            compression = False
+
+        if large_array and compression == "gzip":
+            # Raise exception for specification of gzip w/ large array
+            raise ValueError(("`compression='gzip'` does not support"
+                              " arrays > 2GB!\nPlease use `compression=True`"
+                              " (for default compression for large arrays)\n"
+                              " or specify a compatible algorithm."))
 
         order = 'F' if array.flags.f_contiguous else 'C'
         if not array.flags['%s_CONTIGUOUS' % order]:
@@ -589,10 +608,10 @@ class ArrayInterface(BasicInterface):
                    'before saving (will use extra memory)')
             array = np.array(array, order = order)
 
-        meta = dict(dtype = array.dtype.str,
-                    shape = ','.join(map(str, array.shape)),
-                    compression = str(compression),
-                    order = order)
+        meta = dict(dtype=array.dtype.str,
+                    shape=','.join(map(str, array.shape)),
+                    compression=str(compression),
+                    order=order)
 
         # check for conflicts in metadata
         metadata_keys = []
@@ -603,7 +622,7 @@ class ArrayInterface(BasicInterface):
         assert not any(metadata_keys)
         meta.update(metadata)
 
-        if compression=="gzip":
+        if compression == "gzip":
             if six.PY3 and array.flags['F_CONTIGUOUS']:
                 # eventually, array.data below should be changed to np.getbuffer(array)
                 # (not yet working in python3 numpy)
@@ -623,7 +642,7 @@ class ArrayInterface(BasicInterface):
             filestream = StringIO(compressor.encode(array))
             data_nbytes = get_fileobject_size(filestream)
             print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
-        elif compression is None:
+        elif compression is False:
             data_nbytes = array.nbytes
             filestream = StringIO(array.data)
         else:
@@ -655,7 +674,7 @@ class ArrayInterface(BasicInterface):
         arraystream = self.download_stream(object_name)
 
         shape = arraystream.metadata['shape']
-        shape = map(int, shape.split(',')) if shape else ()
+        shape = tuple(map(int, shape.split(',')) if shape else ())
         dtype = np.dtype(arraystream.metadata['dtype'])
         order = arraystream.metadata.get('order', 'C')
         array = np.empty(tuple(shape), dtype = dtype, order = order)
@@ -668,7 +687,7 @@ class ArrayInterface(BasicInterface):
                 arraystream.metadata['compression'] = 'gzip'
             else:
                 arraystream.metadata['compression'] = 'None'
-        if 'compression' in arraystream.metadata and arraystream.metadata['compression'] != "None":
+        if 'compression' in arraystream.metadata and arraystream.metadata['compression'] != "False":
             if arraystream.metadata['compression'] == 'gzip':
                 # gzipped!
                 datastream = GzipInputStream(body)
@@ -685,7 +704,7 @@ class ArrayInterface(BasicInterface):
         else:
             datastream = body
 
-        read_buffered(datastream, array, buffersize = buffersize)
+        read_buffered(datastream, array, buffersize=buffersize)
         return array
 
     @clean_object_name
