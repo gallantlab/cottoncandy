@@ -24,10 +24,10 @@ This library relies heavily on [boto3](https://github.com/boto/boto3)
 **via pip**
 
 ```
-$ pip install cottcandy
+$ pip install cottoncandy
 ```
 
-**From the repo**
+**from the repo**
 
 Clone the repo from GitHub and do the usual python install from the command line
 
