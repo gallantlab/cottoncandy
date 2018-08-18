@@ -20,6 +20,14 @@ A python scientific library for storing and accessing numpy array data on S3. Th
 This library relies heavily on [boto3](https://github.com/boto/boto3)
 
 ## Installation
+
+### via pip
+
+```
+$ pip install cottcandy
+```
+
+### From the repo
 Clone the repo from GitHub and do the usual python install from the command line
 
 ```
@@ -28,7 +36,9 @@ $ cd cottoncandy
 $ sudo python setup.py install
 ```
 
-The cottoncandy configuration file will be saved under:
+### Configuration file
+
+After installation, the cottoncandy configuration file will be saved under:
 * Linux: `~/.config/cottoncandy/options.cfg` 
 * MAC OS: `~/Library/Application Support/cottoncandy/options.cfg`
 * Windows (sorry not tested, nor supported): `C:\Users\<username>\AppData\Local\<AppAuthor>\cottoncandy\options.cfg`
