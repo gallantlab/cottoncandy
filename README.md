@@ -21,13 +21,14 @@ This library relies heavily on [boto3](https://github.com/boto/boto3)
 
 ## Installation
 
-### via pip
+**via pip**
 
 ```
 $ pip install cottcandy
 ```
 
-### From the repo
+**From the repo**
+
 Clone the repo from GitHub and do the usual python install from the command line
 
 ```
@@ -36,14 +37,14 @@ $ cd cottoncandy
 $ sudo python setup.py install
 ```
 
+**NOTE** When installing, cottoncandy will try to find your AWS keys and store them in a configuration file. See the [default file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg) for more configuration options.
+
 ### Configuration file
 
 After installation, the cottoncandy configuration file will be saved under:
 * Linux: `~/.config/cottoncandy/options.cfg` 
 * MAC OS: `~/Library/Application Support/cottoncandy/options.cfg`
 * Windows (sorry not tested, nor supported): `C:\Users\<username>\AppData\Local\<AppAuthor>\cottoncandy\options.cfg`
-
-Upon installation cottoncandy will try to find your AWS keys and store them in this file. See the [default file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg) for more configuration options.
 
 Object and bucket permissions are set to ``authenticated-read`` by default. If you wish to keep all your objects private, modify the configuration file and set ``default_acl = private``. See [AWS ACL overview](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) for more information on S3 permissions.
 
