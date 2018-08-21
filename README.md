@@ -21,15 +21,13 @@ This library relies heavily on [boto3](https://github.com/boto/boto3)
 
 ## Installation
 
-**NB:** When installing, cottoncandy will try to find your AWS keys and store them in a configuration file.
-
-**via pip**
+With pip:
 
 ```
 $ pip install cottoncandy
 ```
 
-**from the repo**
+Directly from the repo:
 
 Clone the repo from GitHub and do the usual python install from the command line
 
@@ -38,7 +36,6 @@ $ git clone https://github.com/gallantlab/cottoncandy.git
 $ cd cottoncandy
 $ sudo python setup.py install
 ```
-
 
 ### Configuration file
 
