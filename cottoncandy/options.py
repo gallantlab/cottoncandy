@@ -1,10 +1,14 @@
 import os
-from base64 import b64decode, b64encode
 import sys
+import pwd
+
+from base64 import b64decode, b64encode
+
 try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
+
 from . import appdirs
 
 def get_key_from_s3fs():
@@ -66,10 +70,8 @@ def get_config():
         config.read_file(defaults_file)
     return config
 
-
-
 cwd = os.path.split(os.path.abspath(__file__))[0]
-userdir = appdirs.user_data_dir("cottoncandy", "aone")
+userdir = appdirs.user_data_dir("cottoncandy")
 usercfg = os.path.join(userdir, "options.cfg")
 config = get_config()
 
@@ -77,18 +79,6 @@ config = get_config()
 if len(config.read(usercfg)) == 0:
     if not os.path.exists(userdir):
         os.makedirs(userdir)
-
-    # write keys to user config file
-    ak = config.get("login", "access_key")
-    sk = config.get("login", "secret_key")
-    if (ak == 'auto') and (sk == 'auto'):
-        result = get_keys()
-        if result is not None:
-            ak, sk = result
-        else:
-            ak = sk = 'KEYSNOTFOUND'
-        config.set("login", "access_key", ak)
-        config.set("login", "secret_key", sk)
 
     aesKey = config.get('encryption', 'key')
     if aesKey == 'auto':
@@ -98,6 +88,7 @@ if len(config.read(usercfg)) == 0:
 
     with open(usercfg, 'w') as fp:
         config.write(fp)
+
 
 # add things to old versions of config if needed
 else:
