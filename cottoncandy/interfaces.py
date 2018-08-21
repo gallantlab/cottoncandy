@@ -621,7 +621,9 @@ class ArrayInterface(BasicInterface):
         assert not any(metadata_keys)
         meta.update(metadata)
 
-        if compression == "gzip":
+        if compression is False:
+            filestream = StringIO(array.data)
+        elif compression == "gzip":
             if six.PY3 and array.flags['F_CONTIGUOUS']:
                 # eventually, array.data below should be changed to np.getbuffer(array)
                 # (not yet working in python3 numpy)
@@ -633,7 +635,6 @@ class ArrayInterface(BasicInterface):
             gz.close()
             zipdata.seek(0)
             filestream = zipdata
-            data_nbytes = get_fileobject_size(filestream)
         elif hasattr(numcodecs, compression.lower()):
             # If the specified compression type is in numcodecs, use numcodecs
             orig_nbytes = array.nbytes
@@ -641,9 +642,6 @@ class ArrayInterface(BasicInterface):
             filestream = StringIO(compressor.encode(array))
             data_nbytes = get_fileobject_size(filestream)
             print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
-        elif compression is False:
-            data_nbytes = array.nbytes
-            filestream = StringIO(array.data)
         else:
             raise ValueError("Unknown compression scheme: %s"%compression)
         response = self.upload_object(object_name, filestream, acl=acl, **meta)
