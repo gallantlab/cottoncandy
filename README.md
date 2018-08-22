@@ -39,14 +39,16 @@ $ sudo python setup.py install
 
 ### Configuration file
 
-After installation, the cottoncandy configuration file will be saved under:
+Upon first use, cottoncandy will create a configuration file. This configuration file allows you to enter your S3 and Google Drive credentials and set many other options. See the default [configuration file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg).
+
+The configuration file is created the first time you import cottoncandy and it is stored under:
 * Linux: `~/.config/cottoncandy/options.cfg` 
 * MAC OS: `~/Library/Application Support/cottoncandy/options.cfg`
-* Windows (sorry not tested, nor supported): `C:\Users\<username>\AppData\Local\<AppAuthor>\cottoncandy\options.cfg`
+* Windows (not supported): `C:\Users\<username>\AppData\Local\<AppAuthor>\cottoncandy\options.cfg`
 
-Object and bucket permissions are set to ``authenticated-read`` by default. If you wish to keep all your objects private, modify the configuration file and set ``default_acl = private``. See [AWS ACL overview](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) for more information on S3 permissions.
+By default, cottoncandy sets object and bucket permissions to ``authenticated-read``. If you wish to keep all your objects private, modify your configuration file and set ``default_acl = private``. See [AWS ACL overview](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) for more information on S3 permissions.
 
-See the [default file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg) for configuration options.
+Advanced (for admins): One can customize the cottoncandy system install by cloning the repo and modifying `defaults.cfg`. For example, one can set the default encyption key across the system for all users (`key = SoMeEncypTionKey`). When a user first uses cottoncandy, this deault value will be copied to their personal configuration file. Note however that the user can still overwrite that value. 
 
 
 ## Getting started
