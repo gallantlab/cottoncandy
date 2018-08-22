@@ -7,7 +7,8 @@ except ImportError:
     import ConfigParser as configparser
 
 
-if len(set(('develop', 'bdist_wheel', 'bdist_egg', 'bdist_rpm', 'bdist', 'bdist_dumb'
+if len(set(('develop', 'bdist_wheel', 'bdist_egg', 'bdist_rpm', 'bdist',
+            'sdist', 'bdist_wheel', 'bdist_dumb',
             'bdist_wininst', 'install_egg_info', 'egg_info', 'easy_install')).intersection(sys.argv)) > 0:
     # monkey patch distutils
     from setuptools import setup
@@ -43,7 +44,7 @@ A python scientific library for storing and accessing numpy array data on S3. Th
 
 def main(**kwargs):
     setup(name="""cottoncandy""",
-          version='0.1.0rc1',
+          version='0.1.0rc2',
           description="""sugar for S3""",
           author='Anwar O. Nunez-Elizalde',
           author_email='anwarnunez@gmail.com',
