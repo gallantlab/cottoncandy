@@ -12,11 +12,11 @@ if len(set(('develop', 'bdist_wheel', 'bdist_egg', 'bdist_rpm', 'bdist',
             'bdist_wininst', 'install_egg_info', 'egg_info', 'easy_install')).intersection(sys.argv)) > 0:
     # monkey patch distutils
     from setuptools import setup
+    from setuptools.command.install import install
 else:
     # use standard library
     from distutils.core import setup
-
-from distutils.command.install import install
+    from distutils.command.install import install
 
 def set_default_options(optfile):
     import os
@@ -44,7 +44,7 @@ A python scientific library for storing and accessing numpy array data on S3. Th
 
 def main(**kwargs):
     setup(name="""cottoncandy""",
-          version='0.1.0rc2',
+          version='0.1.0rc3',
           description="""sugar for S3""",
           author='Anwar O. Nunez-Elizalde',
           author_email='anwarnunez@gmail.com',
@@ -59,6 +59,8 @@ def main(**kwargs):
           cmdclass=dict(install=my_install),
           include_package_data=True,
           long_description=long_description,
+          install_requires=['six', 'botocore', 'boto3', 'python-dateutil',
+                            'PyDrive', 'pycrypto'],
           **kwargs)
 
 if __name__ == "__main__":
