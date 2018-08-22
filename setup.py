@@ -7,34 +7,25 @@ except ImportError:
     import ConfigParser as configparser
 
 
-from setuptools import setup
-from setuptools.command.install import install
+if len(set(('develop', 'bdist_wheel', 'bdist_egg', 'bdist_rpm', 'bdist', 'bdist_dumb'
+            'bdist_wininst', 'install_egg_info', 'egg_info', 'easy_install')).intersection(sys.argv)) > 0:
+    # monkey patch distutils
+    from setuptools import setup
+else:
+    # use standard library
+    from distutils.core import setup
+
+from distutils.command.install import install
 
 def set_default_options(optfile):
     import os
     import pwd
 
-    from cottoncandy import appdirs
     config = configparser.ConfigParser()
     config.read(optfile)
-    configdir = appdirs.user_data_dir('cottoncandy')
-    usercfg = os.path.join(configdir, "options.cfg")
-    issudo = os.getenv('SUDO_USER')
-    uname = os.getenv('SUDO_USER') if issudo else os.environ['USER']
-
-    # If it has been previously installed do not overwrite
-    if not os.path.exists(usercfg):
-        with open(usercfg, 'w') as fp:
-            config.write(fp)
-
-    uid = pwd.getpwnam(uname).pw_uid
-    gid = pwd.getpwnam(uname).pw_gid
-
-    os.chown(usercfg, uid, gid)
-    os.chmod(usercfg, 0o600)
-    os.chown(configdir, uid, gid)
-    print('cottoncandy configuration path: %s'%usercfg)
-
+    with open(optfile, 'w') as fp:
+        config.write(fp)
+    print('cottoncandy configuration file: %s'%optfile)
 
 
 class my_install(install):

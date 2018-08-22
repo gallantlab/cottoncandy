@@ -80,6 +80,20 @@ if len(config.read(usercfg)) == 0:
     if not os.path.exists(userdir):
         os.makedirs(userdir)
 
+    prompt = '''
+############################################################
+Hi! Looks like this is your first time using cottoncandy.
+
+Your cottoncandy configuration file will be stored in:
+{path}
+
+You can store your S3 or Google Drive credentials there,
+and many other options.
+
+Thanks for using cottoncandy!
+'''
+    print(prompt.format(path=usercfg))
+
     aesKey = config.get('encryption', 'key')
     if aesKey == 'auto':
         newKey = generate_AES_key()
