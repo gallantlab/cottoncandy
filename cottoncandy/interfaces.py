@@ -95,6 +95,7 @@ class BasicInterface(InterfaceObject):
         cci  : ccio
             Cottoncandy interface object
         """
+        bucket_name = None if bucket_name == '' else bucket_name
 
         if backend == 's3':
             self.backend_interface = S3Client(bucket_name, ACCESS_KEY, SECRET_KEY, url,
@@ -107,11 +108,11 @@ class BasicInterface(InterfaceObject):
             raise ValueError('Bad backend')
 
         if verbose:
-            if backend == 's3':
+            if backend == 's3' and bucket_name:
                 print('Available buckets:')
                 self.show_buckets()
                 print('Current bucket: {}'.format(self.backend_interface.bucket_name))
-            else:
+            elif backend == 'gdrive':
                 print('Google drive backend instantiated.')
 
     def __repr__(self):
