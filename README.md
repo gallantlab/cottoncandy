@@ -88,7 +88,6 @@ dask.array<getitem..., shape=(100, 600, 1000), dtype=float64, chunksize=(100, 60
 (100, 600, 200)
 ```
 
-
 ### Command-line search
 
 ```python
@@ -106,7 +105,6 @@ dask.array<getitem..., shape=(100, 600, 1000), dtype=float64, chunksize=(100, 60
 
 ### File system-like object browsing
 
-
 ```python
 >>> import cottoncandy as cc
 >>> browser = cc.get_browser('my_bucket_name',
@@ -120,6 +118,16 @@ browser.sweet_project.sub02_awesome_analysis_DOT_grp
 <cottoncandy-group <bucket:my_bucket_name> (sub01_awesome_analysis.grp: 3 keys)>
 >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01
 <cottoncandy-dataset <bucket:my_bucket_name [1.00MB:shape=(10000)]>
+```
+
+### Connection settings (S3 only)
+
+`cottoncandy` allows users to modify connection settings via `botocore`. For example, the user can define the connection time out for downloads, and the number of times to retry dropped S3 requests.
+
+```
+from botocore.client import Config
+config = Config(connect_timeout=60, read_timeout=60, retries=dict(max_attempts=10))
+cci = cc.get_interface('my_bucket_name', config=config)
 ```
 
 ### Google Drive backend
@@ -139,7 +147,6 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
 
 **WARNING**: Encryption is an advance feature. Make sure to create a backup of the encryption keys  (stored in `~/.config/cottoncandy/options.cfg`). If you lose your encryption keys you will not be able to recover your data!
 
-
 ```python
 >>> import cottoncandy as cc
 >>> cci = cc.get_encrypted_interface('my_bucket_name',
@@ -147,6 +154,7 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
                                       SECRET_KEY='FAKESECRETKEYTEXT',
                                       endpoint_url='https://s3.amazonaws.com')                               
 ```
+
 
 
 ### Contributing
