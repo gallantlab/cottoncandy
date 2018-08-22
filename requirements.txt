@@ -1,4 +1,4 @@
-wheel
+wheel>=0.31.1
 numpy>=1.6.0
 scipy>=0.9.0
 boto3>=1.2.3
