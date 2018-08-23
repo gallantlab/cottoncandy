@@ -428,7 +428,6 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
 
 def read_buffered(frm, to, buffersize=64):
     '''Fill a numpy n-d array with file-like object contents
-    (XXX: python3 broken)
 
     Parameters
     ----------
