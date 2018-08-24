@@ -163,7 +163,10 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
 
 ## Cite as
 
-Nunez-Elizalde AO, Zhang T, Huth AG, Gao JS, Slivkoff, Lescroart MD, Deniz F, McNeil C, Gibboni R, Popham SF, Rokem A, Oliver MD and Gallant JL. cottoncandy: scientific python package for easy cloud storage. Zenodo. 2017. http://doi.org/10.5281/zenodo.1034342
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.00890/status.svg)](https://doi.org/10.21105/joss.00890)
+
+Nunez-Elizalde AO, Gao JS, Zhang T, Gallant JL (2018). cottoncandy: scientific python package for easy cloud storage. Journal of Open Source Software, 3(28), 890, https://doi.org/10.21105/joss.00890
+
 
 
 
