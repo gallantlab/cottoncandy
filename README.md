@@ -19,6 +19,12 @@ A python scientific library for storing and accessing numpy array data on S3. Th
 
 This library relies heavily on [boto3](https://github.com/boto/boto3)
 
+### Try it out!
+
+Using cottoncandy to explore the Allen Brain Observatory data: [**Launch Notebook!**]( https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb)
+
+Using cottoncandy to explore OpenNeuro nifti data: [**Launch notebook!**](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_openneuro.ipynb)
+
 ## Installation
 
 With pip:
