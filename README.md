@@ -1,3 +1,10 @@
+<p align="center">
+<img src="https://user-images.githubusercontent.com/17423004/43179059-9f1ca3b0-8f85-11e8-8f75-587062e75339.png"
+     alt="cottoncandy logo"
+     width=50%
+/>
+</p>  
+
 # Welcome to cottoncandy!
 [![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=master)](https://travis-ci.org/gallantlab/cottoncandy)
 [![DOI](https://zenodo.org/badge/58677370.svg)](https://zenodo.org/badge/latestdoi/58677370)
@@ -12,7 +19,22 @@ A python scientific library for storing and accessing numpy array data on S3. Th
 
 This library relies heavily on [boto3](https://github.com/boto/boto3)
 
+### Try it out!
+
+Using cottoncandy to explore the Allen Brain Observatory data: [**Launch Notebook!**]( https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb)
+
+Using cottoncandy to explore OpenNeuro nifti data: [**Launch notebook!**](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_openneuro.ipynb)
+
 ## Installation
+
+With pip:
+
+```
+$ pip install cottoncandy
+```
+
+Directly from the repo:
+
 Clone the repo from GitHub and do the usual python install from the command line
 
 ```
@@ -21,9 +43,18 @@ $ cd cottoncandy
 $ sudo python setup.py install
 ```
 
-A configuration file will be saved under `~/.config/cottoncandy/options.cfg`. Upon installation cottoncandy will try to find your AWS keys and store them in this file. See the [default file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg) for more configuration options.
+### Configuration file
 
-Object and bucket permissions are set to ``authenticated-read`` by default. If you wish to keep all your objects private, modify the configuration file and set ``default_acl = private``. See [AWS ACL overview](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) for more information on S3 permissions.
+Upon first use, cottoncandy will create a configuration file. This configuration file allows you to enter your S3 and Google Drive credentials and set many other options. See the default [configuration file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg).
+
+The configuration file is created the first time you import cottoncandy and it is stored under:
+* Linux: `~/.config/cottoncandy/options.cfg` 
+* MAC OS: `~/Library/Application Support/cottoncandy/options.cfg`
+* Windows (not supported): `C:\Users\<username>\AppData\Local\<AppAuthor>\cottoncandy\options.cfg`
+
+By default, cottoncandy sets object and bucket permissions to ``authenticated-read``. If you wish to keep all your objects private, modify your configuration file and set ``default_acl = private``. See [AWS ACL overview](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) for more information on S3 permissions.
+
+Advanced (for admins): One can customize the cottoncandy system install by cloning the repo and modifying `defaults.cfg`. For example, one can set the default encyption key across the system for all users (`key = SoMeEncypTionKey`). When a user first uses cottoncandy, this deault value will be copied to their personal configuration file. Note however that the user can still overwrite that value. 
 
 
 ## Getting started
@@ -63,7 +94,6 @@ dask.array<getitem..., shape=(100, 600, 1000), dtype=float64, chunksize=(100, 60
 (100, 600, 200)
 ```
 
-
 ### Command-line search
 
 ```python
@@ -81,7 +111,6 @@ dask.array<getitem..., shape=(100, 600, 1000), dtype=float64, chunksize=(100, 60
 
 ### File system-like object browsing
 
-
 ```python
 >>> import cottoncandy as cc
 >>> browser = cc.get_browser('my_bucket_name',
@@ -97,7 +126,17 @@ browser.sweet_project.sub02_awesome_analysis_DOT_grp
 <cottoncandy-dataset <bucket:my_bucket_name [1.00MB:shape=(10000)]>
 ```
 
-### Google Drive backend (experimental)
+### Connection settings (S3 only)
+
+`cottoncandy` allows users to modify connection settings via `botocore`. For example, the user can define the connection time out for downloads, and the number of times to retry dropped S3 requests.
+
+```
+from botocore.client import Config
+config = Config(connect_timeout=60, read_timeout=60, retries=dict(max_attempts=10))
+cci = cc.get_interface('my_bucket_name', config=config)
+```
+
+### Google Drive backend
 
 `cottoncandy` can also use Google Drive as a back-end. This equires a `client_secrets.json` file in your `~/.config/cottoncandy` folder and the [pydrive](https://github.com/googledrive/PyDrive) package. 
 
@@ -108,9 +147,11 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
 >>> cci = cc.get_interface(backend='gdrive')
 ```
 
-### Encryption (highly experimental)
+### Encryption
 
-`cottoncandy`provides a transparent encryption interface for AWS S3 and Google Drive. This requires the `pycrypto` package. This is HIGHLY EXPERIMENTAL.
+`cottoncandy`provides a transparent encryption interface for AWS S3 and Google Drive. This requires the `pycrypto` package. 
+
+**WARNING**: Encryption is an advance feature. Make sure to create a backup of the encryption keys  (stored in `~/.config/cottoncandy/options.cfg`). If you lose your encryption keys you will not be able to recover your data!
 
 ```python
 >>> import cottoncandy as cc
@@ -121,9 +162,17 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
 ```
 
 
+
+### Contributing
+* If you find any issues with `cottoncandy`, please report it by submitting an issue on GitHub.
+* If you wish to contribute, please submit a pull request. Include information as to how you ran the tests and the full output log if possible. Running tests on AWS can incur costs. 
+
 ## Cite as
 
-Nunez-Elizalde AO, Zhang T, Huth AG, Gao JS, Slivkoff, Lescroart MD, Deniz F, McNeil C, Gibboni R, Popham SF, Rokem A, Oliver MD and Gallant JL. cottoncandy: scientific python package for easy cloud storage. Zenodo. 2017. http://doi.org/10.5281/zenodo.1034342
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.00890/status.svg)](https://doi.org/10.21105/joss.00890)
+
+Nunez-Elizalde AO, Gao JS, Zhang T, Gallant JL (2018). cottoncandy: scientific python package for easy cloud storage. Journal of Open Source Software, 3(28), 890, https://doi.org/10.21105/joss.00890
+
 
 
 
