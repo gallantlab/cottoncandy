@@ -69,7 +69,7 @@ def content_generator():
 
 def test_upload_raw_array():
     for content in content_generator():
-        print(cci.upload_raw_array(object_name, content, gzip=False))
+        print(cci.upload_raw_array(object_name, content, compression=None))
         time.sleep(1.0)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
