@@ -38,7 +38,7 @@ from .s3client import S3Client, botocore
 from warnings import warn
 from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_size, read_buffered,
                     generate_ndarray_chunks, remove_trivial_magic, has_real_magic, objects2names,
-                    has_magic, remove_root, mk_aws_path,
+                    has_magic, remove_root, mk_aws_path, string2bool,
                     GzipInputStream,
                     DEFAULT_ACL, MPU_CHUNKSIZE, MPU_THRESHOLD, DASK_CHUNKSIZE, MB, SEPARATOR,
                     MAGIC_CHECK)
@@ -678,29 +678,34 @@ class ArrayInterface(BasicInterface):
         array = np.empty(tuple(shape), dtype = dtype, order = order)
 
         body = arraystream.content
-        # Backward compatibility
+
+
         if 'gzip' in arraystream.metadata:
-            # Assume old file; over-write "compression" value
-            if arraystream.metadata['gzip']:
+            # Backward compatibility, over-write "compression" value
+            isgzipped = string2bool(arraystream.metadata['gzip'])
+            if isgzipped:
                 arraystream.metadata['compression'] = 'gzip'
             else:
-                arraystream.metadata['compression'] = 'None'
-        if 'compression' in arraystream.metadata and arraystream.metadata['compression'] != "False":
-            if arraystream.metadata['compression'] == 'gzip':
-                # gzipped!
-                datastream = GzipInputStream(body)
-            else:
-                # numcodecs compression
-                compression = arraystream.metadata['compression']
-                decompressor = numcodecs.get_codec(dict(id=compression.lower()))
-                # Can't decode stream; must read in file. Memory hungry?
-                bits_compr = arraystream.content.read()
-                bits = decompressor.decode(bits_compr)
-                array = np.frombuffer(bits, dtype=dtype)
-                array = array.reshape(shape)
-                return array
-        else:
+                arraystream.metadata['compression'] = 'False'
+
+        assert 'compression' in arraystream.metadata
+
+        if arraystream.metadata['compression'] == 'gzip':
+            # gzipped!
+            datastream = GzipInputStream(body)
+        elif arraystream.metadata['compression'] in ['False', 'None']:
+            # uncompressed data
             datastream = body
+        else:
+            # numcodecs compression
+            compression = arraystream.metadata['compression']
+            decompressor = numcodecs.get_codec(dict(id=compression.lower()))
+            # Can't decode stream; must read in file. Memory hungry?
+            bits_compr = arraystream.content.read()
+            bits = decompressor.decode(bits_compr)
+            array = np.frombuffer(bits, dtype=dtype)
+            array = array.reshape(shape)
+            return array
 
         read_buffered(datastream, array, buffersize=buffersize)
         return array

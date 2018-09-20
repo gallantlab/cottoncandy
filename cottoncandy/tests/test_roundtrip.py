@@ -132,7 +132,13 @@ def test_upload_raw_array():
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
 
-
+def test_upload_raw_array_uncompressed():
+    for i, content in enumerate(content_generator()):
+        print(i, cci.upload_raw_array(object_name, content, compression=False))
+        time.sleep(1.0)
+        dat = cci.download_raw_array(object_name)
+        assert np.allclose(dat, content)
+        cci.rm(object_name, recursive=True)
 
 def test_upload_dask_array():
     for content in content_generator():
