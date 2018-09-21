@@ -7,7 +7,7 @@
 
 # Welcome to cottoncandy!
 [![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=master)](https://travis-ci.org/gallantlab/cottoncandy)
-[![DOI](https://zenodo.org/badge/58677370.svg)](https://zenodo.org/badge/latestdoi/58677370)
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.00890/status.svg)](https://doi.org/10.21105/joss.00890)
 
 *sugar for s3*
 
@@ -168,8 +168,6 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
 * If you wish to contribute, please submit a pull request. Include information as to how you ran the tests and the full output log if possible. Running tests on AWS can incur costs. 
 
 ## Cite as
-
-[![DOI](http://joss.theoj.org/papers/10.21105/joss.00890/status.svg)](https://doi.org/10.21105/joss.00890)
 
 Nunez-Elizalde AO, Gao JS, Zhang T, Gallant JL (2018). cottoncandy: scientific python package for easy cloud storage. Journal of Open Source Software, 3(28), 890, https://doi.org/10.21105/joss.00890
 
