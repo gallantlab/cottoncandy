@@ -58,13 +58,14 @@ def content_generator():
     for kind in kinds:
         for order in orders:
             for dtype in types:
+                print(kind, order, dtype)
                 data = np.random.randn(20,10,5)
                 data = np.asarray(data, order=order).astype(dtype)
 
                 if kind == 'raw':
                     yield data
                 elif kind == 'slice':
-                    yield data[int(data.shape[0]/2):]
+                    yield data[...,int(data.shape[0]/2):]
                 elif kind == 'nonco':
                     yield data[np.random.randint(0,data.shape[0],10)]
 

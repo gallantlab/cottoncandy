@@ -27,7 +27,6 @@ except ImportError:
 from base64 import b64decode, b64encode
 
 
-
 import cottoncandy.browser
 import os
 import re
@@ -562,11 +561,10 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         array : np.ndarray
-        compression  : str
-            Type of compression to use. 'gzip' uses gzip module, None is no compression,
-            other strings specify a codec from numcodecs. Available options are:
-            'LZ4', 'Zlib', 'Zstd', 'BZ2' (note: attend to caps). Zstd appears to be
-            the only one that will work with large (> 2GB) arrays.
+        compression  : str, bool
+            `True` uses the configuration defaults. `False` is no compression.
+            Available options are: 'gzip', 'LZ4', 'Zlib', 'Zstd', 'BZ2' (attend to caps).
+            NB: Zstd appears to be the only one that supports >2GB arrays.
         acl : str
             ACL for the object
         **metadata : optional
@@ -576,37 +574,37 @@ class ArrayInterface(BasicInterface):
         This method also uploads the array ``dtype``, ``shape``, and ``gzip``
         flag as metadata
         """
-        # Backward compatibility
-        if 'gzip' in metadata:
-            warn('Deprecated keyword argument `gzip`. Use `compression="gzip"` instead', DeprecationWarning)
-            gz = metadata.pop('gzip')
-            if gz:
-                compression = 'gzip'
-            else:
-                compression = None
-        # Test whether array is >= 2 GB
-        large_array = array.nbytes > 2 ** 31
-        if compression is True:
-            # Select default from config file
-            if large_array:
-                compression = COMPRESSION_LARGE
-            else:
-                compression = COMPRESSION_SMALL
-        elif compression is None:
+        if compression is None:
             compression = False
 
-        if large_array and compression == "gzip":
-            # Raise exception for specification of gzip w/ large array
-            raise ValueError(("`compression='gzip'` does not support"
-                              " arrays > 2GB!\nPlease use `compression=True`"
-                              " (for default compression for large arrays)\n"
-                              " or specify a compatible algorithm."))
+        # Backward compatibility
+        if 'gzip' in metadata:
+            warn("Deprecated keyword argument `gzip`. Use `compression='gzip'` instead", DeprecationWarning)
+            gz = metadata.pop('gzip')
+            compression = 'gzip' if gz else False
 
-        order = 'F' if array.flags.f_contiguous else 'C'
-        if not array.flags['%s_CONTIGUOUS' % order]:
-            print ('array is a slice along a non-contiguous axis. copying the array '
-                   'before saving (will use extra memory)')
-            array = np.array(array, order = order)
+        if compression is True:
+            # check whether array is >= 2 GB
+            large_array = array.nbytes > 2**31
+            compression = COMPRESSION_LARGE if large_array else COMPRESSION_SMALL
+
+            if large_array and compression == 'gzip':
+                # Raise exception for specification of gzip w/ large array
+                raise ValueError(("gzip does not support compression of >2GB arrays. "
+                                  "Try `compression='Zstd'` instead."))
+
+        order = 'C' if array.flags.carray else 'F'
+        if ((not array.flags['%s_CONTIGUOUS' % order] and six.PY2) or
+            (not array.flags['C_CONTIGUOUS'] and six.PY3)):
+            warn('Non-contiguous array. Creating copy (will use extra memory)...')
+
+            if six.PY3 and order == 'F':
+                # memoryview (PY3) vs buffer (PY2) issues
+                warn("PY3: Changing array from 'F' to 'C' order")
+                order = 'C'
+
+            # create contiguous copy
+            array = np.array(array, order=order)
 
         meta = dict(dtype=array.dtype.str,
                     shape=','.join(map(str, array.shape)),
@@ -624,7 +622,7 @@ class ArrayInterface(BasicInterface):
 
         if compression is False:
             filestream = StringIO(array.data)
-        elif compression == "gzip":
+        elif compression == 'gzip':
             if six.PY3 and array.flags['F_CONTIGUOUS']:
                 # eventually, array.data below should be changed to np.getbuffer(array)
                 # (not yet working in python3 numpy)
@@ -644,7 +642,7 @@ class ArrayInterface(BasicInterface):
             data_nbytes = get_fileobject_size(filestream)
             print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
         else:
-            raise ValueError("Unknown compression scheme: %s"%compression)
+            raise ValueError('Unknown compression scheme: %s'%compression)
         response = self.upload_object(object_name, filestream, acl=acl, **meta)
         return response
 
