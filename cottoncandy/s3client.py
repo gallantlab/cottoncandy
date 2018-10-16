@@ -342,7 +342,7 @@ class S3Client(CCBackEnd):
         if not self.check_file_exists(object_name):
             raise IOError('Object "%s" does not exist' % object_name)
         s3_object = self.get_s3_object(object_name)
-        return CloudStream(BytesIO(s3_object.get()['Body'].read()), s3_object.metadata)
+        return CloudStream(BytesIO(s3_object.get()['Body'].read()), sanitize_metadata(s3_object.metadata))
 
     def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL):
         """Upload a file to S3.

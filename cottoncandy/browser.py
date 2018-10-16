@@ -19,6 +19,7 @@ from cottoncandy.utils import (clean_object_name,
                                read_buffered,
                                GzipInputStream,
                                generate_ndarray_chunks,
+                               sanitize_metadata,
                                )
 
 
@@ -216,8 +217,9 @@ class S3HDF5(S3Directory):
         if len(self._subdirs) == 0:
             # bottom object, probably array
             obj = self.interface.get_object(self._fullpath)
-            if 'shape' in obj.metadata:
-                shape =  obj.metadata['shape']
+            obmeta = sanitize_metadata(obj.metadata)
+            if 'shape' in obmeta:
+                shape =  obmeta['shape']
                 size = get_object_size(obj)
                 details = (__package__, self.interface.bucket_name, size, shape)
                 return "%s-dataset <bucket:%s [%0.01fMB:shape=(%s)]>"%details
