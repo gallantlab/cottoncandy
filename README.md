@@ -27,12 +27,6 @@ Using cottoncandy to explore OpenNeuro nifti data: [**Launch notebook!**](https:
 
 ## Installation
 
-With pip:
-
-```
-$ pip install cottoncandy
-```
-
 Directly from the repo:
 
 Clone the repo from GitHub and do the usual python install from the command line
@@ -41,6 +35,11 @@ Clone the repo from GitHub and do the usual python install from the command line
 $ git clone https://github.com/gallantlab/cottoncandy.git
 $ cd cottoncandy
 $ sudo python setup.py install
+```
+With pip:
+
+```
+$ pip install cottoncandy
 ```
 
 ### Configuration file
