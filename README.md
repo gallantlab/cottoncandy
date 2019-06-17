@@ -21,10 +21,12 @@ This library relies heavily on [boto3](https://github.com/boto/boto3)
 
 ### Try it out!
 
-Using cottoncandy to explore the Allen Brain Observatory data: [**Launch Notebook!**]( https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb)
+Jupyter Notebook examples using cottoncandy to
 
-Using cottoncandy to explore OpenNeuro nifti data: [**Launch notebook!**](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_openneuro.ipynb)
+* Explore the Allen Brain Observatory data: [**view notebook**](https://nbviewer.jupyter.org/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb) ([launch](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb) using google colab)
 
+* Explore OpenNeuro nifti data: [**view notebook**](https://nbviewer.jupyter.org/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_openneuro.ipynb) ([launch](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_openneuro.ipynb)
+using google colab)
 ## Installation
 
 Directly from the repo:
