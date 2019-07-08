@@ -62,11 +62,11 @@ def generate_AES_key(bytes = 32):
 
 def get_config():
     config = configparser.ConfigParser()
-    defaults_file = open(os.path.join(cwd, 'defaults.cfg'), 'r')
-    if sys.version_info.major == 2:
-        config.readfp(defaults_file)
-    else:
-        config.read_file(defaults_file)
+    with open(os.path.join(cwd, 'defaults.cfg'), 'r') as defaults_file:
+        if sys.version_info.major == 2:
+            config.readfp(defaults_file)
+        else:
+            config.read_file(defaults_file)
     return config
 
 cwd = os.path.split(os.path.abspath(__file__))[0]
