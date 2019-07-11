@@ -1,6 +1,6 @@
 import os
 import sys
-import pwd
+# import pwd    # error on Windows 10, removed
 
 from base64 import b64decode, b64encode
 
@@ -71,7 +71,7 @@ def get_config():
     return config
 
 cwd = os.path.split(os.path.abspath(__file__))[0]
-userdir = appdirs.user_data_dir("cottoncandy")
+userdir = appdirs.user_data_dir("cottoncandy",appauthor="cottoncandy")  # error on Windows 10, appdirs requires appauthor
 usercfg = os.path.join(userdir, "options.cfg")
 config = get_config()
 
