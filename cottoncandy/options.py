@@ -1,6 +1,5 @@
 import os
 import sys
-# import pwd    # error on Windows 10, removed
 
 from base64 import b64decode, b64encode
 
