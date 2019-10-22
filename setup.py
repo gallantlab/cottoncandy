@@ -44,7 +44,7 @@ A python scientific library for storing and accessing numpy array data on S3. Th
 
 def main(**kwargs):
     setup(name="""cottoncandy""",
-          version='0.1.0',
+          version='0.2.0',
           description="""sugar for S3""",
           author='Anwar O. Nunez-Elizalde',
           author_email='anwarnunez@gmail.com',
