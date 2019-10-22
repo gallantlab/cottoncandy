@@ -637,7 +637,9 @@ class ArrayInterface(BasicInterface):
         array = np.empty(tuple(shape), dtype = dtype, order = order)
 
         body = arraystream.content
-        if 'gzip' in arraystream.metadata and arraystream.metadata['gzip'] == 'True':
+        if 'compression' in arraystream.metadata:
+            raise RuntimeError("Compression usage inconsistent. Please update your software to the newest version.")
+        elif 'gzip' in arraystream.metadata and arraystream.metadata['gzip'] == 'True':
             # gzipped!
             datastream = GzipInputStream(body)
         else:
