@@ -552,7 +552,7 @@ class ArrayInterface(BasicInterface):
 
     @clean_object_name
     def upload_raw_array(self, object_name, array, compression=DO_COMPRESSION, acl=DEFAULT_ACL, **metadata):
-        """Upload a a binary representation of a np.ndarray
+        """Upload a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
         It does not have any overhead.
