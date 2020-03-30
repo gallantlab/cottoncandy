@@ -113,10 +113,9 @@ Learn more:
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    api/index.rst
-
 
 
 .. only:: html
@@ -126,6 +125,7 @@ Learn more:
 
 
 .. only:: html
+
    * :ref:`genindex`
    * :ref:`modindex`
    * :ref:`search`
