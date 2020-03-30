@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>gdriveclient &#8212; cottoncandy 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="interfaces" href="cottoncandy.interfaces.html" />
+    <link rel="prev" title="browser" href="cottoncandy.browser.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          cottoncandy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.browser.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">browser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.interfaces.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">interfaces</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gdriveclient</span></code></a><ul>
+<li><a class="reference internal" href="#id1"><code class="xref py py-class docutils literal notranslate"><span class="pre">GDriveClient</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="cottoncandy.browser.html" title="Previous Chapter: browser"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; browser</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.interfaces.html" title="Next Chapter: interfaces"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">interfaces &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/cottoncandy.gdriveclient.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+  <li>
+    <a href="cottoncandy.browser.html" title="Previous Chapter: browser"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; browser</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.interfaces.html" title="Next Chapter: interfaces"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">interfaces &raquo;</span>
+    </a>
+  </li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-cottoncandy.gdriveclient">
+<span id="gdriveclient"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">gdriveclient</span></code><a class="headerlink" href="#module-cottoncandy.gdriveclient" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.gdriveclient.GDriveClient" title="cottoncandy.gdriveclient.GDriveClient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GDriveClient</span></code></a>([secrets, credentials])</p></td>
+<td><p>Google Drive client based on PyDrive, which is based on google apis.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id1">
+<h2><a class="reference internal" href="#cottoncandy.gdriveclient.GDriveClient" title="cottoncandy.gdriveclient.GDriveClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">GDriveClient</span></code></a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.gdriveclient.GDriveClient">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.gdriveclient.</code><code class="sig-name descname">GDriveClient</code><span class="sig-paren">(</span><em class="sig-param">secrets='client_secrets.json'</em>, <em class="sig-param">credentials='gdrive-credentials.txt'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.backend.CCBackEnd</span></code></p>
+<p>Google Drive client based on PyDrive, which is based on google apis.
+To use, you need to enable gdrive APIs and make an OAuth2 id</p>
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">secrets='client_secrets.json'</em>, <em class="sig-param">credentials='gdrive-credentials.txt'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>secrets</strong> (<em>str</em>) – path to client secrets json file</p></li>
+<li><p><strong>credentials</strong> (<em>str</em>) – path to credentials file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.Authenticate">
+<em class="property">static </em><code class="sig-name descname">Authenticate</code><span class="sig-paren">(</span><em class="sig-param">secrets</em>, <em class="sig-param">credentials</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.Authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>secrets</strong> (<em>str</em>) – path to client secrets json file</p></li>
+<li><p><strong>credentials</strong> (<em>str</em>) – path to credentials file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>authenticator</strong> – google drive authentication object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>GoogleAuth</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.cd">
+<code class="sig-name descname">cd</code><span class="sig-paren">(</span><em class="sig-param">directory=None</em>, <em class="sig-param">make_if_not_exist=False</em>, <em class="sig-param">isID=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.cd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> (<em>str</em>) – path</p></li>
+<li><p><strong>make_if_not_exist</strong> (<em>bool</em>) – make the directory if it doesn’t exist?</p></li>
+<li><p><strong>isID</strong> (<em>bool</em>) – is <cite>directory</cite> a Google UUID?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success of cd operation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.check_ID_exists">
+<code class="sig-name descname">check_ID_exists</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.check_ID_exists" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – Google UUID</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>existence of ID on drive</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.check_file_exists">
+<code class="sig-name descname">check_file_exists</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">bn</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.check_file_exists" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – path on cloud to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>existence of file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.completer">
+<code class="sig-name descname">completer</code><span class="sig-paren">(</span><em class="sig-param">context</em>, <em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.completer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ipython autocomplete hook</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – <p>???</p>
+</p></li>
+<li><p><strong>event</strong> – eventargs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>autocompelte options</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list&lt;str&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">original_name</em>, <em class="sig-param">copy_name</em>, <em class="sig-param">sb=None</em>, <em class="sig-param">db=None</em>, <em class="sig-param">o=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.copy" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_name</strong> (<em>str</em>) – name of origin</p></li>
+<li><p><strong>copy_name</strong> (<em>str</em>) – name/path of copy</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.current_directory_id">
+<em class="property">property </em><code class="sig-name descname">current_directory_id</code><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.current_directory_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>ID of current directory
+:returns: <strong>id</strong> – Google UUID
+:rtype: str</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">recursive=False</em>, <em class="sig-param">delete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.delete" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – name of file/folder to delete</p></li>
+<li><p><strong>recursive</strong> (<em>bool</em>) – recursively delete a folder?</p></li>
+<li><p><strong>delete</strong> (<em>bool</em>) – hard delete files?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success of operation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.download_stream">
+<code class="sig-name descname">download_stream</code><span class="sig-paren">(</span><em class="sig-param">drive_file</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.download_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a file to memory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>drive_file</strong> (<em>str</em>) – name of file to download</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>object in memory of downloaded data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>CloudStream</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.download_to_file">
+<code class="sig-name descname">download_to_file</code><span class="sig-paren">(</span><em class="sig-param">drive_file</em>, <em class="sig-param">local_file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.download_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a file to disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drive_file</strong> (<em>str</em>) – name of file to download</p></li>
+<li><p><strong>local_file</strong> (<em>str</em>) – name to use on disk, if None, uses same name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success of operation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.get_ID_by_name">
+<code class="sig-name descname">get_ID_by_name</code><span class="sig-paren">(</span><em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.get_ID_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the Google UUID for a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – name of file to get</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>id</strong> – Google UUID</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.get_encryption_key">
+<code class="sig-name descname">get_encryption_key</code><span class="sig-paren">(</span><em class="sig-param">fileID</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.get_encryption_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the encryption key from the properties for a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fileID</strong> (<em>str</em>) – Google UUID</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>key64</strong> – base-64 encoded encryption key</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.get_file_by_ID">
+<code class="sig-name descname">get_file_by_ID</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.get_file_by_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the GoogleDriveFile for a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – Google UUID</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>item</strong> – object for the file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>GoogleDriveFile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.get_file_by_name">
+<code class="sig-name descname">get_file_by_name</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.get_file_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the GoogleDriveFile for a file
+:param name: name of file to get
+:type name: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>item</strong> – object for the file</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>GoogleDriveFile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.get_file_properties">
+<code class="sig-name descname">get_file_properties</code><span class="sig-paren">(</span><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.get_file_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the properties for a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – Google UUID of file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>properties</strong> – custom metadata</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.hook_ipython_completer">
+<code class="sig-name descname">hook_ipython_completer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.hook_ipython_completer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hooks the autocompleter into ipython</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.initialise_drive">
+<code class="sig-name descname">initialise_drive</code><span class="sig-paren">(</span><em class="sig-param">authenticator</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.initialise_drive" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>authenticator</strong> (<em>GoogleAuth</em>) – authenticated GoogleAuth object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.insert_property">
+<code class="sig-name descname">insert_property</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">visibility='PUBLIC'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.insert_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a custom property to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – Google UUID of file</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – name of the custom property</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – value of the custom property</p></li>
+<li><p><strong>visibility</strong> (<em>'PUBLIC'|'PRIVATE'</em>) – visibility of the property</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>operation success</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.list_directory">
+<code class="sig-name descname">list_directory</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.list_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists the content of a directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – path on the cloud to get contents for</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.list_objects">
+<code class="sig-name descname">list_objects</code><span class="sig-paren">(</span><em class="sig-param">names_only=False</em>, <em class="sig-param">trashed=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.list_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a list of all files in current directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>names_only</strong> (<em>bool</em>) – Returns names only?</p></li>
+<li><p><strong>trashed</strong> (<em>bool</em>) – Look in trash folder instead?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of files</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list&lt;str&gt; | list&lt;GoogleDriveFile&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.ls">
+<code class="sig-name descname">ls</code><span class="sig-paren">(</span><em class="sig-param">directory=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.ls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints contents of a folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – folder to list, if None defaults to pwd</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.mkdir">
+<code class="sig-name descname">mkdir</code><span class="sig-paren">(</span><em class="sig-param">folder_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>folder_name</strong> (<em>str</em>) – name of folder to make</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>id</strong> – Google UUID of new directory</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.move">
+<code class="sig-name descname">move</code><span class="sig-paren">(</span><em class="sig-param">file</em>, <em class="sig-param">destination</em>, <em class="sig-param">sb=None</em>, <em class="sig-param">db=None</em>, <em class="sig-param">o=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.move" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>str</em>) – file to move</p></li>
+<li><p><strong>destination</strong> (<em>str</em>) – destination folder</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success of move operation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.pwd">
+<em class="property">property </em><code class="sig-name descname">pwd</code><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.pwd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints current working directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.rebuild_current_path">
+<code class="sig-name descname">rebuild_current_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.rebuild_current_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>After a cd, rebuilds the current working directory string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.rename">
+<code class="sig-name descname">rename</code><span class="sig-paren">(</span><em class="sig-param">original_name</em>, <em class="sig-param">new_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.rename" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_name</strong> (<em>str</em>) – file to rename</p></li>
+<li><p><strong>new_name</strong> (<em>str</em>) – new name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success of operation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of stored cloud items in bytes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.store_encryption_key">
+<code class="sig-name descname">store_encryption_key</code><span class="sig-paren">(</span><em class="sig-param">fileID</em>, <em class="sig-param">key64</em>, <em class="sig-param">chunk_size=96</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.store_encryption_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores a base64-encoded encryption key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fileID</strong> (<em>str</em>) – file UUID to store this to</p></li>
+<li><p><strong>key64</strong> (<em>str</em>) – base-64 encoded key</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – size in chars to store the key in (there are limits to property lengths)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.update_metadata">
+<code class="sig-name descname">update_metadata</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.update_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the custom properties for a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – Name of file</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em>) – new metadata</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>operation success</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.upload_file">
+<code class="sig-name descname">upload_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">cloud_name=None</em>, <em class="sig-param">permissions=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.upload_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads from file on disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – path to file on disk to upload</p></li>
+<li><p><strong>cloud_name</strong> (<em>str</em>) – path/name for cloud file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success of operation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.upload_multipart">
+<code class="sig-name descname">upload_multipart</code><span class="sig-paren">(</span><em class="sig-param">stream</em>, <em class="sig-param">cloud_name</em>, <em class="sig-param">properties=None</em>, <em class="sig-param">permissions=None</em>, <em class="sig-param">buffersize=-1</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.upload_multipart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-part upload for large stream objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> (<em>stream</em>) – streaming object</p></li>
+<li><p><strong>cloud_name</strong> (<em>str</em>) – name to use on cloud</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em>) – custom metadata</p></li>
+<li><p><strong>permissions</strong> (<em>str?</em>) – permissions for this file</p></li>
+<li><p><strong>buffersize</strong> (<em>int</em>) – s3 uploading buffersize</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – s3 verbosity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool, upload success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.gdriveclient.GDriveClient.upload_stream">
+<code class="sig-name descname">upload_stream</code><span class="sig-paren">(</span><em class="sig-param">stream</em>, <em class="sig-param">name</em>, <em class="sig-param">properties=None</em>, <em class="sig-param">permissions=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.gdriveclient.GDriveClient.upload_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a stream with a .read() method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> (<em>stream</em>) – stream to upload</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name to use for cloud file</p></li>
+<li><p><strong>properties</strong> (<em>dict</em>) – custom metadata</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success of operation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,6 +1,0 @@
-<map id="inheritance66debcf454" name="inheritance66debcf454">
-<area shape="rect" id="node1" href="#cottoncandy.browser.BrowserObject" target="_top" title="browser.BrowserObject" alt="" coords="5,5,172,31"/>
-<area shape="rect" id="node3" href="#cottoncandy.browser.S3FSLike" target="_top" title="Base class for file&#45;system&#45;like interface to S3" alt="" coords="220,5,353,31"/>
-<area shape="rect" id="node2" href="#cottoncandy.browser.S3Directory" target="_top" title="Get an object that allows you to tab&#45;complete your" alt="" coords="401,5,552,31"/>
-<area shape="rect" id="node4" href="#cottoncandy.browser.S3HDF5" target="_top" title="browser.S3HDF5" alt="" coords="600,5,727,31"/>
-</map>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>options &#8212; cottoncandy 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="s3client" href="cottoncandy.s3client.html" />
+    <link rel="prev" title="interfaces" href="cottoncandy.interfaces.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          cottoncandy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.browser.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">browser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.interfaces.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">interfaces</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">options</span></code></a><ul>
+<li><a class="reference internal" href="#generate-aes-key">generate_AES_key</a></li>
+<li><a class="reference internal" href="#get-config">get_config</a></li>
+<li><a class="reference internal" href="#get-key-from-environ">get_key_from_environ</a></li>
+<li><a class="reference internal" href="#get-key-from-s3fs">get_key_from_s3fs</a></li>
+<li><a class="reference internal" href="#get-keys">get_keys</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="cottoncandy.interfaces.html" title="Previous Chapter: interfaces"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; interfaces</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.s3client.html" title="Next Chapter: s3client"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">s3client &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/cottoncandy.options.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+  <li>
+    <a href="cottoncandy.interfaces.html" title="Previous Chapter: interfaces"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; interfaces</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.s3client.html" title="Next Chapter: s3client"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">s3client &raquo;</span>
+    </a>
+  </li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-cottoncandy.options">
+<span id="options"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">options</span></code><a class="headerlink" href="#module-cottoncandy.options" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.options.generate_AES_key" title="cottoncandy.options.generate_AES_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_AES_key</span></code></a>([bytes])</p></td>
+<td><p>Generates a new AES key</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.options.get_config" title="cottoncandy.options.get_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_config</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.options.get_key_from_environ" title="cottoncandy.options.get_key_from_environ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key_from_environ</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.options.get_key_from_s3fs" title="cottoncandy.options.get_key_from_s3fs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key_from_s3fs</span></code></a>()</p></td>
+<td><p>If user has s3fs-fuse keys,return them</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.options.get_keys" title="cottoncandy.options.get_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_keys</span></code></a>()</p></td>
+<td><p>try to find the user keys in the machine</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="generate-aes-key">
+<h2>generate_AES_key<a class="headerlink" href="#generate-aes-key" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.options.generate_AES_key">
+<code class="sig-prename descclassname">cottoncandy.options.</code><code class="sig-name descname">generate_AES_key</code><span class="sig-paren">(</span><em class="sig-param">bytes=32</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.options.generate_AES_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a new AES key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bytes</strong> (<em>int</em>) – number of bytes in key</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>key</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-config">
+<h2>get_config<a class="headerlink" href="#get-config" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.options.get_config">
+<code class="sig-prename descclassname">cottoncandy.options.</code><code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.options.get_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="get-key-from-environ">
+<h2>get_key_from_environ<a class="headerlink" href="#get-key-from-environ" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.options.get_key_from_environ">
+<code class="sig-prename descclassname">cottoncandy.options.</code><code class="sig-name descname">get_key_from_environ</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.options.get_key_from_environ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="get-key-from-s3fs">
+<h2>get_key_from_s3fs<a class="headerlink" href="#get-key-from-s3fs" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.options.get_key_from_s3fs">
+<code class="sig-prename descclassname">cottoncandy.options.</code><code class="sig-name descname">get_key_from_s3fs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.options.get_key_from_s3fs" title="Permalink to this definition">¶</a></dt>
+<dd><p>If user has s3fs-fuse keys,return them</p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-keys">
+<h2>get_keys<a class="headerlink" href="#get-keys" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.options.get_keys">
+<code class="sig-prename descclassname">cottoncandy.options.</code><code class="sig-name descname">get_keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.options.get_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>try to find the user keys in the machine</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

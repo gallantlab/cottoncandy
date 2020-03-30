@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>appdirs &#8212; cottoncandy 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="browser" href="cottoncandy.browser.html" />
+    <link rel="prev" title="Encryption" href="cottoncandy.Encryption.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          cottoncandy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.browser.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">browser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.interfaces.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">interfaces</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">appdirs</span></code></a><ul>
+<li><a class="reference internal" href="#id1"><code class="xref py py-class docutils literal notranslate"><span class="pre">AppDirs</span></code></a></li>
+<li><a class="reference internal" href="#appdirserror"><code class="xref py py-class docutils literal notranslate"><span class="pre">AppDirsError</span></code></a></li>
+<li><a class="reference internal" href="#site-data-dir">site_data_dir</a></li>
+<li><a class="reference internal" href="#user-cache-dir">user_cache_dir</a></li>
+<li><a class="reference internal" href="#user-data-dir">user_data_dir</a></li>
+<li><a class="reference internal" href="#user-log-dir">user_log_dir</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="cottoncandy.Encryption.html" title="Previous Chapter: Encryption"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Encryption</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.browser.html" title="Next Chapter: browser"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">browser &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/cottoncandy.appdirs.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+  <li>
+    <a href="cottoncandy.Encryption.html" title="Previous Chapter: Encryption"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Encryption</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.browser.html" title="Next Chapter: browser"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">browser &raquo;</span>
+    </a>
+  </li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-cottoncandy.appdirs">
+<span id="appdirs"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">appdirs</span></code><a class="headerlink" href="#module-cottoncandy.appdirs" title="Permalink to this headline">¶</a></h1>
+<p>Utilities for determining application-specific dirs.</p>
+<p>See &lt;<a class="reference external" href="http://github.com/ActiveState/appdirs">http://github.com/ActiveState/appdirs</a>&gt; for details and usage.</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.appdirs.AppDirs" title="cottoncandy.appdirs.AppDirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AppDirs</span></code></a>(appname, appauthor[, version, roaming])</p></td>
+<td><p>Convenience wrapper for getting application dirs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.appdirs.AppDirsError" title="cottoncandy.appdirs.AppDirsError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AppDirsError</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.appdirs.site_data_dir" title="cottoncandy.appdirs.site_data_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">site_data_dir</span></code></a>(appname[, appauthor, version])</p></td>
+<td><p>Return full path to the user-shared data dir for this application.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.appdirs.user_cache_dir" title="cottoncandy.appdirs.user_cache_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_cache_dir</span></code></a>(appname[, appauthor, …])</p></td>
+<td><p>Return full path to the user-specific cache dir for this application.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.appdirs.user_data_dir" title="cottoncandy.appdirs.user_data_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_data_dir</span></code></a>(appname[, appauthor, version, …])</p></td>
+<td><p>Return full path to the user-specific data dir for this application.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.appdirs.user_log_dir" title="cottoncandy.appdirs.user_log_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_log_dir</span></code></a>(appname[, appauthor, version, …])</p></td>
+<td><p>Return full path to the user-specific log dir for this application.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id1">
+<h2><a class="reference internal" href="#cottoncandy.appdirs.AppDirs" title="cottoncandy.appdirs.AppDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">AppDirs</span></code></a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.appdirs.AppDirs">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.appdirs.</code><code class="sig-name descname">AppDirs</code><span class="sig-paren">(</span><em class="sig-param">appname</em>, <em class="sig-param">appauthor</em>, <em class="sig-param">version=None</em>, <em class="sig-param">roaming=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.appdirs.AppDirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Convenience wrapper for getting application dirs.</p>
+<dl class="method">
+<dt id="cottoncandy.appdirs.AppDirs.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">appname</em>, <em class="sig-param">appauthor</em>, <em class="sig-param">version=None</em>, <em class="sig-param">roaming=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.appdirs.AppDirs.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.appdirs.AppDirs.site_data_dir">
+<em class="property">property </em><code class="sig-name descname">site_data_dir</code><a class="headerlink" href="#cottoncandy.appdirs.AppDirs.site_data_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.appdirs.AppDirs.user_cache_dir">
+<em class="property">property </em><code class="sig-name descname">user_cache_dir</code><a class="headerlink" href="#cottoncandy.appdirs.AppDirs.user_cache_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.appdirs.AppDirs.user_data_dir">
+<em class="property">property </em><code class="sig-name descname">user_data_dir</code><a class="headerlink" href="#cottoncandy.appdirs.AppDirs.user_data_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.appdirs.AppDirs.user_log_dir">
+<em class="property">property </em><code class="sig-name descname">user_log_dir</code><a class="headerlink" href="#cottoncandy.appdirs.AppDirs.user_log_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="appdirserror">
+<h2><a class="reference internal" href="#cottoncandy.appdirs.AppDirsError" title="cottoncandy.appdirs.AppDirsError"><code class="xref py py-class docutils literal notranslate"><span class="pre">AppDirsError</span></code></a><a class="headerlink" href="#appdirserror" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.appdirs.AppDirsError">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.appdirs.</code><code class="sig-name descname">AppDirsError</code><a class="headerlink" href="#cottoncandy.appdirs.AppDirsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="method">
+<dt id="cottoncandy.appdirs.AppDirsError.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.appdirs.AppDirsError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="site-data-dir">
+<h2>site_data_dir<a class="headerlink" href="#site-data-dir" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.appdirs.site_data_dir">
+<code class="sig-prename descclassname">cottoncandy.appdirs.</code><code class="sig-name descname">site_data_dir</code><span class="sig-paren">(</span><em class="sig-param">appname</em>, <em class="sig-param">appauthor=None</em>, <em class="sig-param">version=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.appdirs.site_data_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return full path to the user-shared data dir for this application.</p>
+<blockquote>
+<div><p>“appname” is the name of application.
+“appauthor” (only required and used on Windows) is the name of the</p>
+<blockquote>
+<div><p>appauthor or distributing body for this application. Typically
+it is the owning company name.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>“version” is an optional version path element to append to the</dt><dd><p>path. You might want to use this if you want multiple versions
+of your app to be able to run independently. If used, this
+would typically be “&lt;major&gt;.&lt;minor&gt;”.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>Typical user data directories are:</dt><dd><p>Mac OS X:   /Library/Application Support/&lt;AppName&gt;
+Unix:       /etc/xdg/&lt;appname&gt;
+Win XP:     C:Documents and SettingsAll UsersApplication Data&lt;AppAuthor&gt;&lt;AppName&gt;
+Vista:      (Fail! “C:ProgramData” is a hidden <em>system</em> directory on Vista.)
+Win 7:      C:ProgramData&lt;AppAuthor&gt;&lt;AppName&gt;   # Hidden, but writeable on Win 7.</p>
+</dd>
+</dl>
+<p>For Unix, this is using the $XDG_CONFIG_DIRS[0] default.</p>
+<p>WARNING: Do not use this on Windows. See the Vista-Fail note above for why.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="user-cache-dir">
+<h2>user_cache_dir<a class="headerlink" href="#user-cache-dir" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.appdirs.user_cache_dir">
+<code class="sig-prename descclassname">cottoncandy.appdirs.</code><code class="sig-name descname">user_cache_dir</code><span class="sig-paren">(</span><em class="sig-param">appname</em>, <em class="sig-param">appauthor=None</em>, <em class="sig-param">version=None</em>, <em class="sig-param">opinion=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.appdirs.user_cache_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return full path to the user-specific cache dir for this application.</p>
+<blockquote>
+<div><p>“appname” is the name of application.
+“appauthor” (only required and used on Windows) is the name of the</p>
+<blockquote>
+<div><p>appauthor or distributing body for this application. Typically
+it is the owning company name.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>“version” is an optional version path element to append to the</dt><dd><p>path. You might want to use this if you want multiple versions
+of your app to be able to run independently. If used, this
+would typically be “&lt;major&gt;.&lt;minor&gt;”.</p>
+</dd>
+<dt>“opinion” (boolean) can be False to disable the appending of</dt><dd><p>“Cache” to the base app data dir for Windows. See
+discussion below.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>Typical user cache directories are:</dt><dd><p>Mac OS X:   ~/Library/Caches/&lt;AppName&gt;
+Unix:       ~/.cache/&lt;appname&gt; (XDG default)
+Win XP:     C:Documents and Settings&lt;username&gt;Local SettingsApplication Data&lt;AppAuthor&gt;&lt;AppName&gt;Cache
+Vista:      C:Users&lt;username&gt;AppDataLocal&lt;AppAuthor&gt;&lt;AppName&gt;Cache</p>
+</dd>
+</dl>
+<p>On Windows the only suggestion in the MSDN docs is that local settings go in
+the <cite>CSIDL_LOCAL_APPDATA</cite> directory. This is identical to the non-roaming
+app data dir (the default returned by <cite>user_data_dir</cite> above). Apps typically
+put cache data somewhere <em>under</em> the given dir here. Some examples:</p>
+<blockquote>
+<div><p>…MozillaFirefoxProfiles&lt;ProfileName&gt;Cache
+…AcmeSuperAppCache1.0</p>
+</div></blockquote>
+<p>OPINION: This function appends “Cache” to the <cite>CSIDL_LOCAL_APPDATA</cite> value.
+This can be disabled with the <cite>opinion=False</cite> option.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="user-data-dir">
+<h2>user_data_dir<a class="headerlink" href="#user-data-dir" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.appdirs.user_data_dir">
+<code class="sig-prename descclassname">cottoncandy.appdirs.</code><code class="sig-name descname">user_data_dir</code><span class="sig-paren">(</span><em class="sig-param">appname</em>, <em class="sig-param">appauthor=None</em>, <em class="sig-param">version=None</em>, <em class="sig-param">roaming=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.appdirs.user_data_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return full path to the user-specific data dir for this application.</p>
+<blockquote>
+<div><p>“appname” is the name of application.
+“appauthor” (only required and used on Windows) is the name of the</p>
+<blockquote>
+<div><p>appauthor or distributing body for this application. Typically
+it is the owning company name.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>“version” is an optional version path element to append to the</dt><dd><p>path. You might want to use this if you want multiple versions
+of your app to be able to run independently. If used, this
+would typically be “&lt;major&gt;.&lt;minor&gt;”.</p>
+</dd>
+<dt>“roaming” (boolean, default False) can be set True to use the Windows</dt><dd><p>roaming appdata directory. That means that for users on a Windows
+network setup for roaming profiles, this user data will be
+sync’d on login. See
+&lt;<a class="reference external" href="http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx">http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx</a>&gt;
+for a discussion of issues.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>Typical user data directories are:</dt><dd><p>Mac OS X:               ~/Library/Application Support/&lt;AppName&gt;
+Unix:                   ~/.config/&lt;appname&gt;    # or in $XDG_CONFIG_HOME if defined
+Win XP (not roaming):   C:Documents and Settings&lt;username&gt;Application Data&lt;AppAuthor&gt;&lt;AppName&gt;
+Win XP (roaming):       C:Documents and Settings&lt;username&gt;Local SettingsApplication Data&lt;AppAuthor&gt;&lt;AppName&gt;
+Win 7  (not roaming):   C:Users&lt;username&gt;AppDataLocal&lt;AppAuthor&gt;&lt;AppName&gt;
+Win 7  (roaming):       C:Users&lt;username&gt;AppDataRoaming&lt;AppAuthor&gt;&lt;AppName&gt;</p>
+</dd>
+</dl>
+<p>For Unix, we follow the XDG spec and support $XDG_CONFIG_HOME. We don’t
+use $XDG_DATA_HOME as that data dir is mostly used at the time of
+installation, instead of the application adding data during runtime.
+Also, in practice, Linux apps tend to store their data in
+“~/.config/&lt;appname&gt;” instead of “~/.local/share/&lt;appname&gt;”.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="user-log-dir">
+<h2>user_log_dir<a class="headerlink" href="#user-log-dir" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.appdirs.user_log_dir">
+<code class="sig-prename descclassname">cottoncandy.appdirs.</code><code class="sig-name descname">user_log_dir</code><span class="sig-paren">(</span><em class="sig-param">appname</em>, <em class="sig-param">appauthor=None</em>, <em class="sig-param">version=None</em>, <em class="sig-param">opinion=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.appdirs.user_log_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return full path to the user-specific log dir for this application.</p>
+<blockquote>
+<div><p>“appname” is the name of application.
+“appauthor” (only required and used on Windows) is the name of the</p>
+<blockquote>
+<div><p>appauthor or distributing body for this application. Typically
+it is the owning company name.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>“version” is an optional version path element to append to the</dt><dd><p>path. You might want to use this if you want multiple versions
+of your app to be able to run independently. If used, this
+would typically be “&lt;major&gt;.&lt;minor&gt;”.</p>
+</dd>
+<dt>“opinion” (boolean) can be False to disable the appending of</dt><dd><p>“Logs” to the base app data dir for Windows, and “log” to the
+base cache dir for Unix. See discussion below.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>Typical user cache directories are:</dt><dd><p>Mac OS X:   ~/Library/Logs/&lt;AppName&gt;
+Unix:       ~/.cache/&lt;appname&gt;/log  # or under $XDG_CACHE_HOME if defined
+Win XP:     C:Documents and Settings&lt;username&gt;Local SettingsApplication Data&lt;AppAuthor&gt;&lt;AppName&gt;Logs
+Vista:      C:Users&lt;username&gt;AppDataLocal&lt;AppAuthor&gt;&lt;AppName&gt;Logs</p>
+</dd>
+</dl>
+<p>On Windows the only suggestion in the MSDN docs is that local settings
+go in the <cite>CSIDL_LOCAL_APPDATA</cite> directory. (Note: I’m interested in
+examples of what some windows apps use for a logs dir.)</p>
+<p>OPINION: This function appends “Logs” to the <cite>CSIDL_LOCAL_APPDATA</cite>
+value for Windows and appends “log” to the user cache dir for Unix.
+This can be disabled with the <cite>opinion=False</cite> option.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>cottoncandy &#8212; cottoncandy 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="browser" href="cottoncandy.browser.html" />
+    <link rel="prev" title="API Reference" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          cottoncandy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cottoncandy</span></code></a><ul>
+<li><a class="reference internal" href="#get-browser">get_browser</a></li>
+<li><a class="reference internal" href="#get-encrypted-interface">get_encrypted_interface</a></li>
+<li><a class="reference internal" href="#get-interface">get_interface</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="index.html" title="Previous Chapter: API Reference"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; API Reference</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.browser.html" title="Next Chapter: browser"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">browser &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/cottoncandy.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+  <li>
+    <a href="index.html" title="Previous Chapter: API Reference"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; API Reference</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.browser.html" title="Next Chapter: browser"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">browser &raquo;</span>
+    </a>
+  </li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-cottoncandy">
+<span id="cottoncandy"></span><h1><a class="reference internal" href="#module-cottoncandy" title="cottoncandy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cottoncandy</span></code></a><a class="headerlink" href="#module-cottoncandy" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.get_browser" title="cottoncandy.get_browser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_browser</span></code></a>([bucket_name, ACCESS_KEY, …])</p></td>
+<td><p>Browser object that allows you to tab-complete your way through your objects</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.get_encrypted_interface" title="cottoncandy.get_encrypted_interface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_encrypted_interface</span></code></a>([bucket_name, …])</p></td>
+<td><p>Returns a cc interface that encrypts things By default, encryption is 32 bit AES, single key for everything.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.get_interface" title="cottoncandy.get_interface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_interface</span></code></a>([bucket_name, ACCESS_KEY, …])</p></td>
+<td><p>Return an interface to the cloud.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="get-browser">
+<h2>get_browser<a class="headerlink" href="#get-browser" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.get_browser">
+<code class="sig-prename descclassname">cottoncandy.</code><code class="sig-name descname">get_browser</code><span class="sig-paren">(</span><em class="sig-param">bucket_name='cathy'</em>, <em class="sig-param">ACCESS_KEY='XC88AMWK9I755O1ZC4CH'</em>, <em class="sig-param">SECRET_KEY='UOUY3dYag4X3021Y2Hv3AtHrf9pKPBYPunmyCuF1'</em>, <em class="sig-param">endpoint_url='http://radosgw.openstack:7480'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_browser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Browser object that allows you to tab-complete your
+way through your objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ACCESS_KEY</strong> (<em>str</em>) – </p></li>
+<li><p><strong>SECRET_KEY</strong> (<em>str</em>) – </p></li>
+<li><p><strong>endpoint_url</strong> (<em>str</em>) – The URL for the S3 gateway</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ccb</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>cottoncandy.BrowserObject</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">browser</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">get_browser</span><span class="p">(</span><span class="s1">&#39;my_bucket&#39;</span><span class="p">,</span>
+<span class="go">                             ACCESS_KEY=&#39;FAKEACCESSKEYTEXT&#39;,</span>
+<span class="go">                             SECRET_KEY=&#39;FAKESECRETKEYTEXT&#39;,</span>
+<span class="go">                             endpoint_url=&#39;https://s3.amazonaws.com&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">browser</span><span class="o">.</span><span class="n">sweet_project</span><span class="o">.</span><span class="n">sub</span><span class="o">&lt;</span><span class="n">TAB</span><span class="o">&gt;</span>
+<span class="go">browser.sweet_project.sub01_awesome_analysis_DOT_grp</span>
+<span class="go">browser.sweet_project.sub02_awesome_analysis_DOT_grp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">browser</span><span class="o">.</span><span class="n">sweet_project</span><span class="o">.</span><span class="n">sub01_awesome_analysis_DOT_grp</span>
+<span class="go">&lt;cottoncandy-group &lt;bucket:my_bucket_name&gt; (sub01_awesome_analysis.grp: 3 keys)&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">browser</span><span class="o">.</span><span class="n">sweet_project</span><span class="o">.</span><span class="n">sub01_awesome_analysis_DOT_grp</span><span class="o">.</span><span class="n">result_model01</span>
+<span class="go">&lt;cottoncandy-dataset &lt;bucket:my_bucket_name [1.00MB:shape=(10000)]&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="get-encrypted-interface">
+<h2>get_encrypted_interface<a class="headerlink" href="#get-encrypted-interface" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.get_encrypted_interface">
+<code class="sig-prename descclassname">cottoncandy.</code><code class="sig-name descname">get_encrypted_interface</code><span class="sig-paren">(</span><em class="sig-param">bucket_name='cathy'</em>, <em class="sig-param">ACCESS_KEY='XC88AMWK9I755O1ZC4CH'</em>, <em class="sig-param">SECRET_KEY='UOUY3dYag4X3021Y2Hv3AtHrf9pKPBYPunmyCuF1'</em>, <em class="sig-param">endpoint_url='http://radosgw.openstack:7480'</em>, <em class="sig-param">force_bucket_creation=False</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">backend='s3'</em>, <em class="sig-param">encryption='AES'</em>, <em class="sig-param">encryptionKey=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_encrypted_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a cc interface that encrypts things
+By default, encryption is 32 bit AES, single key for everything. The key is stored in base64
+in your config file. You can also choose to use RSA-encrypted AES, in which each file gets a
+different key, and the keys are encrypted using RSA and stored alongside each file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>encryption</strong> (<em>str</em>) – ‘RSA’ | ‘AES’</p></li>
+<li><p><strong>encryptionKey</strong> (<em>str</em>) – if RSA, path to key file, if AES, binary string encryption key</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-interface">
+<h2>get_interface<a class="headerlink" href="#get-interface" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.get_interface">
+<code class="sig-prename descclassname">cottoncandy.</code><code class="sig-name descname">get_interface</code><span class="sig-paren">(</span><em class="sig-param">bucket_name='cathy'</em>, <em class="sig-param">ACCESS_KEY='XC88AMWK9I755O1ZC4CH'</em>, <em class="sig-param">SECRET_KEY='UOUY3dYag4X3021Y2Hv3AtHrf9pKPBYPunmyCuF1'</em>, <em class="sig-param">endpoint_url='http://radosgw.openstack:7480'</em>, <em class="sig-param">force_bucket_creation=False</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">backend='s3'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an interface to the cloud.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ACCESS_KEY</strong> (<em>str</em>) – </p></li>
+<li><p><strong>SECRET_KEY</strong> (<em>str</em>) – </p></li>
+<li><p><strong>endpoint_url</strong> (<em>str</em>) – The URL for the S3 gateway</p></li>
+<li><p><strong>backend</strong> (<em>'s3'|'gdrive'</em>) – What backend to hook on to</p></li>
+<li><p><strong>kwargs</strong> – S3 only. kwargs passed to botocore. For example,
+&gt;&gt;&gt; from botocore.client import Config
+&gt;&gt;&gt; config = Config(connect_timeout=50, read_timeout=10*60)
+&gt;&gt;&gt; cci = cc.get_interface(‘my_bucket’, config=config)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cci</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>cottoncandy.InterfaceObject</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

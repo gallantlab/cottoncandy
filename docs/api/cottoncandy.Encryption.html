@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Encryption &#8212; cottoncandy 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="appdirs" href="cottoncandy.appdirs.html" />
+    <link rel="prev" title="cottoncandy" href="cottoncandy.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          cottoncandy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.browser.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">browser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.interfaces.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">interfaces</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Encryption</span></code></a><ul>
+<li><a class="reference internal" href="#aesencryption"><code class="xref py py-class docutils literal notranslate"><span class="pre">AESEncryption</span></code></a></li>
+<li><a class="reference internal" href="#id1"><code class="xref py py-class docutils literal notranslate"><span class="pre">Encryption</span></code></a></li>
+<li><a class="reference internal" href="#rsaaesencryption"><code class="xref py py-class docutils literal notranslate"><span class="pre">RSAAESEncryption</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="cottoncandy.html" title="Previous Chapter: cottoncandy"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; cottoncandy</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.appdirs.html" title="Next Chapter: appdirs"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">appdirs &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/cottoncandy.Encryption.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+  <li>
+    <a href="cottoncandy.html" title="Previous Chapter: cottoncandy"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; cottoncandy</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.appdirs.html" title="Next Chapter: appdirs"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">appdirs &raquo;</span>
+    </a>
+  </li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-cottoncandy.Encryption">
+<span id="encryption"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">Encryption</span></code><a class="headerlink" href="#module-cottoncandy.Encryption" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.Encryption.AESEncryption" title="cottoncandy.Encryption.AESEncryption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AESEncryption</span></code></a>([key, keyfile, mode, …])</p></td>
+<td><p>Encrypts files using an AES cipher.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.Encryption.Encryption" title="cottoncandy.Encryption.Encryption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Encryption</span></code></a>([key, keyfile])</p></td>
+<td><p>Abstract base class for a file encrypt/decrypt object</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.Encryption.RSAAESEncryption" title="cottoncandy.Encryption.RSAAESEncryption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RSAAESEncryption</span></code></a>([key, keyfile, mode, …])</p></td>
+<td><p>Encrypts each file using a unique AES key.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="aesencryption">
+<h2><a class="reference internal" href="#cottoncandy.Encryption.AESEncryption" title="cottoncandy.Encryption.AESEncryption"><code class="xref py py-class docutils literal notranslate"><span class="pre">AESEncryption</span></code></a><a class="headerlink" href="#aesencryption" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.Encryption.AESEncryption">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.Encryption.</code><code class="sig-name descname">AESEncryption</code><span class="sig-paren">(</span><em class="sig-param">key=None</em>, <em class="sig-param">keyfile=None</em>, <em class="sig-param">mode=2</em>, <em class="sig-param">chunk_size=65536</em>, <em class="sig-param">initialisation_vector_size=16</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.AESEncryption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cottoncandy.Encryption.Encryption" title="cottoncandy.Encryption.Encryption"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.Encryption.Encryption</span></code></a></p>
+<p>Encrypts files using an AES cipher. All files passing through the same object will be encrypted with the same key
+Encrypted files have the following structure:</p>
+<p>[  16 bytes default   ][        file size            || file size % 16 - 8 bytes ][     8 bytes      ]
+[initialization vector][ binary ciphertext for file  ||   padding with spaces    ][file size in bytes]</p>
+<dl class="method">
+<dt id="cottoncandy.Encryption.AESEncryption.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">key=None</em>, <em class="sig-param">keyfile=None</em>, <em class="sig-param">mode=2</em>, <em class="sig-param">chunk_size=65536</em>, <em class="sig-param">initialisation_vector_size=16</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.AESEncryption.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – key to use</p></li>
+<li><p><strong>keyfile</strong> (<em>str</em>) – path to stored key, overrides key value</p></li>
+<li><p><strong>mode</strong> (<em>int</em>) – encrytion mode</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – size in bytes of each chunk during encryption</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes of initialisation vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.AESEncryption.decrypt_file">
+<code class="sig-name descname">decrypt_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">key=None</em>, <em class="sig-param">decrypted_file_name=None</em>, <em class="sig-param">chunk_size=None</em>, <em class="sig-param">initialisation_vector_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.AESEncryption.decrypt_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – path to encrypted file</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – key to use</p></li>
+<li><p><strong>decrypted_file_name</strong> (<em>str</em>) – name for decrypted file</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – bytes in each chunk</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes in initialisation vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.AESEncryption.decrypt_stream">
+<code class="sig-name descname">decrypt_stream</code><span class="sig-paren">(</span><em class="sig-param">instream</em>, <em class="sig-param">key=None</em>, <em class="sig-param">chunk_size=None</em>, <em class="sig-param">initialisation_vector_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.AESEncryption.decrypt_stream" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instream</strong> (<em>stream</em>) – object in memory with a .read() function</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – key to use</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – bytes in each chunk</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes in initialisation vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output_stream</strong> – decrypted stream</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.AESEncryption.encrypt_file">
+<code class="sig-name descname">encrypt_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">encrypted_file_name=None</em>, <em class="sig-param">key=None</em>, <em class="sig-param">chunk_size=None</em>, <em class="sig-param">initialisation_vector_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.AESEncryption.encrypt_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – path to file</p></li>
+<li><p><strong>encrypted_file_name</strong> (<em>str</em>) – name for encrypted file</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – key to use</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – bytes in each chunk</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes in initialisation vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.AESEncryption.encrypt_stream">
+<code class="sig-name descname">encrypt_stream</code><span class="sig-paren">(</span><em class="sig-param">instream</em>, <em class="sig-param">key=None</em>, <em class="sig-param">chunk_size=None</em>, <em class="sig-param">initialisation_vector_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.AESEncryption.encrypt_stream" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instream</strong> (<em>stream</em>) – object in memory with a .read() function</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – key to use</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – bytes in each chunk</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes in initialisation vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output_stream</strong> – encrypted stream</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.AESEncryption.generate_key">
+<code class="sig-name descname">generate_key</code><span class="sig-paren">(</span><em class="sig-param">key_size=32</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.AESEncryption.generate_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a new AES key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_size</strong> (<em>int</em>) – bits in key</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="id1">
+<h2><a class="reference internal" href="#cottoncandy.Encryption.Encryption" title="cottoncandy.Encryption.Encryption"><code class="xref py py-class docutils literal notranslate"><span class="pre">Encryption</span></code></a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.Encryption.Encryption">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.Encryption.</code><code class="sig-name descname">Encryption</code><span class="sig-paren">(</span><em class="sig-param">key=None</em>, <em class="sig-param">keyfile=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base class for a file encrypt/decrypt object</p>
+<dl class="method">
+<dt id="cottoncandy.Encryption.Encryption.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">key=None</em>, <em class="sig-param">keyfile=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – key to use</p></li>
+<li><p><strong>keyfile</strong> (<em>str</em>) – key from which to read stored key</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.Encryption.decrypt_file">
+<code class="sig-name descname">decrypt_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">key=None</em>, <em class="sig-param">decrypted_file_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption.decrypt_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrypts a file on disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – path to encrypted file</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – key to use for decryption</p></li>
+<li><p><strong>decrypted_file_name</strong> (<em>str</em>) – name for decrypted file, if None, strips the last 3 chars off the name (assumes ‘enc’ on extension)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.Encryption.decrypt_stream">
+<code class="sig-name descname">decrypt_stream</code><span class="sig-paren">(</span><em class="sig-param">instream</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption.decrypt_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrypts a stream in memory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instream</strong> (<em>stream</em>) – object with .read() function</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – key to use for decryption</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>decrypted stream</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.Encryption.encrypt_file">
+<code class="sig-name descname">encrypt_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">encrypted_file_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption.encrypt_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encrypts a file on disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – path to file to be encrypted</p></li>
+<li><p><strong>encrypted_file_name</strong> (<em>str</em>) – path for encrypted file, if None, appends ‘enc’ to the file extenstion</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.Encryption.encrypt_stream">
+<code class="sig-name descname">encrypt_stream</code><span class="sig-paren">(</span><em class="sig-param">instream</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption.encrypt_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encrypts a stream object in memory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>instream</strong> (<em>stream</em>) – object in memory with a .read() function</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>encrypted object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.Encryption.generate_key">
+<code class="sig-name descname">generate_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption.generate_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a key for encrypting/decrypting files for this object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.Encryption.read_key">
+<code class="sig-name descname">read_key</code><span class="sig-paren">(</span><em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption.read_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a stored key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – name of file to read from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.Encryption.store_key">
+<code class="sig-name descname">store_key</code><span class="sig-paren">(</span><em class="sig-param">file_name='key.key'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.Encryption.store_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores key to file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – path of tile to store</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="rsaaesencryption">
+<h2><a class="reference internal" href="#cottoncandy.Encryption.RSAAESEncryption" title="cottoncandy.Encryption.RSAAESEncryption"><code class="xref py py-class docutils literal notranslate"><span class="pre">RSAAESEncryption</span></code></a><a class="headerlink" href="#rsaaesencryption" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.Encryption.RSAAESEncryption">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.Encryption.</code><code class="sig-name descname">RSAAESEncryption</code><span class="sig-paren">(</span><em class="sig-param">key=None</em>, <em class="sig-param">keyfile=None</em>, <em class="sig-param">mode=2</em>, <em class="sig-param">chunk_size=65536</em>, <em class="sig-param">initialisation_vector_size=16</em>, <em class="sig-param">AES_key_length=32</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cottoncandy.Encryption.AESEncryption" title="cottoncandy.Encryption.AESEncryption"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.Encryption.AESEncryption</span></code></a></p>
+<p>Encrypts each file using a unique AES key. Keys are then encrypted with RSA and returned along with the objects,
+the RSA private key is needed to decrypt the AES key.</p>
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">key=None</em>, <em class="sig-param">keyfile=None</em>, <em class="sig-param">mode=2</em>, <em class="sig-param">chunk_size=65536</em>, <em class="sig-param">initialisation_vector_size=16</em>, <em class="sig-param">AES_key_length=32</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – key to use</p></li>
+<li><p><strong>keyfile</strong> (<em>str</em>) – path to key file</p></li>
+<li><p><strong>mode</strong> (<em>int</em>) – AES encryption method</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – bytes in each chunk</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes in initialisation vector</p></li>
+<li><p><strong>AES_key_length</strong> (<em>int</em>) – bits in AES keys</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.can_decrypt">
+<em class="property">property </em><code class="sig-name descname">can_decrypt</code><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.can_decrypt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can this object decrypt? i.e. does it have a private RSA key?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.can_encrypt">
+<em class="property">property </em><code class="sig-name descname">can_encrypt</code><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.can_encrypt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can this object encrypt?, i.e. does it have a public key?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.decrypt_file">
+<code class="sig-name descname">decrypt_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">encrypted_AES_key=None</em>, <em class="sig-param">decrypted_file_name=None</em>, <em class="sig-param">chunk_size=None</em>, <em class="sig-param">initialisation_vector_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.decrypt_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – path to encrypted file</p></li>
+<li><p><strong>encrypted_AES_key</strong> (<em>str</em>) – The encrypted AES key associated with this file</p></li>
+<li><p><strong>decrypted_file_name</strong> (<em>str</em>) – name for decrypted file</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – bytes in each chunk</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes in initialisation vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.decrypt_stream">
+<code class="sig-name descname">decrypt_stream</code><span class="sig-paren">(</span><em class="sig-param">instream</em>, <em class="sig-param">encrypted_AES_Key=None</em>, <em class="sig-param">chunk_size=None</em>, <em class="sig-param">initialisation_vector_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.decrypt_stream" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instream</strong> (<em>stream</em>) – object in memory with a .read() function</p></li>
+<li><p><strong>encrypted_AES_Key</strong> (<em>str</em>) – The encrypted AES key associated with this file</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – bytes in each chunk</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes in initialisation vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.decrypt_string">
+<code class="sig-name descname">decrypt_string</code><span class="sig-paren">(</span><em class="sig-param">ciphertext</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.decrypt_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrypts a string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ciphertext</strong> (<em>str</em>) – ciphertext</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>plaintext</strong> – plaintext</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.encrypt_file">
+<code class="sig-name descname">encrypt_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">encrypted_file_name=None</em>, <em class="sig-param">AESkey=None</em>, <em class="sig-param">chunk_size=None</em>, <em class="sig-param">initialisation_vector_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.encrypt_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> – </p></li>
+<li><p><strong>encrypted_file_name</strong> – </p></li>
+<li><p><strong>AESkey</strong> (<em>str</em>) – AES key to use for this particular file</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – bytes in each chunk</p></li>
+<li><p><strong>initialisation_vector_size</strong> (<em>int</em>) – bytes in initialisation vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.encrypt_stream">
+<code class="sig-name descname">encrypt_stream</code><span class="sig-paren">(</span><em class="sig-param">instream</em>, <em class="sig-param">AESkey=None</em>, <em class="sig-param">chunk_size=None</em>, <em class="sig-param">initialisation_vector_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.encrypt_stream" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instream</strong> (<em>stream</em>) – object in memory with a .read() function</p></li>
+<li><p><strong>AESkey</strong> (<em>str</em>) – AES key to use for this particular stream</p></li>
+<li><p><strong>chunk_size</strong> – </p></li>
+<li><p><strong>initialisation_vector_size</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.encrypt_string">
+<code class="sig-name descname">encrypt_string</code><span class="sig-paren">(</span><em class="sig-param">plaintext</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.encrypt_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encrypts a string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>plaintext</strong> (<em>str</em>) – plaintext</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ciphertext</strong> – ciphertext</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.generate_AES_key">
+<code class="sig-name descname">generate_AES_key</code><span class="sig-paren">(</span><em class="sig-param">key_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.generate_AES_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a new AES key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_size</strong> (<em>int</em>) – bits in key</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>key</strong> – AES key</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.generate_key">
+<code class="sig-name descname">generate_key</code><span class="sig-paren">(</span><em class="sig-param">key_size=2048</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.generate_key" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_size</strong> (<em>int</em>) – bits in RSA key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.read_key">
+<code class="sig-name descname">read_key</code><span class="sig-paren">(</span><em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.read_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a stored key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – name of file to read from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.Encryption.RSAAESEncryption.store_key">
+<code class="sig-name descname">store_key</code><span class="sig-paren">(</span><em class="sig-param">file_name='key.key'</em>, <em class="sig-param">public=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.Encryption.RSAAESEncryption.store_key" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> – </p></li>
+<li><p><strong>public</strong> (<em>bool</em>) – store public key only?</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

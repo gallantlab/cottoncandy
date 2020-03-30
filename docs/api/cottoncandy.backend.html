@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>backend &#8212; cottoncandy 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="browser" href="cottoncandy.browser.html" />
+    <link rel="prev" title="appdirs" href="cottoncandy.appdirs.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          cottoncandy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">backend</span></code></a><ul>
+<li><a class="reference internal" href="#ccbackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">CCBackEnd</span></code></a></li>
+<li><a class="reference internal" href="#cloudstream"><code class="xref py py-class docutils literal notranslate"><span class="pre">CloudStream</span></code></a></li>
+<li><a class="reference internal" href="#filenotfounderror"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="cottoncandy.appdirs.html" title="Previous Chapter: appdirs"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; appdirs</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.browser.html" title="Next Chapter: browser"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">browser &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/cottoncandy.backend.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+  <li>
+    <a href="cottoncandy.appdirs.html" title="Previous Chapter: appdirs"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; appdirs</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.browser.html" title="Next Chapter: browser"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">browser &raquo;</span>
+    </a>
+  </li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-cottoncandy.backend">
+<span id="backend"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">backend</span></code><a class="headerlink" href="#module-cottoncandy.backend" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.backend.CCBackEnd" title="cottoncandy.backend.CCBackEnd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CCBackEnd</span></code></a>()</p></td>
+<td><p>Interface for cottoncandy backends</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.backend.CloudStream" title="cottoncandy.backend.CloudStream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CloudStream</span></code></a>(stream, metadata)</p></td>
+<td><p>A simple unified representation of an object downloaded from the cloud.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.backend.FileNotFoundError" title="cottoncandy.backend.FileNotFoundError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></a></p></td>
+<td><p>File not found error</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="ccbackend">
+<h2><a class="reference internal" href="#cottoncandy.backend.CCBackEnd" title="cottoncandy.backend.CCBackEnd"><code class="xref py py-class docutils literal notranslate"><span class="pre">CCBackEnd</span></code></a><a class="headerlink" href="#ccbackend" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.backend.CCBackEnd">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.backend.</code><code class="sig-name descname">CCBackEnd</code><a class="headerlink" href="#cottoncandy.backend.CCBackEnd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Interface for cottoncandy backends</p>
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.check_file_exists">
+<em class="property">abstract </em><code class="sig-name descname">check_file_exists</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">bucket_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.check_file_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether a file exists on the cloud</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – file on cloud</p></li>
+<li><p><strong>bucket_name</strong> (<em>str</em>) – (s3) bucket to check in</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.copy">
+<em class="property">abstract </em><code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">source</em>, <em class="sig-param">destination</em>, <em class="sig-param">source_bucket</em>, <em class="sig-param">destination_bucket</em>, <em class="sig-param">overwrite</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies an object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>str</em>) – origin path</p></li>
+<li><p><strong>destination</strong> (<em>str</em>) – destination path</p></li>
+<li><p><strong>source_bucket</strong> (<em>str</em>) – (s3) origin bucket</p></li>
+<li><p><strong>destination_bucket</strong> (<em>str</em>) – (s3) destination bucket</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – overwrite if destination exists?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool, copy success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.delete">
+<em class="property">abstract </em><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">recursive=False</em>, <em class="sig-param">delete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes an object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – name of cloud object to delete</p></li>
+<li><p><strong>recursive</strong> (<em>bool</em>) – recursively delete directory?</p></li>
+<li><p><strong>delete</strong> (<em>bool</em>) – (gdrive) hard delete the file(s)?</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.download_stream">
+<em class="property">abstract </em><code class="sig-name descname">download_stream</code><span class="sig-paren">(</span><em class="sig-param">cloud_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.download_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a object to an in-memory stream</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cloud_name</strong> (<em>str</em>) – name of object to download</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>CloudStream object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.download_to_file">
+<em class="property">abstract </em><code class="sig-name descname">download_to_file</code><span class="sig-paren">(</span><em class="sig-param">cloud_name</em>, <em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.download_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads an object directly to disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cloud_name</strong> (<em>str</em>) – name of object to download</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – name on disk to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool, download success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.list_directory">
+<em class="property">abstract </em><code class="sig-name descname">list_directory</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.list_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists the content of a directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – path on the cloud to get contents for</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.list_objects">
+<em class="property">abstract </em><code class="sig-name descname">list_objects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.list_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all objects contained by backend</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.move">
+<em class="property">abstract </em><code class="sig-name descname">move</code><span class="sig-paren">(</span><em class="sig-param">source</em>, <em class="sig-param">destination</em>, <em class="sig-param">source_bucket</em>, <em class="sig-param">destination_bucket</em>, <em class="sig-param">overwrite</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves an object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – </p></li>
+<li><p><strong>destination</strong> – </p></li>
+<li><p><strong>source_bucket</strong> – </p></li>
+<li><p><strong>destination_bucket</strong> – </p></li>
+<li><p><strong>overwrite</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.size">
+<em class="property">abstract property </em><code class="sig-name descname">size</code><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of stored cloud items in bytes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.upload_file">
+<em class="property">abstract </em><code class="sig-name descname">upload_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">cloud_name</em>, <em class="sig-param">permissions</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.upload_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads a file from disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – name of file to upload</p></li>
+<li><p><strong>cloud_name</strong> (<em>str</em>) – name to use on the cloud</p></li>
+<li><p><strong>permissions</strong> (<em>str?</em>) – permissions for this file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool, upload success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.upload_multipart">
+<em class="property">abstract </em><code class="sig-name descname">upload_multipart</code><span class="sig-paren">(</span><em class="sig-param">stream</em>, <em class="sig-param">cloud_name</em>, <em class="sig-param">metadata</em>, <em class="sig-param">permissions</em>, <em class="sig-param">buffersize</em>, <em class="sig-param">verbose</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.upload_multipart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-part upload for large stream objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> (<em>stream</em>) – streaming object</p></li>
+<li><p><strong>cloud_name</strong> (<em>str</em>) – name to use on cloud</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em>) – custom metadata</p></li>
+<li><p><strong>permissions</strong> (<em>str?</em>) – permissions for this file</p></li>
+<li><p><strong>buffersize</strong> (<em>int</em>) – s3 uploading buffersize</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – s3 verbosity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool, upload success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.backend.CCBackEnd.upload_stream">
+<em class="property">abstract </em><code class="sig-name descname">upload_stream</code><span class="sig-paren">(</span><em class="sig-param">stream</em>, <em class="sig-param">cloud_name</em>, <em class="sig-param">metadata</em>, <em class="sig-param">permissions</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CCBackEnd.upload_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads a stream object with a .read() function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stream</strong> (<em>stream</em>) – streaming object</p></li>
+<li><p><strong>cloud_name</strong> (<em>str</em>) – name to use on cloud</p></li>
+<li><p><strong>metadata</strong> (<em>dict</em>) – custom metadata for this file</p></li>
+<li><p><strong>permissions</strong> (<em>str?</em>) – permissions for this file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool, upload success</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cloudstream">
+<h2><a class="reference internal" href="#cottoncandy.backend.CloudStream" title="cottoncandy.backend.CloudStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">CloudStream</span></code></a><a class="headerlink" href="#cloudstream" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.backend.CloudStream">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.backend.</code><code class="sig-name descname">CloudStream</code><span class="sig-paren">(</span><em class="sig-param">stream</em>, <em class="sig-param">metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CloudStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt>A simple unified representation of an object downloaded from the cloud.</dt><dd><p>.content is a streaming object with a .read() function
+.metadata is a dictionary of the custom metadata of this object</p>
+</dd>
+</dl>
+<p>TODO: unified metadata</p>
+<dl class="method">
+<dt id="cottoncandy.backend.CloudStream.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">stream</em>, <em class="sig-param">metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.CloudStream.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="filenotfounderror">
+<h2><a class="reference internal" href="#cottoncandy.backend.FileNotFoundError" title="cottoncandy.backend.FileNotFoundError"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></a><a class="headerlink" href="#filenotfounderror" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.backend.FileNotFoundError">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.backend.</code><code class="sig-name descname">FileNotFoundError</code><a class="headerlink" href="#cottoncandy.backend.FileNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+<p>File not found error</p>
+<dl class="method">
+<dt id="cottoncandy.backend.FileNotFoundError.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.backend.FileNotFoundError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

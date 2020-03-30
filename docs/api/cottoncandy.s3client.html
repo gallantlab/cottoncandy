@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>s3client &#8212; cottoncandy 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="utils" href="cottoncandy.utils.html" />
+    <link rel="prev" title="options" href="cottoncandy.options.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          cottoncandy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.browser.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">browser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.interfaces.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">interfaces</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="cottoncandy.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">s3client</span></code></a><ul>
+<li><a class="reference internal" href="#id1"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3Client</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="cottoncandy.options.html" title="Previous Chapter: options"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; options</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.utils.html" title="Next Chapter: utils"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">utils &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/cottoncandy.s3client.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+  <li>
+    <a href="cottoncandy.options.html" title="Previous Chapter: options"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; options</span>
+    </a>
+  </li>
+  <li>
+    <a href="cottoncandy.utils.html" title="Next Chapter: utils"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">utils &raquo;</span>
+    </a>
+  </li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-cottoncandy.s3client">
+<span id="s3client"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">s3client</span></code><a class="headerlink" href="#module-cottoncandy.s3client" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.s3client.S3Client" title="cottoncandy.s3client.S3Client"><code class="xref py py-obj docutils literal notranslate"><span class="pre">S3Client</span></code></a>(bucket, access_key, secret_key, s3url)</p></td>
+<td><p>S3 client interface refactored out of cotton candy interfaces to allow for switching between S3 and Google Drive</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id1">
+<h2><a class="reference internal" href="#cottoncandy.s3client.S3Client" title="cottoncandy.s3client.S3Client"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3Client</span></code></a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.s3client.S3Client">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.s3client.</code><code class="sig-name descname">S3Client</code><span class="sig-paren">(</span><em class="sig-param">bucket</em>, <em class="sig-param">access_key</em>, <em class="sig-param">secret_key</em>, <em class="sig-param">s3url</em>, <em class="sig-param">force_bucket_creation=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.backend.CCBackEnd</span></code></p>
+<p>S3 client interface refactored out of cotton candy interfaces to allow for switching between
+S3 and Google Drive</p>
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">bucket</em>, <em class="sig-param">access_key</em>, <em class="sig-param">secret_key</em>, <em class="sig-param">s3url</em>, <em class="sig-param">force_bucket_creation=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket</strong> – </p></li>
+<li><p><strong>access_key</strong> – </p></li>
+<li><p><strong>secret_key</strong> – </p></li>
+<li><p><strong>s3url</strong> – </p></li>
+<li><p><strong>force_bucket_creation</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.check_bucket_exists">
+<code class="sig-name descname">check_bucket_exists</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.check_bucket_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the bucket exists</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bucket_name</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.check_file_exists">
+<code class="sig-name descname">check_file_exists</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">bucket_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.check_file_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether object exists in bucket</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object_name</strong> (<em>str</em>) – The object name</p></li>
+<li><p><strong>bucket_name</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.connect">
+<em class="property">static </em><code class="sig-name descname">connect</code><span class="sig-paren">(</span><em class="sig-param">ACCESS_KEY</em>, <em class="sig-param">SECRET_KEY</em>, <em class="sig-param">url</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to S3 using boto</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ACCESS_KEY</strong> – </p></li>
+<li><p><strong>SECRET_KEY</strong> – </p></li>
+<li><p><strong>url</strong> – </p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Extra keyword arguments to <cite>boto3.resource</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param">source</em>, <em class="sig-param">destination</em>, <em class="sig-param">source_bucket</em>, <em class="sig-param">destination_bucket</em>, <em class="sig-param">overwrite</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies an object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>str</em>) – origin path</p></li>
+<li><p><strong>destination</strong> (<em>str</em>) – destination path</p></li>
+<li><p><strong>source_bucket</strong> (<em>str</em>) – (s3) origin bucket</p></li>
+<li><p><strong>destination_bucket</strong> (<em>str</em>) – (s3) destination bucket</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – overwrite if destination exists?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool, copy success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.create_bucket">
+<code class="sig-name descname">create_bucket</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em>, <em class="sig-param">acl='authenticated-read'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.create_bucket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new bucket</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket_name</strong> – </p></li>
+<li><p><strong>acl</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">recursive=False</em>, <em class="sig-param">delete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes an object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – name of cloud object to delete</p></li>
+<li><p><strong>recursive</strong> (<em>bool</em>) – recursively delete directory?</p></li>
+<li><p><strong>delete</strong> (<em>bool</em>) – (gdrive) hard delete the file(s)?</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.download_stream">
+<code class="sig-name descname">download_stream</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.download_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download object raw data.
+This simply calls the object body <code class="docutils literal notranslate"><span class="pre">read()</span></code> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>object_name</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>file-like stream of object data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.download_to_file">
+<code class="sig-name descname">download_to_file</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">local_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.download_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download S3 object to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>local_name</strong> (<em>str</em>) – Absolute path where the data will be downloaded on disk</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.get_bucket">
+<code class="sig-name descname">get_bucket</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.get_bucket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bucket boto3 object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.get_bucket_name">
+<code class="sig-name descname">get_bucket_name</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.get_bucket_name" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bucket_name</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.get_current_bucket_size">
+<code class="sig-name descname">get_current_bucket_size</code><span class="sig-paren">(</span><em class="sig-param">limit=1000000</em>, <em class="sig-param">page_size=1000000</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.get_current_bucket_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the size of all objects in the current bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>1000</em>) – Maximum number of items to return</p></li>
+<li><p><strong>page_size</strong> (<em>int</em><em>, </em><em>1000</em>) – The page size for pagination</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>total_bytes</strong> – The byte count of all objects in the bucket.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Because paging does not work properly, if there are more than
+limit,page_size number of objects in the bucket, this function will
+underestimate the total size. Check the printed number of objects for
+suspicious round numbers.
+TODO(anunez): Remove this note when the bug is fixed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.get_s3_object">
+<code class="sig-name descname">get_s3_object</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">bucket_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.get_s3_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a boto3 object. Create it if it doesn’t exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object_name</strong> – </p></li>
+<li><p><strong>bucket_name</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.list_directory">
+<code class="sig-name descname">list_directory</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.list_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the contents of a “directory”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em><em> (</em><em>default: &quot;/&quot;</em><em>)</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>matches</strong> – The children of the path.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.list_objects">
+<code class="sig-name descname">list_objects</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.list_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of objects from the bucket
+This is a wrapper to <code class="docutils literal notranslate"><span class="pre">self.get_bucket().bucket.objects</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>1000</em>) – Maximum number of items to return</p></li>
+<li><p><strong>page_size</strong> (<em>int</em><em>, </em><em>1000</em>) – The page size for pagination</p></li>
+<li><p><strong>filter</strong> (<em>dict</em>) – A dictionary with key ‘Prefix’, specifying a prefix
+string.  Only return objects matching this string.
+Defaults to ‘/’, all objects.</p></li>
+<li><p><strong>kwargs</strong> (<em>optional</em>) – Dictionary of {method:value} for <code class="docutils literal notranslate"><span class="pre">bucket.objects</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If you get a ‘PaginationError’, this means you have
+a lot of items on your bucket and should increase <code class="docutils literal notranslate"><span class="pre">page_size</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.move">
+<code class="sig-name descname">move</code><span class="sig-paren">(</span><em class="sig-param">source</em>, <em class="sig-param">destination</em>, <em class="sig-param">source_bucket</em>, <em class="sig-param">destination_bucket</em>, <em class="sig-param">overwrite</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves an object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – </p></li>
+<li><p><strong>destination</strong> – </p></li>
+<li><p><strong>source_bucket</strong> – </p></li>
+<li><p><strong>destination_bucket</strong> – </p></li>
+<li><p><strong>overwrite</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.set_current_bucket">
+<code class="sig-name descname">set_current_bucket</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.set_current_bucket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets which bucket to use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bucket_name</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.show_all_buckets">
+<code class="sig-name descname">show_all_buckets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.show_all_buckets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#cottoncandy.s3client.S3Client.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of stored cloud items in bytes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.upload_file">
+<code class="sig-name descname">upload_file</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">cloud_name=None</em>, <em class="sig-param">permissions='authenticated-read'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.upload_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a file to S3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – Absolute path of file to upload</p></li>
+<li><p><strong>cloud_name</strong> (<em>str</em><em>, </em><em>None</em>) – Name of uploaded object. If None, use
+the full file name as the object name.</p></li>
+<li><p><strong>permissions</strong> – S3 permissions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>response</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boto3 response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.upload_multipart">
+<code class="sig-name descname">upload_multipart</code><span class="sig-paren">(</span><em class="sig-param">file_object</em>, <em class="sig-param">object_name</em>, <em class="sig-param">metadata</em>, <em class="sig-param">permissions='authenticated-read'</em>, <em class="sig-param">buffersize=104857600</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.upload_multipart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-part upload for a python file-object.</p>
+<p>This automatically creates a multipart upload of an object.
+Useful for large objects that are loaded in memory. This avoids
+having to write the file to disk and then using <code class="docutils literal notranslate"><span class="pre">upload_from_file</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object_name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>file_object</strong> – file-like python object (e.g. StringIO, file, etc)</p></li>
+<li><p><strong>buffersize</strong> (<em>int</em>) – Byte size of the individual parts to create.
+Defaults to 100MB</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – verbosity flag of whether to print mpu information to stdout</p></li>
+<li><p><strong>metadata</strong> (<em>optional</em>) – Metadata to store along with MPU object</p></li>
+<li><p><strong>permissions</strong> (<em>str?</em>) – permissions for this file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.s3client.S3Client.upload_stream">
+<code class="sig-name descname">upload_stream</code><span class="sig-paren">(</span><em class="sig-param">body</em>, <em class="sig-param">object_name</em>, <em class="sig-param">metadata</em>, <em class="sig-param">permissions='authenticated-read'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.s3client.S3Client.upload_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads a stream</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object_name</strong> – </p></li>
+<li><p><strong>body</strong> (<em>stream</em>) – </p></li>
+<li><p><strong>permissions</strong> – </p></li>
+<li><p><strong>metadata</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
