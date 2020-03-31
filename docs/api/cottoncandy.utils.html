@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>utils &#8212; cottoncandy 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="interfaces" href="cottoncandy.interfaces.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          cottoncandy</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a><ul>
+<li><a class="reference internal" href="#gzipinputstream"><code class="xref py py-class docutils literal notranslate"><span class="pre">GzipInputStream</span></code></a></li>
+<li><a class="reference internal" href="#bytes2human">bytes2human</a></li>
+<li><a class="reference internal" href="#clean-object-name">clean_object_name</a></li>
+<li><a class="reference internal" href="#generate-ndarray-chunks">generate_ndarray_chunks</a></li>
+<li><a class="reference internal" href="#get-fileobject-size">get_fileobject_size</a></li>
+<li><a class="reference internal" href="#get-key-from-environ">get_key_from_environ</a></li>
+<li><a class="reference internal" href="#get-key-from-s3fs">get_key_from_s3fs</a></li>
+<li><a class="reference internal" href="#get-keys">get_keys</a></li>
+<li><a class="reference internal" href="#get-object-size">get_object_size</a></li>
+<li><a class="reference internal" href="#has-magic">has_magic</a></li>
+<li><a class="reference internal" href="#has-real-magic">has_real_magic</a></li>
+<li><a class="reference internal" href="#has-start-digit">has_start_digit</a></li>
+<li><a class="reference internal" href="#has-trivial-magic">has_trivial_magic</a></li>
+<li><a class="reference internal" href="#mk-aws-path">mk_aws_path</a></li>
+<li><a class="reference internal" href="#objects2names">objects2names</a></li>
+<li><a class="reference internal" href="#pathjoin">pathjoin</a></li>
+<li><a class="reference internal" href="#print-objects">print_objects</a></li>
+<li><a class="reference internal" href="#read-buffered">read_buffered</a></li>
+<li><a class="reference internal" href="#remove-root">remove_root</a></li>
+<li><a class="reference internal" href="#remove-trivial-magic">remove_trivial_magic</a></li>
+<li><a class="reference internal" href="#sanitize-metadata">sanitize_metadata</a></li>
+<li><a class="reference internal" href="#split-uri">split_uri</a></li>
+<li><a class="reference internal" href="#string2bool">string2bool</a></li>
+<li><a class="reference internal" href="#unquote-names">unquote_names</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="cottoncandy.interfaces.html" title="Previous Chapter: interfaces"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; interfaces</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/cottoncandy.utils.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+  <li>
+    <a href="cottoncandy.interfaces.html" title="Previous Chapter: interfaces"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; interfaces</span>
+    </a>
+  </li>
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-cottoncandy.utils">
+<span id="utils"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code><a class="headerlink" href="#module-cottoncandy.utils" title="Permalink to this headline">¶</a></h1>
+<p>Helper functions</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.GzipInputStream" title="cottoncandy.utils.GzipInputStream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GzipInputStream</span></code></a>(fileobj[, block_size])</p></td>
+<td><p>Simple class that allow streaming reads from GZip files (from <a class="reference external" href="https://gist.github.com/beaufour/4205533">https://gist.github.com/beaufour/4205533</a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.bytes2human" title="cottoncandy.utils.bytes2human"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes2human</span></code></a>(nbytes)</p></td>
+<td><p>Return string representation of bytes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.clean_object_name" title="cottoncandy.utils.clean_object_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_object_name</span></code></a>(input_function)</p></td>
+<td><p>Remove leading “/” from object_name</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.generate_ndarray_chunks" title="cottoncandy.utils.generate_ndarray_chunks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_ndarray_chunks</span></code></a>(arr[, axis, buffersize])</p></td>
+<td><p>A generator that splits an array into chunks of desired byte size</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.get_fileobject_size" title="cottoncandy.utils.get_fileobject_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fileobject_size</span></code></a>(file_object)</p></td>
+<td><p>Return byte size of file-object</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.get_key_from_environ" title="cottoncandy.utils.get_key_from_environ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key_from_environ</span></code></a>()</p></td>
+<td><p>Get AWS keys from environmental variables if available</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.get_key_from_s3fs" title="cottoncandy.utils.get_key_from_s3fs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key_from_s3fs</span></code></a>()</p></td>
+<td><p>Get AWS keys from default S3fs location if available.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.get_keys" title="cottoncandy.utils.get_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_keys</span></code></a>()</p></td>
+<td><p>Read AWS keys from S3fs configuration or environmental variables.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.get_object_size" title="cottoncandy.utils.get_object_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_object_size</span></code></a>(boto_s3_object)</p></td>
+<td><p>Return the size of the S3 object in MB</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.has_magic" title="cottoncandy.utils.has_magic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_magic</span></code></a>(s)</p></td>
+<td><p>Check string to see if it has any glob magic</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.has_real_magic" title="cottoncandy.utils.has_real_magic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_real_magic</span></code></a>(s)</p></td>
+<td><p>Check if string has non-trivial glob pattern</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.has_start_digit" title="cottoncandy.utils.has_start_digit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_start_digit</span></code></a>(s)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.has_trivial_magic" title="cottoncandy.utils.has_trivial_magic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_trivial_magic</span></code></a>(s)</p></td>
+<td><p>Check string to see if it has trivial glob magic (e.g.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.mk_aws_path" title="cottoncandy.utils.mk_aws_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mk_aws_path</span></code></a>(path)</p></td>
+<td><p>Make the <cite>path</cite> behave as expected when querying S3 with <cite>list_objects</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.objects2names" title="cottoncandy.utils.objects2names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">objects2names</span></code></a>(objects)</p></td>
+<td><p>Return the name of all objects in a list</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.pathjoin" title="cottoncandy.utils.pathjoin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathjoin</span></code></a>(a, *p)</p></td>
+<td><p>Join two or more pathname components, inserting SEPARATOR as needed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.print_objects" title="cottoncandy.utils.print_objects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_objects</span></code></a>(object_list)</p></td>
+<td><p>Print name, size, and creation date of objects in list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.read_buffered" title="cottoncandy.utils.read_buffered"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_buffered</span></code></a>(frm, to[, buffersize])</p></td>
+<td><p>Fill a numpy n-d array with file-like object contents</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.remove_root" title="cottoncandy.utils.remove_root"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_root</span></code></a>(string_)</p></td>
+<td><p>remove leading “/” from a string</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.remove_trivial_magic" title="cottoncandy.utils.remove_trivial_magic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_trivial_magic</span></code></a>(s)</p></td>
+<td><p><ul class="simple">
+<li><p>xxx/*      -&gt; xxx/</p></li>
+</ul>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.sanitize_metadata" title="cottoncandy.utils.sanitize_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sanitize_metadata</span></code></a>(metadict)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.split_uri" title="cottoncandy.utils.split_uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_uri</span></code></a>(uri[, pattern, separator])</p></td>
+<td><p>Convert a URI to a bucket, object name tuple.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.string2bool" title="cottoncandy.utils.string2bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">string2bool</span></code></a>(mstring)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.unquote_names" title="cottoncandy.utils.unquote_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unquote_names</span></code></a>(object_names)</p></td>
+<td><p>Clean URL names from a list.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="gzipinputstream">
+<h2><a class="reference internal" href="#cottoncandy.utils.GzipInputStream" title="cottoncandy.utils.GzipInputStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">GzipInputStream</span></code></a><a class="headerlink" href="#gzipinputstream" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cottoncandy.utils.GzipInputStream">
+<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">GzipInputStream</code><span class="sig-paren">(</span><em class="sig-param">fileobj</em>, <em class="sig-param">block_size=16384</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple class that allow streaming reads from GZip files
+(from <a class="reference external" href="https://gist.github.com/beaufour/4205533">https://gist.github.com/beaufour/4205533</a>).</p>
+<p>Python 2.x gzip.GZipFile relies on .seek() and .tell(), so it
+doesn’t support this (&#64;see: <a class="reference external" href="http://bo4.me/YKWSsL">http://bo4.me/YKWSsL</a>).</p>
+<p>Adapted from: <a class="reference external" href="http://effbot.org/librarybook/zlib-example-4.py">http://effbot.org/librarybook/zlib-example-4.py</a></p>
+<dl class="method">
+<dt id="cottoncandy.utils.GzipInputStream.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">fileobj</em>, <em class="sig-param">block_size=16384</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize with the given file-like object.</p>
+<p>&#64;param fileobj: file-like object,</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.utils.GzipInputStream.next">
+<code class="sig-name descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.utils.GzipInputStream.read">
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">size=0</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.utils.GzipInputStream.readline">
+<code class="sig-name descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.readline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.utils.GzipInputStream.readlines">
+<code class="sig-name descname">readlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.readlines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.utils.GzipInputStream.seek">
+<code class="sig-name descname">seek</code><span class="sig-paren">(</span><em class="sig-param">offset</em>, <em class="sig-param">whence=0</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.seek" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cottoncandy.utils.GzipInputStream.tell">
+<code class="sig-name descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.tell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="bytes2human">
+<h2>bytes2human<a class="headerlink" href="#bytes2human" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.bytes2human">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">bytes2human</code><span class="sig-paren">(</span><em class="sig-param">nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.bytes2human" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string representation of bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nbytes</strong> (<em>int</em>) – Number of bytes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>human_bytes</strong> – Human readable byte size (e.g. “10.00MB”, “1.24GB”, etc.).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="clean-object-name">
+<h2>clean_object_name<a class="headerlink" href="#clean-object-name" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.clean_object_name">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">clean_object_name</code><span class="sig-paren">(</span><em class="sig-param">input_function</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.clean_object_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove leading “/” from object_name</p>
+<p>This is important for compatibility with S3fs.
+S3fs does not list objects with a “/” prefix.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="generate-ndarray-chunks">
+<h2>generate_ndarray_chunks<a class="headerlink" href="#generate-ndarray-chunks" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.generate_ndarray_chunks">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">generate_ndarray_chunks</code><span class="sig-paren">(</span><em class="sig-param">arr</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">buffersize=104857600</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.generate_ndarray_chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>A generator that splits an array into chunks of desired byte size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>np.ndarray</em>) – </p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>None</em>) – The axis along which to slice the array. If None is given,
+the array is chunked into ideal isotropic voxels.</p></li>
+<li><p><strong>buffersize</strong> (<em>scalar</em>) – Byte size of the desired array chunks</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>iterator</strong> – The object yields the tuple:
+(chunk_coordinates, chunk_data_slice)</p>
+<ul class="simple">
+<li><p>chunk_coordinates:
+Indices of the current chunk along each dimension</p></li>
+<li><p>chunk_data_slice:
+Data for this chunk</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>generator object</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p><code class="docutils literal notranslate"><span class="pre">axis=None</span></code> is WIP and only works well for near isotropic matrices.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-fileobject-size">
+<h2>get_fileobject_size<a class="headerlink" href="#get-fileobject-size" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.get_fileobject_size">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_fileobject_size</code><span class="sig-paren">(</span><em class="sig-param">file_object</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_fileobject_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return byte size of file-object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_object</strong> (<em>file object</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>nbytes</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-key-from-environ">
+<h2>get_key_from_environ<a class="headerlink" href="#get-key-from-environ" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.get_key_from_environ">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_key_from_environ</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_key_from_environ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get AWS keys from environmental variables if available</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>ACCESS_KEY</strong> (<em>str</em>)</p></li>
+<li><p><strong>SECRET_KEY</strong> (<em>str</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Reads AWS_ACCESS_KEY and AWS_SECRET_KEY</p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-key-from-s3fs">
+<h2>get_key_from_s3fs<a class="headerlink" href="#get-key-from-s3fs" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.get_key_from_s3fs">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_key_from_s3fs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_key_from_s3fs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get AWS keys from default S3fs location if available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>ACCESS_KEY</strong> (<em>str</em>)</p></li>
+<li><p><strong>SECRET_KEY</strong> (<em>str</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Reads ~/.passwd-s3fs to get ACCESSKEY and SECRET KEY</p>
+</dd></dl>
+
+</div>
+<div class="section" id="get-keys">
+<h2>get_keys<a class="headerlink" href="#get-keys" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.get_keys">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read AWS keys from S3fs configuration or environmental variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>ACCESS_KEY</strong> (<em>str</em>)</p></li>
+<li><p><strong>SECRET_KEY</strong> (<em>str</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-object-size">
+<h2>get_object_size<a class="headerlink" href="#get-object-size" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.get_object_size">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_object_size</code><span class="sig-paren">(</span><em class="sig-param">boto_s3_object</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_object_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the size of the S3 object in MB</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>boto_s3_object</strong> (<em>boto object</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>object_size</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float (in MB)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="has-magic">
+<h2>has_magic<a class="headerlink" href="#has-magic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.has_magic">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">has_magic</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_magic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check string to see if it has any glob magic</p>
+</dd></dl>
+
+</div>
+<div class="section" id="has-real-magic">
+<h2>has_real_magic<a class="headerlink" href="#has-real-magic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.has_real_magic">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">has_real_magic</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_real_magic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if string has non-trivial glob pattern</p>
+</dd></dl>
+
+</div>
+<div class="section" id="has-start-digit">
+<h2>has_start_digit<a class="headerlink" href="#has-start-digit" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.has_start_digit">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">has_start_digit</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_start_digit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="has-trivial-magic">
+<h2>has_trivial_magic<a class="headerlink" href="#has-trivial-magic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.has_trivial_magic">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">has_trivial_magic</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_trivial_magic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check string to see if it has trivial glob magic
+(e.g. “path/<a href="#id1"><span class="problematic" id="id2">*</span></a>”)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="mk-aws-path">
+<h2>mk_aws_path<a class="headerlink" href="#mk-aws-path" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.mk_aws_path">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">mk_aws_path</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.mk_aws_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the <cite>path</cite> behave as expected when querying S3 with
+<cite>list_objects</cite>.</p>
+<ul class="simple">
+<li><p>xxx/yyy -&gt; xxx/yyy/</p></li>
+<li><p>xxx/    -&gt; xxx/</p></li>
+<li><p>xxx     -&gt; xxx/</p></li>
+<li><p>/       -&gt; ‘’</p></li>
+<li><p>‘’      -&gt; ‘’</p></li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="objects2names">
+<h2>objects2names<a class="headerlink" href="#objects2names" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.objects2names">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">objects2names</code><span class="sig-paren">(</span><em class="sig-param">objects</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.objects2names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the name of all objects in a list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objects</strong> (<em>list</em><em> (</em><em>of boto3 objects</em><em>)</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>object_names</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list (of strings)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="pathjoin">
+<h2>pathjoin<a class="headerlink" href="#pathjoin" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.pathjoin">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">pathjoin</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">*p</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.pathjoin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join two or more pathname components, inserting SEPARATOR as needed.
+If any component is an absolute path, all previous path components
+will be discarded.  An empty last part will result in a path that
+ends with a separator.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="print-objects">
+<h2>print_objects<a class="headerlink" href="#print-objects" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.print_objects">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">print_objects</code><span class="sig-paren">(</span><em class="sig-param">object_list</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.print_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print name, size, and creation date of objects in list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>object_list</strong> (<em>list</em><em> (</em><em>of boto3 objects</em><em>)</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="read-buffered">
+<h2>read_buffered<a class="headerlink" href="#read-buffered" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.read_buffered">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">read_buffered</code><span class="sig-paren">(</span><em class="sig-param">frm</em>, <em class="sig-param">to</em>, <em class="sig-param">buffersize=64</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.read_buffered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill a numpy n-d array with file-like object contents</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frm</strong> (<em>buffer</em>) – Object with a <code class="docutils literal notranslate"><span class="pre">read</span></code> method</p></li>
+<li><p><strong>to</strong> (<em>np.ndarray</em>) – Array to which the contents will be put</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="remove-root">
+<h2>remove_root<a class="headerlink" href="#remove-root" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.remove_root">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">remove_root</code><span class="sig-paren">(</span><em class="sig-param">string_</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.remove_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove leading “/” from a string</p>
+</dd></dl>
+
+</div>
+<div class="section" id="remove-trivial-magic">
+<h2>remove_trivial_magic<a class="headerlink" href="#remove-trivial-magic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.remove_trivial_magic">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">remove_trivial_magic</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.remove_trivial_magic" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li><p>xxx/*      -&gt; xxx/</p></li>
+<li><p>xxx/       -&gt; xxx/</p></li>
+<li><p>xxx/<em>/yyy/ -&gt; xxx/</em>/yyy/</p></li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="sanitize-metadata">
+<h2>sanitize_metadata<a class="headerlink" href="#sanitize-metadata" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.sanitize_metadata">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">sanitize_metadata</code><span class="sig-paren">(</span><em class="sig-param">metadict</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.sanitize_metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="split-uri">
+<h2>split_uri<a class="headerlink" href="#split-uri" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.split_uri">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">split_uri</code><span class="sig-paren">(</span><em class="sig-param">uri</em>, <em class="sig-param">pattern='s3://'</em>, <em class="sig-param">separator='/'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.split_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a URI to a bucket, object name tuple.</p>
+<p>‘s3://bucket/path/to/thing’ -&gt; (‘bucket’, ‘path/to/thing’)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="string2bool">
+<h2>string2bool<a class="headerlink" href="#string2bool" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.string2bool">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">string2bool</code><span class="sig-paren">(</span><em class="sig-param">mstring</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.string2bool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="unquote-names">
+<h2>unquote_names<a class="headerlink" href="#unquote-names" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cottoncandy.utils.unquote_names">
+<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">unquote_names</code><span class="sig-paren">(</span><em class="sig-param">object_names</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.unquote_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean URL names from a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>object_names</strong> (<em>list</em><em> (</em><em>of strings</em><em>)</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>clean_object_names</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list (of strings)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

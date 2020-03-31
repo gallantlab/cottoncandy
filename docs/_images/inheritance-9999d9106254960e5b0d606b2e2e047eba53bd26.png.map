@@ -1,7 +1,0 @@
-<map id="inheritancea69b3fcd6d" name="inheritancea69b3fcd6d">
-<area shape="rect" id="node1" href="#cottoncandy.interfaces.ArrayInterface" target="_top" title="Provides numpy.array concepts." alt="" coords="402,4,551,25"/>
-<area shape="rect" id="node4" href="#cottoncandy.interfaces.DefaultInterface" target="_top" title="Default cottoncandy interface to S3" alt="" coords="605,46,764,68"/>
-<area shape="rect" id="node2" href="#cottoncandy.interfaces.BasicInterface" target="_top" title="Basic cottoncandy interface to S3." alt="" coords="199,46,347,68"/>
-<area shape="rect" id="node5" href="#cottoncandy.interfaces.FileSystemInterface" target="_top" title="Emulate some file system functionality." alt="" coords="387,89,565,110"/>
-<area shape="rect" id="node3" href="#cottoncandy.interfaces.InterfaceObject" target="_top" title="interfaces.InterfaceObject" alt="" coords="4,46,159,68"/>
-</map>
