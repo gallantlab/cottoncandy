@@ -7,6 +7,7 @@ PYTHON ?= python3
 API_DIR = source/api
 BUILDROOT = build
 HTMLOUTPATH = ../docs
+GENDOCPATH = .
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
@@ -41,13 +42,14 @@ html-only:
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDROOT)/html."
 
-
 githubio-docs: clean-docs api html-only
 	@mkdir -p $(HTMLOUTPATH)
 	@cp -r $(BUILDROOT)/html/* $(HTMLOUTPATH)/
 	@touch $(HTMLOUTPATH)/.nojekyll
 	@echo
 	@echo "Copied HTML pages to $(HTMLOUTPATH)."
+	@echo "Removing private values from documentation."
+	$(PYTHON) remove_keys.py $(GENDOCPATH) $(HTMLOUTPATH)
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
