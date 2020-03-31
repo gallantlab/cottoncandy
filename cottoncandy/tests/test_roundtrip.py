@@ -10,7 +10,7 @@ import cottoncandy as cc
 ##############################
 # globals
 ##############################
-
+WAIT_TIME = 2.         # Account for AWS S3 lag by waiting N [seconds]
 DATE = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 
 prefix = 'testcc/%s/py%s'%(DATE, sys.version[:6])
@@ -80,7 +80,7 @@ def test_upload_from_file():
         fl.write(content)
 
     print(cci.upload_from_file(flname, object_name=object_name))
-    time.sleep(1.0)
+    time.sleep(WAIT_TIME)
     dat = cci.download_object(os.path.join(prefix, 'test'))
     assert dat == content
 
@@ -91,7 +91,7 @@ def test_upload_from_file():
         fl.write(content)
 
     print(cci.upload_from_file(flname, object_name=object_name))
-    time.sleep(1.0)
+    time.sleep(WAIT_TIME)
     dat = cci.download_object(os.path.join(prefix, 'test')).decode()
     assert dat == content
 
@@ -102,7 +102,7 @@ def test_upload_json():
                    )
 
     print(cci.upload_json(object_name, content))
-    time.sleep(1.0)
+    time.sleep(WAIT_TIME)
     dat = cci.download_json(object_name)
     assert dat == content
     cci.rm(object_name, recursive=True)
@@ -113,7 +113,7 @@ def test_pickle_upload():
                    bye='bye?')
 
     print(cci.upload_pickle(object_name, content))
-    time.sleep(1.0)
+    time.sleep(WAIT_TIME)
     dat = cci.download_pickle(object_name)
     assert dat == content
     cci.rm(object_name, recursive=True)
@@ -121,14 +121,14 @@ def test_pickle_upload():
 def test_upload_npy_upload():
     for content in content_generator():
         print(cci.upload_npy_array(object_name, content))
-        time.sleep(1.0)
+        time.sleep(WAIT_TIME)
         dat = cci.download_npy_array(object_name)
         assert np.allclose(dat, content)
 
 def test_upload_raw_array():
     for i, content in enumerate(content_generator()):
         print(i, cci.upload_raw_array(object_name, content))
-        time.sleep(1.0)
+        time.sleep(WAIT_TIME)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
@@ -136,7 +136,7 @@ def test_upload_raw_array():
 def test_upload_raw_array_uncompressed():
     for i, content in enumerate(content_generator()):
         print(i, cci.upload_raw_array(object_name, content, compression=False))
-        time.sleep(1.0)
+        time.sleep(WAIT_TIME)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
@@ -144,7 +144,7 @@ def test_upload_raw_array_uncompressed():
 def test_upload_dask_array():
     for content in content_generator():
         print(cci.upload_dask_array(object_name, content))
-        time.sleep(1.0)
+        time.sleep(WAIT_TIME)
         dat = cci.download_dask_array(object_name)
         dat = np.asarray(dat)
         assert np.allclose(dat, content)
@@ -160,10 +160,10 @@ def test_dict2cloud():
                        )
 
         print(cci.dict2cloud(object_name, content))
-        time.sleep(1.0)
+        time.sleep(WAIT_TIME)
         dat = cci.cloud2dict(object_name)
         assert np.allclose(dat['arr1'], content['arr1'])
         for k,v in content['deep'].items():
             assert np.allclose(v, dat['deep'][k])
         cci.rm(object_name, recursive=True)
-        time.sleep(1.0)
+        time.sleep(WAIT_TIME)

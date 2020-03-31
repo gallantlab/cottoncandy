@@ -12,7 +12,7 @@ import cottoncandy as cc
 ##############################
 # globals
 ##############################
-
+WAIT_TIME = 2.         # Account for AWS S3 lag by waiting N [seconds]
 DATE = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 
 prefix = 'testcc/%s/py%s'%(DATE, sys.version[:6])
@@ -70,7 +70,7 @@ def content_generator():
 def test_upload_raw_array():
     for content in content_generator():
         print(cci.upload_raw_array(object_name, content, compression=None))
-        time.sleep(1.0)
+        time.sleep(WAIT_TIME)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
