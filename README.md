@@ -8,6 +8,8 @@
 # Welcome to cottoncandy!
 [![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=master)](https://travis-ci.org/gallantlab/cottoncandy)
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00890/status.svg)](https://doi.org/10.21105/joss.00890)
+[![License](https://img.shields.io/badge/license-BSD%202--Clause-blue)](https://opensource.org/licenses/BSD-2-Clause)
+[![Downloads](https://pepy.tech/badge/cottoncandy)](https://pepy.tech/project/cottoncandy)
 
 *sugar for s3*
 
