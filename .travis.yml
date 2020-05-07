@@ -1,12 +1,22 @@
 sudo: true
 language: python
 python:
-- '2.7'
 - '3.6'
+- '3.7'
+
+before_install:
+  - pip install codecov pytest-cov
+  
 install:
 - pip install -r requirements.txt
 - python setup.py install
-script: pytest -v
+
+script:
+  - coverage run -m pytest
+
+after_success:
+  - codecov
+
 env:
   global:
   - secure: BphCjxSOyhBNBEHVgByYX+FmnPbZqGKVVQPfo4WZZ3RTSaCvwShVSBdZe/45dU0P/PMd4vsbAMziBCryiRsGrFa3CtW4p+CnGCkVGvlBi9LxQWwtNqnE/0FKIWjFrzeLotBj/0BkIofuxFHczFZtK7xCozo2q2zPMK/mwp9H+rWPWcDXsHbXy+OYst6RGihB35T3e0sjVuh0Ix5v6mEr/KxntGFjS0qT7Jsru46JFih3G3Ycljssm/z5uFriUrFCFLVNTWf9MomFoMKW5zXjN3ajbbyKVewr4J9R+8KwIY4Jelf/3tV0fJ1tckubFCYBy2FS4wyJSwIkkRYHiml5n1nzX72RHE+HcosKVyJd5RhtISdm9Bl9xaoTmizQtR+Xdw39Dpmh7vyxs3KRQ8we8sgS7Tg6PHDwHfUErcGv/XTEqxmgh2Ie+9MLxRL8UdBOOj5+dUO35u5kSzBcfxKbCxAYkS9pYD7dBduMzdhRN5w4mE9/9qDaTNVgwYAJD45QL9Lka4jStKXzCe+sJO/ydKEtgamu0HQdDDFaAk50GEcJNYinyq4hU4fL17I5sKy9+MrHj7xfhmx+K47kjAAw9PbqbfgL7p1UFe2tncSqipax1NJ9/IFegdei0wYRe65bw5tgm/43lMMax79SUETL8oOP7mrfv4x4xmGuey51YR4=
