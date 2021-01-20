@@ -6,7 +6,7 @@
 </p>  
 
 # Welcome to cottoncandy!
-[![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=master)](https://travis-ci.org/gallantlab/cottoncandy)
+[![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=main)](https://travis-ci.org/gallantlab/cottoncandy)
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00890/status.svg)](https://doi.org/10.21105/joss.00890)
 [![License](https://img.shields.io/badge/license-BSD%202--Clause-blue)](https://opensource.org/licenses/BSD-2-Clause)
 [![Downloads](https://pepy.tech/badge/cottoncandy)](https://pepy.tech/project/cottoncandy)
@@ -25,9 +25,9 @@ This library relies heavily on [boto3](https://github.com/boto/boto3)
 
 Jupyter Notebook examples using cottoncandy to
 
-* Explore the Allen Brain Observatory data: [**view notebook**](https://nbviewer.jupyter.org/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb) ([launch](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb) using google colab)
+* Explore the Allen Brain Observatory data: [**view notebook**](https://nbviewer.jupyter.org/github/gallantlab/cottoncandy/blob/main/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb) ([launch](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/main/cottoncandy/examples/ccexample_allenbrainobservatory.ipynb) using google colab)
 
-* Explore OpenNeuro nifti data: [**view notebook**](https://nbviewer.jupyter.org/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_openneuro.ipynb) ([launch](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/master/cottoncandy/examples/ccexample_openneuro.ipynb)
+* Explore OpenNeuro nifti data: [**view notebook**](https://nbviewer.jupyter.org/github/gallantlab/cottoncandy/blob/main/cottoncandy/examples/ccexample_openneuro.ipynb) ([launch](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/main/cottoncandy/examples/ccexample_openneuro.ipynb)
 using google colab)
 ## Installation
 
@@ -48,7 +48,7 @@ $ pip install cottoncandy
 
 ### Configuration file
 
-Upon first use, cottoncandy will create a configuration file. This configuration file allows you to enter your S3 and Google Drive credentials and set many other options. See the default [configuration file](https://github.com/gallantlab/cottoncandy/blob/master/cottoncandy/defaults.cfg).
+Upon first use, cottoncandy will create a configuration file. This configuration file allows you to enter your S3 and Google Drive credentials and set many other options. See the default [configuration file](https://github.com/gallantlab/cottoncandy/blob/main/cottoncandy/defaults.cfg).
 
 The configuration file is created the first time you import cottoncandy and it is stored under:
 * Linux: `~/.config/cottoncandy/options.cfg` 
@@ -143,7 +143,7 @@ cci = cc.get_interface('my_bucket_name', config=config)
 
 `cottoncandy` can also use Google Drive as a back-end. This equires a `client_secrets.json` file in your `~/.config/cottoncandy` folder and the [pydrive](https://github.com/googledrive/PyDrive) package. 
 
-See the [Google Drive setup instructions](https://github.com/gallantlab/cottoncandy/blob/master/google_drive_setup_instructions.md) for more details.
+See the [Google Drive setup instructions](https://github.com/gallantlab/cottoncandy/blob/main/google_drive_setup_instructions.md) for more details.
 
 ```python
 >>> import cottoncandy as cc
