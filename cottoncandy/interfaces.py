@@ -891,7 +891,7 @@ class ArrayInterface(BasicInterface):
         from dask import array as da
 
         metadata = self.download_json(self.pathjoin(object_name, 'metadata.json'))
-        chunks = metadata['chunks']
+        chunks = list(map(tuple, metadata['chunks']))
         shape = metadata['shape']
         dtype = np.dtype(metadata['dtype'])
 
