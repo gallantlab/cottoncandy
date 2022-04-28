@@ -1352,7 +1352,7 @@ class FileSystemInterface(BasicInterface):
         elif self.backend == "gdrive":
             return self.backend_interface.delete(object_name, recursive, delete)
         else:
-            self.backend_interface.delete(object_name, recursive, delete)
+            return self.backend_interface.delete(object_name, recursive, delete)
 
         has_objects = len(self.ls(object_name)) > 0
         if has_objects:

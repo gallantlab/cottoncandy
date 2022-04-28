@@ -22,20 +22,27 @@ object_name = os.path.join(prefix, 'test')
 # login
 ##############################
 
-if False:
+if True:
     # for travis testing on AWS.
     bucket_name = os.environ['DL_BUCKET_NAME']
     AK = os.environ['DL_ACCESS_KEY']
     SK = os.environ['DL_SECRET_KEY']
     URL = os.environ['DL_URL']
 
+    # test on AWS
     cci_aws = cc.get_interface(bucket_name,
                                ACCESS_KEY=AK,
                                SECRET_KEY=SK,
                                endpoint_url=URL,
                                verbose=False)
 
-    ALL_CCI = [cci_aws]
+    # test on local client
+    cci_local = cc.get_interface(
+        os.path.join(tempfile.gettempdir(), "cottoncandy"),
+        backend="local",
+        verbose=False,
+    )
+    ALL_CCI = [cci_aws, cci_local]
 
 elif False:
     ##############################
@@ -47,6 +54,7 @@ elif False:
     ALL_CCI = [cci]
 
 else:
+    # run on a local filesystem client
     cci_local = cc.get_interface(
         os.path.join(tempfile.gettempdir(), "cottoncandy"),
         backend="local",

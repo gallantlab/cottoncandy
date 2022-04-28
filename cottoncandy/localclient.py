@@ -16,7 +16,7 @@ class LocalClient(CCBackEnd):
     """
     Client interface for local file system.
 
-    Handle metadata in CouldStream object by storing a json file.
+    Handle metadata in CouldStream objects by storing a json file (.meta.json).
     """
 
     def __init__(self, path):
@@ -32,7 +32,8 @@ class LocalClient(CCBackEnd):
         cloud_name : str
             file on cloud
         bucket_name : str
-            ignored
+            For a local client, the bucket is just a directory path.
+            If None, use self.path.
 
         Returns
         -------
@@ -48,7 +49,7 @@ class LocalClient(CCBackEnd):
         Parameters
         ----------
         stream : stream
-            stream.content, e.g. StringIO(json.dumps(my_dict)) (no metadata)
+            streaming object, e.g. StringIO(json.dumps(my_dict)) (no metadata)
         cloud_name : str
             name to use on cloud
         metadata : dict
@@ -78,8 +79,7 @@ class LocalClient(CCBackEnd):
             name of file to upload
         cloud_name : str
             name to use on the cloud
-        permissions : str?
-            permissions for this file
+        permissions : ignored
 
         Returns
         -------
@@ -159,7 +159,7 @@ class LocalClient(CCBackEnd):
         -------
         bool, download success
         """
-        self.copy(
+        return self.copy(
             source=os.path.join(self.path, cloud_name),
             destination=file_name,
             source_bucket=None,
@@ -228,7 +228,7 @@ class LocalClient(CCBackEnd):
         source = os.path.join(source_bucket, source)
         destination = os.path.join(destination_bucket, destination)
         auto_makedirs(destination)
-        shutil.copy(source, destination)
+        return shutil.copy(source, destination)
 
     def move(self, source, destination, source_bucket, destination_bucket,
              overwrite):
@@ -267,7 +267,7 @@ class LocalClient(CCBackEnd):
         recursive : bool
             recursively delete directory?
         delete : bool
-            (gdrive) hard delete the file(s)?
+            ignored
 
         Returns
         -------
@@ -301,18 +301,22 @@ class LocalClient(CCBackEnd):
         return total_size
 
     def _remove_path_and_metadata(self, file_list):
+        """Removes path from filenames, removes .meta.json files from the list.
+        """
         results = []
         for file_name in file_list:
             # remove self.path
             if file_name[:len(self.path)] == self.path:
                 file_name = file_name[len(self.path):]
             # remove .meta.json files
-            if file_name[-10:] != ".meta.json":
+            if file_name[-10:] == ".meta.json":
                 continue
-            results.append(file_name)
+            else:
+                results.append(file_name)
         return results
 
 
 def auto_makedirs(destination):
+    """Create directory tree if destination does not exist."""
     if not os.path.exists(os.path.dirname(destination)):
         os.makedirs(os.path.dirname(destination))
