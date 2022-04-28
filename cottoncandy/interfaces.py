@@ -1,5 +1,6 @@
 import json
 import six
+import glob
 
 try:
     import cPickle as pickle
@@ -113,6 +114,9 @@ class BasicInterface(InterfaceObject):
         elif backend == 'gdrive':
             from .gdriveclient import GDriveClient
             self.backend_interface = GDriveClient(ACCESS_KEY, SECRET_KEY)
+        elif backend == 'local':
+            from .localclient import LocalClient
+            self.backend_interface = LocalClient(path=bucket_name)
         else:
             raise ValueError('Bad backend')
 
@@ -123,13 +127,20 @@ class BasicInterface(InterfaceObject):
                 print('Current bucket: {}'.format(self.backend_interface.bucket_name))
             elif backend == 'gdrive':
                 print('Google drive backend instantiated.')
+            elif backend == 'local':
+                print('Local backend instantiated.')
+
+        self.backend = backend
 
     def __repr__(self):
-        if isinstance(self.backend_interface, S3Client):
+        if self.backend == "s3":
             details = (__package__, self.bucket_name, self.backend_interface.url)
             return '%s.backend_interface <bucket:%s on %s>' % details
-        else:
+        elif self.backend == "gdrive":
             return '{}.backend_interface on Google Drive'.format(__package__)
+        else:
+            details = (__package__, self.backend_interface.path)
+            return '%s.backend_interface on local machine (%s)' % details
 
     def _get_bucket_name(self, bucket_name):
         return self.backend_interface._get_bucket_name(bucket_name)
@@ -139,11 +150,13 @@ class BasicInterface(InterfaceObject):
 
     @property
     def bucket_name(self):
-        if isinstance(self.backend_interface, S3Client):
+        if self.backend == "s3":
             return self.backend_interface.bucket_name
-        else:
+        elif self.backend == "gdrive":
             print('Google drive has no concept of buckets')
             return None
+        else:
+            return self.backend_interface.path
 
     @clean_object_name
     def exists_object(self, object_name, bucket_name=None, raise_err=False):
@@ -284,7 +297,7 @@ class BasicInterface(InterfaceObject):
 
     def show_objects(self, limit=1000, page_size=1000):
         """Print objects in the current bucket"""
-        if isinstance(self.backend_interface, S3Client):
+        if self.backend == 's3':
             object_list = self.backend_interface.list_objects(limit=limit, page_size=page_size)
             try:
                 print_objects(object_list)
@@ -292,12 +305,14 @@ class BasicInterface(InterfaceObject):
                 print('Loads of objects in "%s". Increasing page_size by 100x...' % self.bucket_name)
                 object_list = self.backend_interface.list_objects(limit = limit, page_size = page_size * 100)
                 print_objects(object_list)
-        else:
+        elif self.backend == 'gdrive':
             drivefiles = self.backend_interface.drive.ListFile({'q': "trashed=false"}).GetList()
             object_list = [df['title'] for df in drivefiles]
             for obj in object_list:
                 # TODO: also print last modified date and whatever else to match s3
                 print(obj)
+        else:
+            print(self.backend_interface.list_objects())
 
     # With the abstraction of the cloud interface, and the encrypting interface, all file I/O methods
     # should be calling upload_object() and download_stream() instead of directly interfacing with the
@@ -765,6 +780,7 @@ class ArrayInterface(BasicInterface):
             subdirs = self.lsdir(object_root)
             subdirs = [os.path.split(t)[-1] for t in subdirs]
 
+
         if not subdirs:
             print('Nothing found in "%s"' % object_root)
             return
@@ -782,6 +798,8 @@ class ArrayInterface(BasicInterface):
                 datadict[subdir] = arr
             else:
                 datadict[subdir] = self.cloud2dict(path)
+
+            
 
         if verbose:
             print('Downloaded arrays in "%s"' % object_root)
@@ -1123,10 +1141,12 @@ class FileSystemInterface(BasicInterface):
         """
         # determine if we're globbing
 
-        if isinstance(self.backend_interface, S3Client):
+        if self.backend == 's3':
             return self.glob_s3(pattern, **kwargs)
-        else:
+        elif self.backend == 'gdrive':
             return self.glob_google_drive(pattern)
+        else:
+            return self.glob_local(pattern)
 
     def glob_google_drive(self, pattern):
         """Globbing on google drive
@@ -1194,6 +1214,14 @@ class FileSystemInterface(BasicInterface):
                 print_objects(objects_found)
             print('Found %i objects matching "%s"' % (len(objects_found), pattern))
         return matches
+
+    def glob_local(self, pattern):
+        results = glob.glob(os.path.join(self.backend_interface.path, pattern))
+        # remove self.backend_interface.path
+        results = [res[len(self.backend_interface.path):] for res in results]
+        # remove .meta.json files
+        results = [res for res in results if res[-10:] != ".meta.json"]
+        return results
 
     @clean_object_name
     def download_directory(self, directory, disk_name):
@@ -1321,12 +1349,13 @@ class FileSystemInterface(BasicInterface):
         """
 
         # not moving this to the basic S3Client because it depends on glob
-        if self.exists_object(object_name):
-            return self.backend_interface.get_s3_object(object_name).delete()
-
-        if not isinstance(self.backend_interface, S3Client):
-            from .gdriveclient import GDriveClient
+        if self.backend == "s3":
+            if self.exists_object(object_name):
+                return self.backend_interface.get_s3_object(object_name).delete()
+        elif self.backend == "gdrive":
             return self.backend_interface.delete(object_name, recursive, delete)
+        else:
+            self.backend_interface.delete(object_name, recursive, delete)
 
         has_objects = len(self.ls(object_name)) > 0
         if has_objects:

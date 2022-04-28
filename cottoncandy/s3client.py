@@ -69,6 +69,11 @@ class S3Client(CCBackEnd):
         self.bucket_name = None
 
         if bucket:
+            if not self.check_bucket_exists(bucket):
+                bucket_new = "glab-" + bucket.replace("_", "-")
+                if self.check_bucket_exists(bucket_new):
+                    bucket = bucket_new
+
             # bucket given
             if self.check_bucket_exists(bucket):
                 self.set_current_bucket(bucket)

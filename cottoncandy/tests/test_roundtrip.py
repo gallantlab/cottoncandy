@@ -2,7 +2,9 @@ import os
 import sys
 import time
 import datetime
+import tempfile
 
+import pytest
 import numpy as np
 
 import cottoncandy as cc
@@ -20,28 +22,38 @@ object_name = os.path.join(prefix, 'test')
 # login
 ##############################
 
-if True:
+if False:
     # for travis testing on AWS.
     bucket_name = os.environ['DL_BUCKET_NAME']
     AK = os.environ['DL_ACCESS_KEY']
     SK = os.environ['DL_SECRET_KEY']
     URL = os.environ['DL_URL']
 
-    cci = cc.get_interface(bucket_name,
-                           ACCESS_KEY=AK,
-                           SECRET_KEY=SK,
-                           endpoint_url=URL,
-                           verbose=False)
-else:
+    cci_aws = cc.get_interface(bucket_name,
+                               ACCESS_KEY=AK,
+                               SECRET_KEY=SK,
+                               endpoint_url=URL,
+                               verbose=False)
+
+    ALL_CCI = [cci_aws]
+
+elif False:
     ##############################
     # Warning
     ##############################
     # This will use your defaults to run the tests on.
     # If you use AWS, you might incur costs.
     cci = cc.get_interface()
+    ALL_CCI = [cci]
 
-
-
+else:
+    cci_local = cc.get_interface(
+        os.path.join(tempfile.gettempdir(), "cottoncandy"),
+        backend="local",
+        verbose=False,
+    )
+    ALL_CCI = [cci_local]
+    WAIT_TIME = 0
 
 ##############################
 # tests
@@ -70,7 +82,8 @@ def content_generator():
                     yield data[np.random.randint(0,data.shape[0],10)]
 
 
-def test_upload_from_file():
+@pytest.mark.parametrize("cci", ALL_CCI)
+def test_upload_from_file(cci):
     '''test file uploads'''
 
     # byte round trip
@@ -96,7 +109,8 @@ def test_upload_from_file():
     assert dat == content
 
 
-def test_upload_json():
+@pytest.mark.parametrize("cci", ALL_CCI)
+def test_upload_json(cci):
     content = dict(hello=0,
                    bye='bye!',
                    )
@@ -108,7 +122,8 @@ def test_upload_json():
     cci.rm(object_name, recursive=True)
 
 
-def test_pickle_upload():
+@pytest.mark.parametrize("cci", ALL_CCI)
+def test_pickle_upload(cci):
     content = dict(hello=1,
                    bye='bye?')
 
@@ -118,14 +133,16 @@ def test_pickle_upload():
     assert dat == content
     cci.rm(object_name, recursive=True)
 
-def test_upload_npy_upload():
+@pytest.mark.parametrize("cci", ALL_CCI)
+def test_upload_npy_upload(cci):
     for content in content_generator():
         print(cci.upload_npy_array(object_name, content))
         time.sleep(WAIT_TIME)
         dat = cci.download_npy_array(object_name)
         assert np.allclose(dat, content)
 
-def test_upload_raw_array():
+@pytest.mark.parametrize("cci", ALL_CCI)
+def test_upload_raw_array(cci):
     for i, content in enumerate(content_generator()):
         print(i, cci.upload_raw_array(object_name, content))
         time.sleep(WAIT_TIME)
@@ -133,7 +150,8 @@ def test_upload_raw_array():
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
 
-def test_upload_raw_array_uncompressed():
+@pytest.mark.parametrize("cci", ALL_CCI)
+def test_upload_raw_array_uncompressed(cci):
     for i, content in enumerate(content_generator()):
         print(i, cci.upload_raw_array(object_name, content, compression=False))
         time.sleep(WAIT_TIME)
@@ -141,7 +159,8 @@ def test_upload_raw_array_uncompressed():
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
 
-def test_upload_dask_array():
+@pytest.mark.parametrize("cci", ALL_CCI)
+def test_upload_dask_array(cci):
     for content in content_generator():
         print(cci.upload_dask_array(object_name, content))
         time.sleep(WAIT_TIME)
@@ -151,7 +170,8 @@ def test_upload_dask_array():
         cci.rm(object_name, recursive=True)
 
 
-def test_dict2cloud():
+@pytest.mark.parametrize("cci", ALL_CCI)
+def test_dict2cloud(cci):
     for cc in content_generator():
         content = dict(arr1=cc,
                        deep=dict(dat01=np.random.randn(15),
