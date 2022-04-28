@@ -59,7 +59,8 @@ def get_interface(bucket_name=default_bucket,
     """
     from cottoncandy.interfaces import DefaultInterface
 
-    if (ACCESS_KEY is False) and (SECRET_KEY is False):
+    if ((ACCESS_KEY is False or ACCESS_KEY == "False") and
+            (SECRET_KEY is False or SECRET_KEY == "False")):
         from cottoncandy.utils import get_keys
         ACCESS_KEY, SECRET_KEY = get_keys()
 

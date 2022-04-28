@@ -909,8 +909,8 @@ class ArrayInterface(BasicInterface):
         from dask import array as da
 
         metadata = self.download_json(self.pathjoin(object_name, 'metadata.json'))
-        chunks = metadata['chunks']
-        shape = metadata['shape']
+        chunks = tuple(tuple(chunk) for chunk in metadata['chunks'])
+        shape = tuple(metadata['shape'])
         dtype = np.dtype(metadata['dtype'])
 
         dask = {(dask_name,) + tuple(shape): (self.download_raw_array, part_name) \
@@ -1217,10 +1217,7 @@ class FileSystemInterface(BasicInterface):
 
     def glob_local(self, pattern):
         results = glob.glob(os.path.join(self.backend_interface.path, pattern))
-        # remove self.backend_interface.path
-        results = [res[len(self.backend_interface.path):] for res in results]
-        # remove .meta.json files
-        results = [res for res in results if res[-10:] != ".meta.json"]
+        results = self.backend_interface._remove_path_and_metadata(results)
         return results
 
     @clean_object_name

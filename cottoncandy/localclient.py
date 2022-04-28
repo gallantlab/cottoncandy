@@ -182,10 +182,7 @@ class LocalClient(CCBackEnd):
         """
         path = os.path.join(self.path, path)
         results = glob.glob(os.path.join(path, "*"))
-        # remove self.path
-        results = [res[len(self.path):] for res in results]
-        # remove .meta.json files
-        results = [res for res in results if res[-10:] != ".meta.json"]
+        results = self._remove_path_and_metadata(results)
         return results
 
     def list_objects(self):
@@ -200,10 +197,7 @@ class LocalClient(CCBackEnd):
             for dirpath, dirnames, filenames in os.walk(
                 os.path.expanduser(self.path)) for filename in filenames
         ]
-        # remove self.path
-        results = [res[len(self.path):] for res in results]
-        # remove .meta.json files
-        results = [res for res in results if res[-10:] != ".meta.json"]
+        results = self._remove_path_and_metadata(results)
         return results
 
     def copy(self, source, destination, source_bucket, destination_bucket,
@@ -305,6 +299,18 @@ class LocalClient(CCBackEnd):
                     total_size += os.path.getsize(fp)
 
         return total_size
+
+    def _remove_path_and_metadata(self, file_list):
+        results = []
+        for file_name in file_list:
+            # remove self.path
+            if file_name[:len(self.path)] == self.path:
+                file_name = file_name[len(self.path):]
+            # remove .meta.json files
+            if file_name[-10:] != ".meta.json":
+                continue
+            results.append(file_name)
+        return results
 
 
 def auto_makedirs(destination):
