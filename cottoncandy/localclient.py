@@ -324,7 +324,7 @@ class LocalClient(CCBackEnd):
         for file_name in file_list:
             # remove path
             if file_name.startswith(path):
-                file_name = file_name.lstrip(path)
+                file_name = file_name[len(path):]
             if file_name[0] == SEPARATOR:
                 file_name = file_name[1:]
             # remove .meta.json files
