@@ -1146,7 +1146,7 @@ class FileSystemInterface(BasicInterface):
         elif self.backend == 'gdrive':
             return self.glob_google_drive(pattern)
         else:
-            return self.glob_local(pattern)
+            return self.glob_s3(pattern, **kwargs)
 
     def glob_google_drive(self, pattern):
         """Globbing on google drive
@@ -1200,7 +1200,10 @@ class FileSystemInterface(BasicInterface):
                                        page_size = page_size,
                                        limit = limit)
 
-        mapper = {unquote(obj.key): obj for obj in object_list}
+        if self.backend == 's3':
+            mapper = {unquote(obj.key): obj for obj in object_list}
+        else:
+            mapper = {unquote(obj): obj for obj in object_list}
         object_names = mapper.keys()
 
         matches = fnmatch.filter(object_names, pattern) \
@@ -1214,11 +1217,6 @@ class FileSystemInterface(BasicInterface):
                 print_objects(objects_found)
             print('Found %i objects matching "%s"' % (len(objects_found), pattern))
         return matches
-
-    def glob_local(self, pattern):
-        results = glob.glob(os.path.join(self.backend_interface.path, pattern))
-        results = self.backend_interface._remove_path_and_metadata(results)
-        return results
 
     @clean_object_name
     def download_directory(self, directory, disk_name):

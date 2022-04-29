@@ -10,6 +10,11 @@ except ImportError:
 
 from .backend import CCBackEnd, CloudStream
 from .utils import sanitize_metadata
+from .utils import remove_root
+from .utils import remove_trivial_magic
+from .utils import SEPARATOR
+
+METADATA_SUFFIX = ".meta.json"
 
 
 class LocalClient(CCBackEnd):
@@ -24,7 +29,7 @@ class LocalClient(CCBackEnd):
             os.makedirs(path)
         self.path = path
 
-    def check_file_exists(self, cloud_name, bucket_name):
+    def check_file_exists(self, cloud_name, bucket_name=None):
         """Checks whether a file exists on the cloud
 
         Parameters
@@ -65,7 +70,7 @@ class LocalClient(CCBackEnd):
         with open(file_name, 'wb') as local_file:
             local_file.write(stream.read())
 
-        metadata_file_name = file_name + ".meta.json"
+        metadata_file_name = file_name + METADATA_SUFFIX
         auto_makedirs(metadata_file_name)
         with open(metadata_file_name, 'w') as local_file:
             json.dump(metadata, local_file, indent=4)
@@ -136,7 +141,7 @@ class LocalClient(CCBackEnd):
             content.write(local_file.read())  # load in memory
             content.seek(0)
 
-        metadata_file_name = file_name + ".meta.json"
+        metadata_file_name = file_name + METADATA_SUFFIX
         if os.path.isfile(metadata_file_name):
             with open(metadata_file_name, 'r') as local_file:
                 metadata = json.load(local_file)
@@ -180,23 +185,32 @@ class LocalClient(CCBackEnd):
         -------
 
         """
+        if (path != '') and (path != '/'):
+            path = remove_root(path)
+        path = remove_trivial_magic(path)
+
         path = os.path.join(self.path, path)
         results = glob.glob(os.path.join(path, "*"))
         results = self._remove_path_and_metadata(results)
         return results
 
-    def list_objects(self):
+    def list_objects(self, **kwargs):
         """Gets all objects contained by backend
 
         Returns
         -------
 
         """
-        results = [
-            os.path.join(dirpath, filename)
-            for dirpath, dirnames, filenames in os.walk(
-                os.path.expanduser(self.path)) for filename in filenames
-        ]
+        # match S3Client API to get a prefix
+        filter = kwargs.pop("filter", dict())
+        prefix = filter.pop("Prefix", "")
+
+        results = glob.glob(os.path.join(self.path, prefix, "**", "*"),
+                            recursive=True)
+        results += glob.glob(os.path.join(self.path, prefix, "**", ".*"),
+                             recursive=True)  # hidden files
+        # remove directories
+        results = [res for res in results if os.path.isfile(res)]
         results = self._remove_path_and_metadata(results)
         return results
 
@@ -300,21 +314,38 @@ class LocalClient(CCBackEnd):
 
         return total_size
 
-    def _remove_path_and_metadata(self, file_list):
+    def _remove_path_and_metadata(self, file_list, path=None):
         """Removes path from filenames, removes .meta.json files from the list.
         """
+        if path is None:
+            path = self.path
         results = []
         for file_name in file_list:
-            # remove self.path
-            if file_name[:len(self.path)] == self.path:
-                file_name = file_name[len(self.path):]
+            # remove path
+            if file_name[:len(path)] == path:
+                file_name = file_name[len(path):]
+            if file_name[0] == SEPARATOR:
+                file_name = file_name[1:]
             # remove .meta.json files
-            if file_name[-10:] == ".meta.json":
+            if file_name[-10:] == METADATA_SUFFIX:
                 continue
             else:
                 results.append(file_name)
         return results
 
+    def get_metadata_and_size(self, object_name):
+        file_name = os.path.join(self.path, object_name)
+        size = os.path.getsize(file_name)
+
+        metadata_file_name = file_name + METADATA_SUFFIX
+        if os.path.isfile(metadata_file_name):
+            with open(metadata_file_name, 'r') as local_file:
+                metadata = json.load(local_file)
+        else:
+            metadata = dict()
+        metadata = sanitize_metadata(metadata)
+
+        return metadata, size
 
 def auto_makedirs(destination):
     """Create directory tree if destination does not exist."""
