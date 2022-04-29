@@ -333,9 +333,8 @@ class LocalClient(CCBackEnd):
                 results.append(file_name)
         return results
 
-    def get_metadata_and_size(self, object_name):
+    def get_object_metadata(self, object_name):
         file_name = os.path.join(self.path, object_name)
-        size = os.path.getsize(file_name)
 
         metadata_file_name = file_name + METADATA_SUFFIX
         if os.path.isfile(metadata_file_name):
@@ -345,7 +344,13 @@ class LocalClient(CCBackEnd):
             metadata = dict()
         metadata = sanitize_metadata(metadata)
 
-        return metadata, size
+        return metadata
+
+    def get_object_size(self, object_name):
+        file_name = os.path.join(self.path, object_name)
+        size = os.path.getsize(file_name)
+        return size
+
 
 def auto_makedirs(destination):
     """Create directory tree if destination does not exist."""
