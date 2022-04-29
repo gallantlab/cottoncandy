@@ -71,7 +71,6 @@ class LocalClient(CCBackEnd):
             local_file.write(stream.read())
 
         metadata_file_name = file_name + METADATA_SUFFIX
-        auto_makedirs(metadata_file_name)
         with open(metadata_file_name, 'w') as local_file:
             json.dump(metadata, local_file, indent=4)
 
@@ -90,9 +89,11 @@ class LocalClient(CCBackEnd):
         -------
         bool, upload success
         """
+        destination = os.path.join(self.path, cloud_name)
+        auto_makedirs(destination)
         self.copy(
             source=file_name,
-            destination=os.path.join(self.path, cloud_name),
+            destination=destination,
             source_bucket=None,
             destination_bucket=None,
             overwrite=True,
@@ -269,7 +270,7 @@ class LocalClient(CCBackEnd):
         source = os.path.join(source_bucket, source)
         destination = os.path.join(destination_bucket, destination)
         auto_makedirs(destination)
-        shutil.move(source, destination)
+        return shutil.move(source, destination)
 
     def delete(self, cloud_name, recursive=False, delete=False):
         """Deletes an object
@@ -322,18 +323,19 @@ class LocalClient(CCBackEnd):
         results = []
         for file_name in file_list:
             # remove path
-            if file_name[:len(path)] == path:
-                file_name = file_name[len(path):]
+            if file_name.startswith(path):
+                file_name = file_name.lstrip(path)
             if file_name[0] == SEPARATOR:
                 file_name = file_name[1:]
             # remove .meta.json files
-            if file_name[-10:] == METADATA_SUFFIX:
+            if file_name.endswith(METADATA_SUFFIX):
                 continue
             else:
                 results.append(file_name)
         return results
 
     def get_object_metadata(self, object_name):
+        """Get metadata associated with an object"""
         file_name = os.path.join(self.path, object_name)
 
         metadata_file_name = file_name + METADATA_SUFFIX
@@ -347,6 +349,7 @@ class LocalClient(CCBackEnd):
         return metadata
 
     def get_object_size(self, object_name):
+        """Get the size in bytes of an object"""
         file_name = os.path.join(self.path, object_name)
         size = os.path.getsize(file_name)
         return size

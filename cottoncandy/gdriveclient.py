@@ -968,3 +968,21 @@ class GDriveClient(CCBackEnd):
         if ipython is None:
             return
         ipython.set_hook('complete_command', self.completer, re_key = r'(?:.*\=)?(.+?)(\.(ls|cd|Download|rm|DownloadRawArray|DownloadStream|mv|rename|CheckFileExists|CheckIDExists))\([\'"].*')
+
+    def get_object_metadata(self, object_name):
+        """Get metadata associated with an object"""
+        f = self.drive.CreateFile({'id': self.get_ID_by_name(object_name)})
+
+        f.FetchMetadata()
+        properties = self.get_file_properties(f.metadata['id'])
+        if 'key' in properties:
+            properties['key'] = self.get_encryption_key(f.metadata['id'])
+
+        return properties
+
+    def get_object_size(self, object_name):
+        """Get the size in bytes of an object"""
+        f = self.drive.CreateFile({'id': self.get_ID_by_name(object_name)})
+        f.FetchMetadata()
+        size = f.metadata['size']
+        return size
