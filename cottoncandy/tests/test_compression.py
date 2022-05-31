@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 
-WAIT_TIME = 0.1  # Account for Wasabi lag by waiting N [seconds]
+WAIT_TIME = 0.5  # Account for Wasabi lag by waiting N [seconds]
 
 
 def content_generator():
