@@ -25,6 +25,7 @@ def content_generator():
                 elif kind == 'nonco':
                     yield data[np.random.randint(0,data.shape[0],10)]
 
+
 def test_upload_raw_array(cci, object_name):
     for content in content_generator():
         print(cci.upload_raw_array(object_name, content, compression=None))

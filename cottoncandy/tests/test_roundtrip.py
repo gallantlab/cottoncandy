@@ -77,6 +77,7 @@ def test_pickle_upload(cci, object_name):
     assert dat == content
     cci.rm(object_name, recursive=True)
 
+
 def test_upload_npy_upload(cci, object_name):
     for content in content_generator():
         print(cci.upload_npy_array(object_name, content))
@@ -85,6 +86,7 @@ def test_upload_npy_upload(cci, object_name):
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
 
+
 def test_upload_raw_array(cci, object_name):
     for i, content in enumerate(content_generator()):
         print(i, cci.upload_raw_array(object_name, content))
@@ -92,6 +94,7 @@ def test_upload_raw_array(cci, object_name):
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
+
 
 def test_upload_raw_array_uncompressed(cci, object_name):
     for i, content in enumerate(content_generator()):
