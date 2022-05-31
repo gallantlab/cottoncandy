@@ -341,7 +341,11 @@ class LocalClient(CCBackEnd):
         metadata_file_name = file_name + METADATA_SUFFIX
         if os.path.isfile(metadata_file_name):
             with open(metadata_file_name, 'r') as local_file:
-                metadata = json.load(local_file)
+                try:
+                    metadata = json.load(local_file)
+                except Exception as e:
+                    print(local_file)
+                    raise e
         else:
             metadata = dict()
         metadata = sanitize_metadata(metadata)
