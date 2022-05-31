@@ -1,6 +1,6 @@
 name: Tests
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   run-tests:
@@ -38,6 +38,11 @@ jobs:
         flake8 . --count --exit-zero --ignore=E402,C901 --max-line-length=127 --statistics
 
     - name: Test with pytest
+      env:
+        DL_BUCKET_NAME: ${{ secrets.DL_BUCKET_NAME }} 
+        DL_SECRET_KEY: ${{ secrets.DL_SECRET_KEY }} 
+        DL_ACCESS_KEY: ${{ secrets.DL_ACCESS_KEY }} 
+        DL_URL: ${{ secrets.DL_URL }} 
       run: |
         pip install -q pytest pytest-cov codecov
         pytest --cov=./
