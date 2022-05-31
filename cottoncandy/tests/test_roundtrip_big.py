@@ -12,7 +12,7 @@ import cottoncandy as cc
 ##############################
 # globals
 ##############################
-WAIT_TIME = 2.         # Account for AWS S3 lag by waiting N [seconds]
+WAIT_TIME = 2.         # Account for Wasabi lag by waiting N [seconds]
 DATE = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
 
 prefix = 'testcc/%s/py%s'%(DATE, sys.version[:6])
@@ -23,8 +23,8 @@ object_name = os.path.join(prefix, 'test')
 # login
 ##############################
 
-if 1:
-    # for travis testing on AWS.
+if True:
+    # for accessing wasabi from github actions.
     bucket_name = os.environ['DL_BUCKET_NAME']
     AK = os.environ['DL_ACCESS_KEY']
     SK = os.environ['DL_SECRET_KEY']
@@ -57,7 +57,7 @@ def content_generator():
     for kind in kinds:
         for order in orders:
             for dtype in types:
-                data = np.random.randn(int(1 + 200*(2**20)/8))
+                data = np.random.randn(int(1 + 200*(2**20)/8))  # 200 MB
                 data = np.asarray(data, order=order).astype(dtype)
 
                 if kind == 'raw':
