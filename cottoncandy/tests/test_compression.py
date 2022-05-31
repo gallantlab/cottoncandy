@@ -16,7 +16,7 @@ def content_generator():
     for kind in kinds:
         for order in orders:
             for dtype in types:
-                nitems = int(np.ceil(np.sqrt(1 + size_mb*(2**20)/8)))  
+                nitems = int(np.ceil(np.sqrt(1 + size_mb*(2**20)/8)))
                 data = np.random.randn(nitems, nitems)
                 data = np.asarray(data, order=order, dtype=dtype)
 
