@@ -1,54 +1,12 @@
-import os
-import sys
 import time
-import datetime
 
 import numpy as np
 
-import cottoncandy as cc
+WAIT_TIME = 0.1  # Account for Wasabi lag by waiting N [seconds]
 
-
-
-##############################
-# globals
-##############################
-WAIT_TIME = 2.         # Account for Wasabi lag by waiting N [seconds]
-DATE = datetime.datetime.today().strftime('%Y%m%d_%H%M%S')
-
-prefix = 'testcc/%s/py%s'%(DATE, sys.version[:6])
-object_name = os.path.join(prefix, 'test')
-
-
-##############################
-# login
-##############################
-
-if True:
-    # for accessing wasabi from github actions.
-    bucket_name = os.environ['DL_BUCKET_NAME']
-    AK = os.environ['DL_ACCESS_KEY']
-    SK = os.environ['DL_SECRET_KEY']
-    URL = os.environ['DL_URL']
-
-    cci = cc.get_interface(bucket_name,
-                           ACCESS_KEY=AK,
-                           SECRET_KEY=SK,
-                           endpoint_url=URL,
-                           verbose=False)
-else:
-    ##############################
-    # Warning
-    ##############################
-    # This will use your defaults to run the tests on.
-    # If you use AWS, you might incur costs.
-    cci = cc.get_interface()
-
-
-##############################
-# tests
-##############################
 
 def content_generator():
+    size_mb = 200
     orders = ['C','F']
     types = ['float64',
              ]
@@ -57,7 +15,7 @@ def content_generator():
     for kind in kinds:
         for order in orders:
             for dtype in types:
-                data = np.random.randn(int(1 + 200*(2**20)/8))  # 200 MB
+                data = np.random.randn(int(1 + size_mb*(2**20)/8))
                 data = np.asarray(data, order=order).astype(dtype)
 
                 if kind == 'raw':
@@ -67,7 +25,7 @@ def content_generator():
                 elif kind == 'nonco':
                     yield data[np.random.randint(0,data.shape[0],10)]
 
-def test_upload_raw_array():
+def test_upload_raw_array(cci, object_name):
     for content in content_generator():
         print(cci.upload_raw_array(object_name, content, compression=None))
         time.sleep(WAIT_TIME)
