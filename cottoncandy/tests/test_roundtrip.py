@@ -6,26 +6,26 @@ WAIT_TIME = 0.1  # Account for Wasabi lag by waiting N [seconds]
 
 
 def content_generator():
-    orders = ['C','F']
-    types = ['float16', 'float32', 'float64',
-             'int8', 'int16', 'int32', 'int64',
-             'uint8', 'uint16', 'uint32',
-             'int','float']
+    orders = ['C', 'F']
+    types = [
+        'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
+        'uint8', 'uint16', 'uint32', 'int', 'float'
+    ]
 
     kinds = ['raw', 'slice', 'nonco']
     for kind in kinds:
         for order in orders:
             for dtype in types:
                 print(kind, order, dtype)
-                data = np.random.randn(20,10,5)
+                data = np.random.randn(20, 10, 5)
                 data = np.asarray(data, order=order).astype(dtype)
 
                 if kind == 'raw':
                     yield data
                 elif kind == 'slice':
-                    yield data[...,int(data.shape[0]/2):]
+                    yield data[..., int(data.shape[0] / 2):]
                 elif kind == 'nonco':
-                    yield data[np.random.randint(0,data.shape[0],10)]
+                    yield data[np.random.randint(0, data.shape[0], 10)]
 
 
 def test_upload_from_file(cci, object_name):
@@ -56,9 +56,10 @@ def test_upload_from_file(cci, object_name):
 
 
 def test_upload_json(cci, object_name):
-    content = dict(hello=0,
-                   bye='bye!',
-                   )
+    content = dict(
+        hello=0,
+        bye='bye!',
+    )
 
     print(cci.upload_json(object_name, content))
     time.sleep(WAIT_TIME)
@@ -68,8 +69,7 @@ def test_upload_json(cci, object_name):
 
 
 def test_pickle_upload(cci, object_name):
-    content = dict(hello=1,
-                   bye='bye?')
+    content = dict(hello=1, bye='bye?')
 
     print(cci.upload_pickle(object_name, content))
     time.sleep(WAIT_TIME)
@@ -117,16 +117,18 @@ def test_upload_dask_array(cci, object_name):
 
 def test_dict2cloud(cci, object_name):
     for cc in content_generator():
-        content = dict(arr1=cc,
-                       deep=dict(dat01=np.random.randn(15),
-                                 dat02=np.random.randn(30),
-                                 ),
-                       )
+        content = dict(
+            arr1=cc,
+            deep=dict(
+                dat01=np.random.randn(15),
+                dat02=np.random.randn(30),
+            ),
+        )
 
         print(cci.dict2cloud(object_name, content))
         time.sleep(WAIT_TIME)
         dat = cci.cloud2dict(object_name)
         assert np.allclose(dat['arr1'], content['arr1'])
-        for k,v in content['deep'].items():
+        for k, v in content['deep'].items():
             assert np.allclose(v, dat['deep'][k])
         cci.rm(object_name, recursive=True)

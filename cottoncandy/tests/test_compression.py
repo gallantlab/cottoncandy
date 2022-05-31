@@ -8,15 +8,16 @@ WAIT_TIME = 0.1  # Account for Wasabi lag by waiting N [seconds]
 def content_generator():
     size_mb = 101
 
-    orders = ['F','C']
-    types = ['float64',
-             ]
+    orders = ['F', 'C']
+    types = [
+        'float64',
+    ]
 
     kinds = ['nonco']
     for kind in kinds:
         for order in orders:
             for dtype in types:
-                nitems = int(np.ceil(np.sqrt(1 + size_mb*(2**20)/8)))
+                nitems = int(np.ceil(np.sqrt(1 + size_mb * (2 ** 20) / 8)))
                 data = np.random.randn(nitems, nitems)
                 data = np.asarray(data, order=order, dtype=dtype)
 
