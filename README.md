@@ -6,7 +6,7 @@
 </p>  
 
 # Welcome to cottoncandy!
-[![Build Status](https://travis-ci.org/gallantlab/cottoncandy.svg?branch=main)](https://travis-ci.org/gallantlab/cottoncandy)
+[![Build Status](https://github.com/gallantlab/himalaya/actions/workflows/run_tests.yml/badge.svg)](https://github.com/gallantlab/himalaya/actions/workflows/run_tests.yml)
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00890/status.svg)](https://doi.org/10.21105/joss.00890)
 [![License](https://img.shields.io/badge/license-BSD%202--Clause-blue)](https://opensource.org/licenses/BSD-2-Clause)
 [![Downloads](https://pepy.tech/badge/cottoncandy)](https://pepy.tech/project/cottoncandy)
