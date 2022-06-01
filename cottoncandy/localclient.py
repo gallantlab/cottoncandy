@@ -122,7 +122,7 @@ class LocalClient(CCBackEnd):
         -------
         bool, upload success
         """
-        raise NotImplementedError
+        return self.upload_stream(stream, cloud_name, metadata, permissions)
 
     def download_stream(self, cloud_name):
         """Downloads a object to an in-memory stream
