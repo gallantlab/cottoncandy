@@ -31,3 +31,7 @@ coverage:
 # Files are the files impacted by the pull request
 comment: false
 #  layout: diff, files  # accepted in any order: reach, diff, flags, and/or files
+
+# disable codecov annotations
+github_checks:
+  annotations: false
