@@ -2,8 +2,6 @@ import time
 
 import numpy as np
 
-WAIT_TIME = 0.5  # Account for Wasabi lag by waiting N [seconds]
-
 
 def content_generator():
     size_mb = 200
@@ -30,7 +28,7 @@ def content_generator():
 def test_upload_raw_array(cci, object_name):
     for content in content_generator():
         print(cci.upload_raw_array(object_name, content, compression=None))
-        time.sleep(WAIT_TIME)
+        time.sleep(cci.wait_time)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)

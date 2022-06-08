@@ -522,3 +522,15 @@ class S3Client(CCBackEnd):
 
     def delete(self, object_name, recursive=False, delete=False):
         raise RuntimeError('Deleting on S3 backend is implemented by cottoncandy interface object')
+
+    def get_object_metadata(self, object_name):
+        """Get metadata associated with an object"""
+        s3_object = self.get_s3_object(object_name)
+        metadata = sanitize_metadata(s3_object.metadata)
+        return metadata
+
+    def get_object_size(self, object_name):
+        """Get the size in bytes of an object"""
+        s3_object = self.get_s3_object(object_name)
+        size = s3_object.content_length
+        return size

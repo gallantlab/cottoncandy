@@ -8,7 +8,7 @@ __all__ = []
 
 from .browser import BrowserObject
 from .interfaces import InterfaceObject
-from .utils import string2bool
+from .utils import string2bool, get_keys
 
 from cottoncandy import options
 
@@ -59,14 +59,14 @@ def get_interface(bucket_name=default_bucket,
     """
     from cottoncandy.interfaces import DefaultInterface
 
-    if (ACCESS_KEY is False) and (SECRET_KEY is False):
-        from cottoncandy.utils import get_keys
-        ACCESS_KEY, SECRET_KEY = get_keys()
-
-    if backend == 'gdrive':
+    if backend == 's3':
+        if ACCESS_KEY in [False, "False"] or SECRET_KEY in [False, "False"]:
+            ACCESS_KEY, SECRET_KEY = get_keys()
+    elif backend == 'gdrive':
         ACCESS_KEY = os.path.join(options.userdir, options.config.get('gdrive', 'secrets'))
         SECRET_KEY = os.path.join(options.userdir, options.config.get('gdrive', 'credentials'))
-
+    else:
+        pass
 
     if 'config' in kwargs:
         # user provided config

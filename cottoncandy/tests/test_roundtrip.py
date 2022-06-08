@@ -2,8 +2,6 @@ import time
 
 import numpy as np
 
-WAIT_TIME = 0.5  # Account for Wasabi lag by waiting N [seconds]
-
 
 def content_generator():
     orders = ['C', 'F']
@@ -38,7 +36,7 @@ def test_upload_from_file(cci, object_name):
         fl.write(content)
 
     print(cci.upload_from_file(flname, object_name=object_name))
-    time.sleep(WAIT_TIME)
+    time.sleep(cci.wait_time)
     dat = cci.download_object(object_name)
     assert dat == content
 
@@ -49,7 +47,7 @@ def test_upload_from_file(cci, object_name):
         fl.write(content)
 
     print(cci.upload_from_file(flname, object_name=object_name))
-    time.sleep(WAIT_TIME)
+    time.sleep(cci.wait_time)
     dat = cci.download_object(object_name).decode()
     assert dat == content
     cci.rm(object_name, recursive=True)
@@ -62,7 +60,7 @@ def test_upload_json(cci, object_name):
     )
 
     print(cci.upload_json(object_name, content))
-    time.sleep(WAIT_TIME)
+    time.sleep(cci.wait_time)
     dat = cci.download_json(object_name)
     assert dat == content
     cci.rm(object_name, recursive=True)
@@ -72,7 +70,7 @@ def test_pickle_upload(cci, object_name):
     content = dict(hello=1, bye='bye?')
 
     print(cci.upload_pickle(object_name, content))
-    time.sleep(WAIT_TIME)
+    time.sleep(cci.wait_time)
     dat = cci.download_pickle(object_name)
     assert dat == content
     cci.rm(object_name, recursive=True)
@@ -81,7 +79,7 @@ def test_pickle_upload(cci, object_name):
 def test_upload_npy_upload(cci, object_name):
     for content in content_generator():
         print(cci.upload_npy_array(object_name, content))
-        time.sleep(WAIT_TIME)
+        time.sleep(cci.wait_time)
         dat = cci.download_npy_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
@@ -90,7 +88,7 @@ def test_upload_npy_upload(cci, object_name):
 def test_upload_raw_array(cci, object_name):
     for i, content in enumerate(content_generator()):
         print(i, cci.upload_raw_array(object_name, content))
-        time.sleep(WAIT_TIME)
+        time.sleep(cci.wait_time)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
@@ -99,7 +97,7 @@ def test_upload_raw_array(cci, object_name):
 def test_upload_raw_array_uncompressed(cci, object_name):
     for i, content in enumerate(content_generator()):
         print(i, cci.upload_raw_array(object_name, content, compression=False))
-        time.sleep(WAIT_TIME)
+        time.sleep(cci.wait_time)
         dat = cci.download_raw_array(object_name)
         assert np.allclose(dat, content)
         cci.rm(object_name, recursive=True)
@@ -108,7 +106,7 @@ def test_upload_raw_array_uncompressed(cci, object_name):
 def test_upload_dask_array(cci, object_name):
     for content in content_generator():
         print(cci.upload_dask_array(object_name, content))
-        time.sleep(WAIT_TIME)
+        time.sleep(cci.wait_time)
         dat = cci.download_dask_array(object_name)
         dat = np.asarray(dat)
         assert np.allclose(dat, content)
@@ -126,7 +124,7 @@ def test_dict2cloud(cci, object_name):
         )
 
         print(cci.dict2cloud(object_name, content))
-        time.sleep(WAIT_TIME)
+        time.sleep(cci.wait_time)
         dat = cci.cloud2dict(object_name)
         assert np.allclose(dat['arr1'], content['arr1'])
         for k, v in content['deep'].items():

@@ -33,21 +33,21 @@ class CCBackEnd(object):
     def upload_stream(self, stream, cloud_name, metadata, permissions):
         """Uploads a stream object with a .read() function
 
-		Parameters
-		----------
-		stream : stream
-			streaming object
-		cloud_name : str
-			name to use on cloud
-		metadata : dict
-			custom metadata for this file
-		permissions : str?
-			permissions for this file
+        Parameters
+        ----------
+        stream : stream
+            streaming object
+        cloud_name : str
+            name to use on cloud
+        metadata : dict
+            custom metadata for this file
+        permissions : str?
+            permissions for this file
 
-		Returns
-		-------
-		bool, upload success
-		"""
+        Returns
+        -------
+        bool, upload success
+        """
         pass
 
     @abstractmethod
