@@ -210,6 +210,8 @@ class LocalClient(CCBackEnd):
                             recursive=True)
         results += glob.glob(os.path.join(self.path, prefix, "**", ".*"),
                              recursive=True)  # hidden files
+        results += glob.glob(os.path.join(self.path, prefix, "**", ".*", "**"),
+                             recursive=True)  # files in hidden directories
         # remove directories
         results = [res for res in results if os.path.isfile(res)]
         results = self._remove_path_and_metadata(results)
