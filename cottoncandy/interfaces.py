@@ -1195,15 +1195,18 @@ class FileSystemInterface(BasicInterface):
 
         page_size = kwargs.get('page_size', 1000000)
         limit = kwargs.get('limit', None)
+        do_unquote = kwargs.get('do_unquote', True)
 
         object_list = self.get_objects(filter = dict(Prefix = prefix),
                                        page_size = page_size,
                                        limit = limit)
 
         if self.backend == 's3':
-            mapper = {unquote(obj.key): obj for obj in object_list}
+            mapper = {obj.key: obj for obj in object_list}
         else:
-            mapper = {unquote(obj): obj for obj in object_list}
+            mapper = {obj: obj for obj in object_list}
+        if do_unquote:
+            mapper = {unquote(key): val for key, val in mapper.items()}
         object_names = mapper.keys()
 
         matches = fnmatch.filter(object_names, pattern) \
