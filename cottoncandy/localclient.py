@@ -192,6 +192,7 @@ class LocalClient(CCBackEnd):
 
         path = os.path.join(self.path, path)
         results = glob.glob(os.path.join(path, "*"))
+        results += glob.glob(os.path.join(path, ".*"))  # hidden files
         results = self._remove_path_and_metadata(results)
         return results
 
