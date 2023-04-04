@@ -25,6 +25,12 @@ Clone the repo from GitHub and do the usual python install
    cd cottoncandy
    sudo python setup.py install
 
+or install from PyPI
+
+::
+
+   pip install cottoncandy
+
 A configuration file will be saved under ``~/.config/cottoncandy/options.cfg``. Upon installation cottoncandy will try to find your AWS keys and store them in this file. See the `default file <https://github.com/gallantlab/cottoncandy/blob/main/cottoncandy/defaults.cfg>`_ for more configuration options.
 
 Object and bucket permissions are set to ``authenticated-read`` by default. If you wish to keep all your objects private, modify the configuration file and set ``default_acl = private``. See `AWS ACL overview <http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html>`_ for more information on S3 permissions.
