@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cottoncandy &#8212; cottoncandy 0.2.0 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="browser" href="cottoncandy.browser.html" />
@@ -19,10 +19,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
   </head><body>
 
@@ -160,9 +160,9 @@
 </table>
 <div class="section" id="get-browser">
 <h2>get_browser<a class="headerlink" href="#get-browser" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.get_browser">
-<code class="sig-prename descclassname">cottoncandy.</code><code class="sig-name descname">get_browser</code><span class="sig-paren">(</span><em class="sig-param">bucket_name='FAKE_DEFAULT_BUCKET'</em>, <em class="sig-param">ACCESS_KEY='FAKE_ACCESS_KEY'</em>, <em class="sig-param">SECRET_KEY='FAKE_SECRET_KEY'</em>, <em class="sig-param">endpoint_url='FAKE_ENDPOINT_URL'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_browser" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.get_browser">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.</span></span><span class="sig-name descname"><span class="pre">get_browser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACCESS_KEY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SECRET_KEY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://s3.us-west-1.wasabisys.com'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_browser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Browser object that allows you to tab-complete your
 way through your objects</p>
 <dl class="field-list simple">
@@ -200,9 +200,9 @@ way through your objects</p>
 </div>
 <div class="section" id="get-encrypted-interface">
 <h2>get_encrypted_interface<a class="headerlink" href="#get-encrypted-interface" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.get_encrypted_interface">
-<code class="sig-prename descclassname">cottoncandy.</code><code class="sig-name descname">get_encrypted_interface</code><span class="sig-paren">(</span><em class="sig-param">bucket_name='FAKE_DEFAULT_BUCKET'</em>, <em class="sig-param">ACCESS_KEY='FAKE_ACCESS_KEY'</em>, <em class="sig-param">SECRET_KEY='FAKE_SECRET_KEY'</em>, <em class="sig-param">endpoint_url='FAKE_ENDPOINT_URL'</em>, <em class="sig-param">force_bucket_creation=False</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">backend='s3'</em>, <em class="sig-param">encryption='AES'</em>, <em class="sig-param">encryptionKey=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_encrypted_interface" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.get_encrypted_interface">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.</span></span><span class="sig-name descname"><span class="pre">get_encrypted_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACCESS_KEY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SECRET_KEY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://s3.us-west-1.wasabisys.com'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_bucket_creation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s3'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encryption</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'AES'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encryptionKey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_encrypted_interface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a cc interface that encrypts things
 By default, encryption is 32 bit AES, single key for everything. The key is stored in base64
 in your config file. You can also choose to use RSA-encrypted AES, in which each file gets a
@@ -220,9 +220,9 @@ different key, and the keys are encrypted using RSA and stored alongside each fi
 </div>
 <div class="section" id="get-interface">
 <h2>get_interface<a class="headerlink" href="#get-interface" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.get_interface">
-<code class="sig-prename descclassname">cottoncandy.</code><code class="sig-name descname">get_interface</code><span class="sig-paren">(</span><em class="sig-param">bucket_name='FAKE_DEFAULT_BUCKET'</em>, <em class="sig-param">ACCESS_KEY='FAKE_ACCESS_KEY'</em>, <em class="sig-param">SECRET_KEY='FAKE_SECRET_KEY'</em>, <em class="sig-param">endpoint_url='FAKE_ENDPOINT_URL'</em>, <em class="sig-param">force_bucket_creation=False</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">backend='s3'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_interface" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.get_interface">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.</span></span><span class="sig-name descname"><span class="pre">get_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACCESS_KEY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SECRET_KEY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://s3.us-west-1.wasabisys.com'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_bucket_creation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s3'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.get_interface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an interface to the cloud.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -231,7 +231,7 @@ different key, and the keys are encrypted using RSA and stored alongside each fi
 <li><p><strong>ACCESS_KEY</strong> (<em>str</em>) – </p></li>
 <li><p><strong>SECRET_KEY</strong> (<em>str</em>) – </p></li>
 <li><p><strong>endpoint_url</strong> (<em>str</em>) – The URL for the S3 gateway</p></li>
-<li><p><strong>backend</strong> (<em>'s3'|'gdrive'</em>) – What backend to hook on to</p></li>
+<li><p><strong>backend</strong> (<em>'s3'</em><em>|</em><em>'gdrive'</em>) – What backend to hook on to</p></li>
 <li><p><strong>kwargs</strong> – S3 only. kwargs passed to botocore. For example,
 &gt;&gt;&gt; from botocore.client import Config
 &gt;&gt;&gt; config = Config(connect_timeout=50, read_timeout=10*60)
@@ -263,7 +263,7 @@ different key, and the keys are encrypted using RSA and stored alongside each fi
     </p>
     <p>
         &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
     </p>
   </div>
 </footer>

@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>utils &#8212; cottoncandy 0.2.0 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="interfaces" href="cottoncandy.interfaces.html" />
+    <link rel="prev" title="localclient" href="cottoncandy.localclient.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
   </head><body>
 
@@ -102,7 +102,7 @@
               
                 
   <li>
-    <a href="cottoncandy.interfaces.html" title="Previous Chapter: interfaces"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; interfaces</span>
+    <a href="cottoncandy.localclient.html" title="Previous Chapter: localclient"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; localclient</span>
     </a>
   </li>
               
@@ -137,7 +137,7 @@
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary">
   <li>
-    <a href="cottoncandy.interfaces.html" title="Previous Chapter: interfaces"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; interfaces</span>
+    <a href="cottoncandy.localclient.html" title="Previous Chapter: localclient"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; localclient</span>
     </a>
   </li>
 <form action="../search.html" method="get">
@@ -197,7 +197,7 @@
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.utils.has_trivial_magic" title="cottoncandy.utils.has_trivial_magic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_trivial_magic</span></code></a>(s)</p></td>
-<td><p>Check string to see if it has trivial glob magic (e.g.</p></td>
+<td><p>Check string to see if it has trivial glob magic (e.g. “path/<a href="#id1"><span class="problematic" id="id2">*</span></a>”).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.utils.mk_aws_path" title="cottoncandy.utils.mk_aws_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mk_aws_path</span></code></a>(path)</p></td>
 <td><p>Make the <cite>path</cite> behave as expected when querying S3 with <cite>list_objects</cite>.</p></td>
@@ -239,50 +239,50 @@
 </table>
 <div class="section" id="gzipinputstream">
 <h2><a class="reference internal" href="#cottoncandy.utils.GzipInputStream" title="cottoncandy.utils.GzipInputStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">GzipInputStream</span></code></a><a class="headerlink" href="#gzipinputstream" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="cottoncandy.utils.GzipInputStream">
-<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">GzipInputStream</code><span class="sig-paren">(</span><em class="sig-param">fileobj</em>, <em class="sig-param">block_size=16384</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="cottoncandy.utils.GzipInputStream">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">GzipInputStream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileobj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16384</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Simple class that allow streaming reads from GZip files
 (from <a class="reference external" href="https://gist.github.com/beaufour/4205533">https://gist.github.com/beaufour/4205533</a>).</p>
 <p>Python 2.x gzip.GZipFile relies on .seek() and .tell(), so it
 doesn’t support this (&#64;see: <a class="reference external" href="http://bo4.me/YKWSsL">http://bo4.me/YKWSsL</a>).</p>
 <p>Adapted from: <a class="reference external" href="http://effbot.org/librarybook/zlib-example-4.py">http://effbot.org/librarybook/zlib-example-4.py</a></p>
-<dl class="method">
-<dt id="cottoncandy.utils.GzipInputStream.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">fileobj</em>, <em class="sig-param">block_size=16384</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.__init__" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.utils.GzipInputStream.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileobj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16384</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize with the given file-like object.</p>
 <p>&#64;param fileobj: file-like object,</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.utils.GzipInputStream.next">
-<code class="sig-name descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.next" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.utils.GzipInputStream.next">
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.next" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.utils.GzipInputStream.read">
-<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">size=0</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.read" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.utils.GzipInputStream.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.read" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.utils.GzipInputStream.readline">
-<code class="sig-name descname">readline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.readline" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.utils.GzipInputStream.readline">
+<span class="sig-name descname"><span class="pre">readline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.readline" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.utils.GzipInputStream.readlines">
-<code class="sig-name descname">readlines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.readlines" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.utils.GzipInputStream.readlines">
+<span class="sig-name descname"><span class="pre">readlines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.readlines" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.utils.GzipInputStream.seek">
-<code class="sig-name descname">seek</code><span class="sig-paren">(</span><em class="sig-param">offset</em>, <em class="sig-param">whence=0</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.seek" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.utils.GzipInputStream.seek">
+<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">whence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.seek" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.utils.GzipInputStream.tell">
-<code class="sig-name descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.tell" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.utils.GzipInputStream.tell">
+<span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.GzipInputStream.tell" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -290,9 +290,9 @@ doesn’t support this (&#64;see: <a class="reference external" href="http://bo4
 </div>
 <div class="section" id="bytes2human">
 <h2>bytes2human<a class="headerlink" href="#bytes2human" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.bytes2human">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">bytes2human</code><span class="sig-paren">(</span><em class="sig-param">nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.bytes2human" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.bytes2human">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">bytes2human</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nbytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.bytes2human" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return string representation of bytes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -310,9 +310,9 @@ doesn’t support this (&#64;see: <a class="reference external" href="http://bo4
 </div>
 <div class="section" id="clean-object-name">
 <h2>clean_object_name<a class="headerlink" href="#clean-object-name" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.clean_object_name">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">clean_object_name</code><span class="sig-paren">(</span><em class="sig-param">input_function</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.clean_object_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.clean_object_name">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">clean_object_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.clean_object_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove leading “/” from object_name</p>
 <p>This is important for compatibility with S3fs.
 S3fs does not list objects with a “/” prefix.</p>
@@ -321,9 +321,9 @@ S3fs does not list objects with a “/” prefix.</p>
 </div>
 <div class="section" id="generate-ndarray-chunks">
 <h2>generate_ndarray_chunks<a class="headerlink" href="#generate-ndarray-chunks" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.generate_ndarray_chunks">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">generate_ndarray_chunks</code><span class="sig-paren">(</span><em class="sig-param">arr</em>, <em class="sig-param">axis=None</em>, <em class="sig-param">buffersize=104857600</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.generate_ndarray_chunks" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.generate_ndarray_chunks">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">generate_ndarray_chunks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">104857600</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.generate_ndarray_chunks" title="Permalink to this definition">¶</a></dt>
 <dd><p>A generator that splits an array into chunks of desired byte size</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -356,9 +356,9 @@ Data for this chunk</p></li>
 </div>
 <div class="section" id="get-fileobject-size">
 <h2>get_fileobject_size<a class="headerlink" href="#get-fileobject-size" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.get_fileobject_size">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_fileobject_size</code><span class="sig-paren">(</span><em class="sig-param">file_object</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_fileobject_size" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.get_fileobject_size">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">get_fileobject_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_fileobject_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return byte size of file-object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -376,9 +376,9 @@ Data for this chunk</p></li>
 </div>
 <div class="section" id="get-key-from-environ">
 <h2>get_key_from_environ<a class="headerlink" href="#get-key-from-environ" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.get_key_from_environ">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_key_from_environ</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_key_from_environ" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.get_key_from_environ">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">get_key_from_environ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_key_from_environ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get AWS keys from environmental variables if available</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -396,9 +396,9 @@ Data for this chunk</p></li>
 </div>
 <div class="section" id="get-key-from-s3fs">
 <h2>get_key_from_s3fs<a class="headerlink" href="#get-key-from-s3fs" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.get_key_from_s3fs">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_key_from_s3fs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_key_from_s3fs" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.get_key_from_s3fs">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">get_key_from_s3fs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_key_from_s3fs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get AWS keys from default S3fs location if available.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -416,9 +416,9 @@ Data for this chunk</p></li>
 </div>
 <div class="section" id="get-keys">
 <h2>get_keys<a class="headerlink" href="#get-keys" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.get_keys">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_keys" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.get_keys">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">get_keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read AWS keys from S3fs configuration or environmental variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -434,9 +434,9 @@ Data for this chunk</p></li>
 </div>
 <div class="section" id="get-object-size">
 <h2>get_object_size<a class="headerlink" href="#get-object-size" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.get_object_size">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">get_object_size</code><span class="sig-paren">(</span><em class="sig-param">boto_s3_object</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_object_size" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.get_object_size">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">get_object_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boto_s3_object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.get_object_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the size of the S3 object in MB</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -454,45 +454,45 @@ Data for this chunk</p></li>
 </div>
 <div class="section" id="has-magic">
 <h2>has_magic<a class="headerlink" href="#has-magic" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.has_magic">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">has_magic</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_magic" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.has_magic">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">has_magic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_magic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check string to see if it has any glob magic</p>
 </dd></dl>
 
 </div>
 <div class="section" id="has-real-magic">
 <h2>has_real_magic<a class="headerlink" href="#has-real-magic" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.has_real_magic">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">has_real_magic</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_real_magic" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.has_real_magic">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">has_real_magic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_real_magic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if string has non-trivial glob pattern</p>
 </dd></dl>
 
 </div>
 <div class="section" id="has-start-digit">
 <h2>has_start_digit<a class="headerlink" href="#has-start-digit" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.has_start_digit">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">has_start_digit</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_start_digit" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.has_start_digit">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">has_start_digit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_start_digit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
 <div class="section" id="has-trivial-magic">
 <h2>has_trivial_magic<a class="headerlink" href="#has-trivial-magic" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.has_trivial_magic">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">has_trivial_magic</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_trivial_magic" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.has_trivial_magic">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">has_trivial_magic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.has_trivial_magic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check string to see if it has trivial glob magic
-(e.g. “path/<a href="#id1"><span class="problematic" id="id2">*</span></a>”)</p>
+(e.g. “path/<a href="#id3"><span class="problematic" id="id4">*</span></a>”)</p>
 </dd></dl>
 
 </div>
 <div class="section" id="mk-aws-path">
 <h2>mk_aws_path<a class="headerlink" href="#mk-aws-path" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.mk_aws_path">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">mk_aws_path</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.mk_aws_path" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.mk_aws_path">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">mk_aws_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.mk_aws_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make the <cite>path</cite> behave as expected when querying S3 with
 <cite>list_objects</cite>.</p>
 <ul class="simple">
@@ -507,9 +507,9 @@ Data for this chunk</p></li>
 </div>
 <div class="section" id="objects2names">
 <h2>objects2names<a class="headerlink" href="#objects2names" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.objects2names">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">objects2names</code><span class="sig-paren">(</span><em class="sig-param">objects</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.objects2names" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.objects2names">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">objects2names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objects</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.objects2names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the name of all objects in a list</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -527,9 +527,9 @@ Data for this chunk</p></li>
 </div>
 <div class="section" id="pathjoin">
 <h2>pathjoin<a class="headerlink" href="#pathjoin" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.pathjoin">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">pathjoin</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">*p</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.pathjoin" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.pathjoin">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">pathjoin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.pathjoin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join two or more pathname components, inserting SEPARATOR as needed.
 If any component is an absolute path, all previous path components
 will be discarded.  An empty last part will result in a path that
@@ -539,9 +539,9 @@ ends with a separator.</p>
 </div>
 <div class="section" id="print-objects">
 <h2>print_objects<a class="headerlink" href="#print-objects" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.print_objects">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">print_objects</code><span class="sig-paren">(</span><em class="sig-param">object_list</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.print_objects" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.print_objects">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">print_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.print_objects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print name, size, and creation date of objects in list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -553,9 +553,9 @@ ends with a separator.</p>
 </div>
 <div class="section" id="read-buffered">
 <h2>read_buffered<a class="headerlink" href="#read-buffered" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.read_buffered">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">read_buffered</code><span class="sig-paren">(</span><em class="sig-param">frm</em>, <em class="sig-param">to</em>, <em class="sig-param">buffersize=64</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.read_buffered" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.read_buffered">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">read_buffered</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.read_buffered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fill a numpy n-d array with file-like object contents</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -570,18 +570,18 @@ ends with a separator.</p>
 </div>
 <div class="section" id="remove-root">
 <h2>remove_root<a class="headerlink" href="#remove-root" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.remove_root">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">remove_root</code><span class="sig-paren">(</span><em class="sig-param">string_</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.remove_root" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.remove_root">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">remove_root</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.remove_root" title="Permalink to this definition">¶</a></dt>
 <dd><p>remove leading “/” from a string</p>
 </dd></dl>
 
 </div>
 <div class="section" id="remove-trivial-magic">
 <h2>remove_trivial_magic<a class="headerlink" href="#remove-trivial-magic" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.remove_trivial_magic">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">remove_trivial_magic</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.remove_trivial_magic" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.remove_trivial_magic">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">remove_trivial_magic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.remove_trivial_magic" title="Permalink to this definition">¶</a></dt>
 <dd><ul class="simple">
 <li><p>xxx/*      -&gt; xxx/</p></li>
 <li><p>xxx/       -&gt; xxx/</p></li>
@@ -592,17 +592,17 @@ ends with a separator.</p>
 </div>
 <div class="section" id="sanitize-metadata">
 <h2>sanitize_metadata<a class="headerlink" href="#sanitize-metadata" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.sanitize_metadata">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">sanitize_metadata</code><span class="sig-paren">(</span><em class="sig-param">metadict</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.sanitize_metadata" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.sanitize_metadata">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">sanitize_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.sanitize_metadata" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
 <div class="section" id="split-uri">
 <h2>split_uri<a class="headerlink" href="#split-uri" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.split_uri">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">split_uri</code><span class="sig-paren">(</span><em class="sig-param">uri</em>, <em class="sig-param">pattern='s3://'</em>, <em class="sig-param">separator='/'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.split_uri" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.split_uri">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">split_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s3://'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.split_uri" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a URI to a bucket, object name tuple.</p>
 <p>‘s3://bucket/path/to/thing’ -&gt; (‘bucket’, ‘path/to/thing’)</p>
 </dd></dl>
@@ -610,17 +610,17 @@ ends with a separator.</p>
 </div>
 <div class="section" id="string2bool">
 <h2>string2bool<a class="headerlink" href="#string2bool" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.string2bool">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">string2bool</code><span class="sig-paren">(</span><em class="sig-param">mstring</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.string2bool" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.string2bool">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">string2bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.string2bool" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
 <div class="section" id="unquote-names">
 <h2>unquote_names<a class="headerlink" href="#unquote-names" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="cottoncandy.utils.unquote_names">
-<code class="sig-prename descclassname">cottoncandy.utils.</code><code class="sig-name descname">unquote_names</code><span class="sig-paren">(</span><em class="sig-param">object_names</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.unquote_names" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cottoncandy.utils.unquote_names">
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.utils.</span></span><span class="sig-name descname"><span class="pre">unquote_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.utils.unquote_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean URL names from a list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -651,7 +651,7 @@ ends with a separator.</p>
     </p>
     <p>
         &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
     </p>
   </div>
 </footer>

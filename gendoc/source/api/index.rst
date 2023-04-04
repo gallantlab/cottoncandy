@@ -12,6 +12,7 @@ API Reference
    cottoncandy.browser.rst
    cottoncandy.gdriveclient.rst
    cottoncandy.interfaces.rst
+   cottoncandy.localclient.rst
    cottoncandy.options.rst
    cottoncandy.s3client.rst
    cottoncandy.utils.rst

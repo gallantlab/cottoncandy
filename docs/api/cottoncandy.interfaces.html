@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>interfaces &#8212; cottoncandy 0.2.0 documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="utils" href="cottoncandy.utils.html" />
+    <link rel="next" title="localclient" href="cottoncandy.localclient.html" />
     <link rel="prev" title="browser" href="cottoncandy.browser.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
   </head><body>
 
@@ -89,7 +89,7 @@
     </a>
   </li>
   <li>
-    <a href="cottoncandy.utils.html" title="Next Chapter: utils"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">utils &raquo;</span>
+    <a href="cottoncandy.localclient.html" title="Next Chapter: localclient"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">localclient &raquo;</span>
     </a>
   </li>
               
@@ -128,7 +128,7 @@
     </a>
   </li>
   <li>
-    <a href="cottoncandy.utils.html" title="Next Chapter: utils"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">utils &raquo;</span>
+    <a href="cottoncandy.localclient.html" title="Next Chapter: localclient"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">localclient &raquo;</span>
     </a>
   </li>
 <form action="../search.html" method="get">
@@ -165,21 +165,21 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.interfaces.FileSystemInterface" title="cottoncandy.interfaces.FileSystemInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileSystemInterface</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Emulate some file system functionality.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.interfaces.InterfaceObject" title="cottoncandy.interfaces.InterfaceObject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InterfaceObject</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#cottoncandy.interfaces.InterfaceObject" title="cottoncandy.interfaces.InterfaceObject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InterfaceObject</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 <div class="section" id="arrayinterface">
 <h2><a class="reference internal" href="#cottoncandy.interfaces.ArrayInterface" title="cottoncandy.interfaces.ArrayInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayInterface</span></code></a><a class="headerlink" href="#arrayinterface" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="cottoncandy.interfaces.ArrayInterface">
-<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.interfaces.</code><code class="sig-name descname">ArrayInterface</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.interfaces.</span></span><span class="sig-name descname"><span class="pre">ArrayInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cottoncandy.interfaces.BasicInterface" title="cottoncandy.interfaces.BasicInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.interfaces.BasicInterface</span></code></a></p>
 <p>Provides numpy.array concepts.</p>
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.__init__" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -199,9 +199,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.cloud2dataset">
-<code class="sig-name descname">cloud2dataset</code><span class="sig-paren">(</span><em class="sig-param">object_root</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.cloud2dataset" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.cloud2dataset">
+<span class="sig-name descname"><span class="pre">cloud2dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_root</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.cloud2dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a dataset representation of the object branch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -217,9 +217,9 @@ object with <code class="docutils literal notranslate"><span class="pre">load()<
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.cloud2dict">
-<code class="sig-name descname">cloud2dict</code><span class="sig-paren">(</span><em class="sig-param">object_root</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">keys=None</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.cloud2dict" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.cloud2dict">
+<span class="sig-name descname"><span class="pre">cloud2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.cloud2dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download all the arrays of the object branch and return a dictionary.
 This is the complement to <code class="docutils literal notranslate"><span class="pre">dict2cloud</span></code></p>
 <dl class="field-list simple">
@@ -239,9 +239,9 @@ This is the complement to <code class="docutils literal notranslate"><span class
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.dict2cloud">
-<code class="sig-name descname">dict2cloud</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">array_dict</em>, <em class="sig-param">acl='authenticated-read'</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.dict2cloud" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.dict2cloud">
+<span class="sig-name descname"><span class="pre">dict2cloud</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.dict2cloud" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload an arbitrary depth dictionary containing arrays</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -255,9 +255,9 @@ conceptualized as implementing an HDF-like group</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.download_dask_array">
-<code class="sig-name descname">download_dask_array</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">dask_name='array'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.download_dask_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.download_dask_array">
+<span class="sig-name descname"><span class="pre">download_dask_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dask_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'array'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.download_dask_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downloads a split matrix as a <code class="docutils literal notranslate"><span class="pre">dask.array.Array</span></code> object</p>
 <p>This uses the stored object metadata to reconstruct the full
 n-dimensional array uploaded using <code class="docutils literal notranslate"><span class="pre">upload_dask_array</span></code>.</p>
@@ -276,9 +276,9 @@ n-dimensional array uploaded using <code class="docutils literal notranslate"><s
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.download_npy_array">
-<code class="sig-name descname">download_npy_array</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.download_npy_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.download_npy_array">
+<span class="sig-name descname"><span class="pre">download_npy_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.download_npy_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a np.ndarray uploaded using <code class="docutils literal notranslate"><span class="pre">np.save</span></code> with <code class="docutils literal notranslate"><span class="pre">np.load</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -293,9 +293,9 @@ n-dimensional array uploaded using <code class="docutils literal notranslate"><s
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.download_raw_array">
-<code class="sig-name descname">download_raw_array</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">buffersize=65536</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.download_raw_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.download_raw_array">
+<span class="sig-name descname"><span class="pre">download_raw_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">65536</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.download_raw_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a binary np.ndarray and return an np.ndarray object
 This method downloads an array without any disk or memory overhead.</p>
 <dl class="field-list simple">
@@ -317,9 +317,9 @@ This method downloads an array without any disk or memory overhead.</p>
 boolean flag. This is all automatically handled by <code class="docutils literal notranslate"><span class="pre">upload_raw_array</span></code>.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.download_sparse_array">
-<code class="sig-name descname">download_sparse_array</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.download_sparse_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.download_sparse_array">
+<span class="sig-name descname"><span class="pre">download_sparse_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.download_sparse_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downloads a scipy.sparse array</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -334,9 +334,9 @@ boolean flag. This is all automatically handled by <code class="docutils literal
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.upload_dask_array">
-<code class="sig-name descname">upload_dask_array</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">arr</em>, <em class="sig-param">axis=-1</em>, <em class="sig-param">buffersize=104857600</em>, <em class="sig-param">**metakwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.upload_dask_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.upload_dask_array">
+<span class="sig-name descname"><span class="pre">upload_dask_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">104857600</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metakwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.upload_dask_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload an array in chunks and store the metadata to reconstruct
 the complete matrix with <code class="docutils literal notranslate"><span class="pre">dask</span></code>.</p>
 <dl class="field-list simple">
@@ -369,9 +369,9 @@ the following objects are created:</p>
 </ul>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.upload_npy_array">
-<code class="sig-name descname">upload_npy_array</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">array</em>, <em class="sig-param">acl='authenticated-read'</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.upload_npy_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.upload_npy_array">
+<span class="sig-name descname"><span class="pre">upload_npy_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.upload_npy_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a np.ndarray using <code class="docutils literal notranslate"><span class="pre">np.save</span></code></p>
 <p>This method creates a copy of the array in memory
 before uploading since it relies on <code class="docutils literal notranslate"><span class="pre">np.save</span></code> to
@@ -398,9 +398,9 @@ get a byte representation of the array.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.upload_raw_array">
-<code class="sig-name descname">upload_raw_array</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">array</em>, <em class="sig-param">compression=True</em>, <em class="sig-param">acl='authenticated-read'</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.upload_raw_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.upload_raw_array">
+<span class="sig-name descname"><span class="pre">upload_raw_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.upload_raw_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a binary representation of a np.ndarray</p>
 <p>This method reads the array content from memory to upload.
 It does not have any overhead.</p>
@@ -422,9 +422,9 @@ NB: Zstd appears to be the only one that supports &gt;2GB arrays.</p></li>
 flag as metadata</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.ArrayInterface.upload_sparse_array">
-<code class="sig-name descname">upload_sparse_array</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">arr</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.upload_sparse_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.ArrayInterface.upload_sparse_array">
+<span class="sig-name descname"><span class="pre">upload_sparse_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.ArrayInterface.upload_sparse_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uploads a scipy.sparse array as a folder of array objects</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -442,14 +442,14 @@ it will be converted to csr before saving</p></li>
 </div>
 <div class="section" id="basicinterface">
 <h2><a class="reference internal" href="#cottoncandy.interfaces.BasicInterface" title="cottoncandy.interfaces.BasicInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicInterface</span></code></a><a class="headerlink" href="#basicinterface" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="cottoncandy.interfaces.BasicInterface">
-<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.interfaces.</code><code class="sig-name descname">BasicInterface</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em>, <em class="sig-param">ACCESS_KEY</em>, <em class="sig-param">SECRET_KEY</em>, <em class="sig-param">url=None</em>, <em class="sig-param">force_bucket_creation=False</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">backend='s3'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.interfaces.</span></span><span class="sig-name descname"><span class="pre">BasicInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACCESS_KEY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SECRET_KEY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_bucket_creation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s3'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cottoncandy.interfaces.InterfaceObject" title="cottoncandy.interfaces.InterfaceObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.interfaces.InterfaceObject</span></code></a></p>
 <p>Basic cottoncandy interface to the cloud.</p>
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em>, <em class="sig-param">ACCESS_KEY</em>, <em class="sig-param">SECRET_KEY</em>, <em class="sig-param">url=None</em>, <em class="sig-param">force_bucket_creation=False</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">backend='s3'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.__init__" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ACCESS_KEY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SECRET_KEY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_bucket_creation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s3'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -459,7 +459,7 @@ it will be converted to csr before saving</p></li>
 <li><p><strong>url</strong> (<em>str</em>) – The URL for the S3 gateway</p></li>
 <li><p><strong>force_bucket_creation</strong> (<em>bool</em>) – if bucket does not exist, make it?</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – print things?</p></li>
-<li><p><strong>backend</strong> (<em>'s3'|'gdrive'</em>) – Access s3 or google drive?</p></li>
+<li><p><strong>backend</strong> (<em>'s3'</em><em>|</em><em>'gdrive'</em>) – Access s3 or google drive?</p></li>
 <li><p><strong>kwargs</strong> (<em>dict</em><em>,</em>) – S3 only. Passed to backend.</p></li>
 </ul>
 </dd>
@@ -472,20 +472,20 @@ it will be converted to csr before saving</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.bucket_name">
-<em class="property">property </em><code class="sig-name descname">bucket_name</code><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.bucket_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.bucket_name">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">bucket_name</span></span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.bucket_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.create_bucket">
-<code class="sig-name descname">create_bucket</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em>, <em class="sig-param">acl='authenticated-read'</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.create_bucket" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.create_bucket">
+<span class="sig-name descname"><span class="pre">create_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.create_bucket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new bucket</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.download_json">
-<code class="sig-name descname">download_json</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_json" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.download_json">
+<span class="sig-name descname"><span class="pre">download_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a JSON object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -500,9 +500,9 @@ it will be converted to csr before saving</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.download_object">
-<code class="sig-name descname">download_object</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_object" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.download_object">
+<span class="sig-name descname"><span class="pre">download_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download object raw data.
 This simply calls the object body <code class="docutils literal notranslate"><span class="pre">read()</span></code> method.</p>
 <dl class="field-list simple">
@@ -518,9 +518,9 @@ This simply calls the object body <code class="docutils literal notranslate"><sp
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.download_pickle">
-<code class="sig-name descname">download_pickle</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_pickle" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.download_pickle">
+<span class="sig-name descname"><span class="pre">download_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_pickle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a pickle object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -535,9 +535,9 @@ This simply calls the object body <code class="docutils literal notranslate"><sp
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.download_stream">
-<code class="sig-name descname">download_stream</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_stream" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.download_stream">
+<span class="sig-name descname"><span class="pre">download_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_stream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the CloudStream object for an object
 :param self:
 :param object_name:</p>
@@ -551,9 +551,9 @@ This simply calls the object body <code class="docutils literal notranslate"><sp
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.download_to_file">
-<code class="sig-name descname">download_to_file</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_to_file" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.download_to_file">
+<span class="sig-name descname"><span class="pre">download_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.download_to_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download cloud object to a file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -565,15 +565,15 @@ This simply calls the object body <code class="docutils literal notranslate"><sp
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.exists_bucket">
-<code class="sig-name descname">exists_bucket</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.exists_bucket" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.exists_bucket">
+<span class="sig-name descname"><span class="pre">exists_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.exists_bucket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the bucket exists</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.exists_object">
-<code class="sig-name descname">exists_object</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">bucket_name=None</em>, <em class="sig-param">raise_err=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.exists_object" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.exists_object">
+<span class="sig-name descname"><span class="pre">exists_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.exists_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether object exists in bucket</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -586,15 +586,15 @@ object does not exist.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.get_bucket">
-<code class="sig-name descname">get_bucket</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_bucket" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.get_bucket">
+<span class="sig-name descname"><span class="pre">get_bucket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_bucket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get bucket boto3 object</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.get_bucket_objects">
-<code class="sig-name descname">get_bucket_objects</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_bucket_objects" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.get_bucket_objects">
+<span class="sig-name descname"><span class="pre">get_bucket_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_bucket_objects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of objects from the bucket.</p>
 <p>This is a wrapper to <code class="docutils literal notranslate"><span class="pre">self.get_bucket().bucket.objects</span></code></p>
 <dl class="field-list simple">
@@ -620,9 +620,9 @@ Defaults to ‘/’ (i.e. all objects).</p></li>
 a lot of items on your bucket and should increase <code class="docutils literal notranslate"><span class="pre">page_size</span></code></p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.get_bucket_size">
-<code class="sig-name descname">get_bucket_size</code><span class="sig-paren">(</span><em class="sig-param">limit=1000000</em>, <em class="sig-param">page_size=1000000</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_bucket_size" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.get_bucket_size">
+<span class="sig-name descname"><span class="pre">get_bucket_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_bucket_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Counts the size of all objects in the current bucket.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -646,30 +646,30 @@ suspicious round numbers.
 TODO(anunez): Remove this note when the bug is fixed.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.get_object">
-<code class="sig-name descname">get_object</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">bucket_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_object" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.get_object">
+<span class="sig-name descname"><span class="pre">get_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a boto3 object. Create it if it doesn’t exist</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.get_objects">
-<code class="sig-name descname">get_objects</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_objects" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.get_objects">
+<span class="sig-name descname"><span class="pre">get_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_objects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Like get_bucket_objects, but more aptly named to the generic interface
 :param self:
 :param kwargs:</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.get_size">
-<code class="sig-name descname">get_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_size" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.get_size">
+<span class="sig-name descname"><span class="pre">get_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.get_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the total size of the current container of objects. Generic naming.
 :param self:</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.mpu_fileobject">
-<code class="sig-name descname">mpu_fileobject</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">file_object</em>, <em class="sig-param">buffersize=104857600</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">acl='authenticated-read'</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.mpu_fileobject" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.mpu_fileobject">
+<span class="sig-name descname"><span class="pre">mpu_fileobject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">104857600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.mpu_fileobject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multi-part upload for a file-object.</p>
 <p>This automatically creates a multipart upload of an object.
 Useful for large objects that are loaded in memory. This avoids
@@ -687,44 +687,44 @@ having to write the file to disk and then using <code class="docutils literal no
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.pathjoin">
-<code class="sig-name descname">pathjoin</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">*p</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.pathjoin" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.pathjoin">
+<span class="sig-name descname"><span class="pre">pathjoin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.pathjoin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.rm_bucket">
-<code class="sig-name descname">rm_bucket</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.rm_bucket" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.rm_bucket">
+<span class="sig-name descname"><span class="pre">rm_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.rm_bucket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove an empty bucket. Throws an exception when bucket is not empty.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.set_bucket">
-<code class="sig-name descname">set_bucket</code><span class="sig-paren">(</span><em class="sig-param">bucket_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.set_bucket" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.set_bucket">
+<span class="sig-name descname"><span class="pre">set_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.set_bucket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bucket to use</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.show_buckets">
-<code class="sig-name descname">show_buckets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.show_buckets" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.show_buckets">
+<span class="sig-name descname"><span class="pre">show_buckets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.show_buckets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show available buckets</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.show_objects">
-<code class="sig-name descname">show_objects</code><span class="sig-paren">(</span><em class="sig-param">limit=1000</em>, <em class="sig-param">page_size=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.show_objects" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.show_objects">
+<span class="sig-name descname"><span class="pre">show_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.show_objects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print objects in the current bucket</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.upload_from_directory">
-<code class="sig-name descname">upload_from_directory</code><span class="sig-paren">(</span><em class="sig-param">disk_path</em>, <em class="sig-param">cloud_path=None</em>, <em class="sig-param">recursive=False</em>, <em class="sig-param">ExtraArgs={'ACL': 'authenticated-read'}</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_from_directory" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.upload_from_directory">
+<span class="sig-name descname"><span class="pre">upload_from_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">disk_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloud_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ExtraArgs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ACL':</span> <span class="pre">'authenticated-read'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_from_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a directory to the cloud</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.upload_from_file">
-<code class="sig-name descname">upload_from_file</code><span class="sig-paren">(</span><em class="sig-param">flname</em>, <em class="sig-param">object_name=None</em>, <em class="sig-param">ExtraArgs={'ACL': 'authenticated-read'}</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_from_file" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.upload_from_file">
+<span class="sig-name descname"><span class="pre">upload_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ExtraArgs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ACL':</span> <span class="pre">'authenticated-read'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a file to the cloud.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -744,9 +744,9 @@ the full file name as the object name.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.upload_json">
-<code class="sig-name descname">upload_json</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">ddict</em>, <em class="sig-param">acl='authenticated-read'</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_json" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.upload_json">
+<span class="sig-name descname"><span class="pre">upload_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a dict as a JSON using <code class="docutils literal notranslate"><span class="pre">json.dumps</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -759,14 +759,14 @@ the full file name as the object name.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.upload_object">
-<code class="sig-name descname">upload_object</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">body</em>, <em class="sig-param">acl='authenticated-read'</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_object" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.upload_object">
+<span class="sig-name descname"><span class="pre">upload_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_object" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.BasicInterface.upload_pickle">
-<code class="sig-name descname">upload_pickle</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">data_object</em>, <em class="sig-param">acl='authenticated-read'</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_pickle" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.BasicInterface.upload_pickle">
+<span class="sig-name descname"><span class="pre">upload_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.BasicInterface.upload_pickle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload an object using pickle: <code class="docutils literal notranslate"><span class="pre">pickle.dumps</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -783,16 +783,16 @@ the full file name as the object name.</p></li>
 </div>
 <div class="section" id="defaultinterface">
 <h2><a class="reference internal" href="#cottoncandy.interfaces.DefaultInterface" title="cottoncandy.interfaces.DefaultInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultInterface</span></code></a><a class="headerlink" href="#defaultinterface" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="cottoncandy.interfaces.DefaultInterface">
-<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.interfaces.</code><code class="sig-name descname">DefaultInterface</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.DefaultInterface" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.DefaultInterface">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.interfaces.</span></span><span class="sig-name descname"><span class="pre">DefaultInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.DefaultInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cottoncandy.interfaces.FileSystemInterface" title="cottoncandy.interfaces.FileSystemInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.interfaces.FileSystemInterface</span></code></a>, <a class="reference internal" href="#cottoncandy.interfaces.ArrayInterface" title="cottoncandy.interfaces.ArrayInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.interfaces.ArrayInterface</span></code></a>, <a class="reference internal" href="#cottoncandy.interfaces.BasicInterface" title="cottoncandy.interfaces.BasicInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.interfaces.BasicInterface</span></code></a></p>
 <p>Default cottoncandy interface to the cloud</p>
 <p>This includes numpy.array and file-system-like
 concepts for easy data I/O and bucket/object exploration.</p>
-<dl class="method">
-<dt id="cottoncandy.interfaces.DefaultInterface.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.DefaultInterface.__init__" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.DefaultInterface.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.DefaultInterface.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -801,7 +801,7 @@ concepts for easy data I/O and bucket/object exploration.</p>
 <li><p><strong>SECRET_KEY</strong> (<em>str</em>) – </p></li>
 <li><p><strong>endpoint_url</strong> (<em>str</em>) – The URL for the S3 gateway</p></li>
 <li><p><strong>force_bucket_creation</strong> (<em>bool</em>) – Create requested bucket if it doesn’t exist</p></li>
-<li><p><strong>backend</strong> (<em>'s3'|'gdrive'</em>) – which backend to hook on to</p></li>
+<li><p><strong>backend</strong> (<em>'s3'</em><em>|</em><em>'gdrive'</em>) – which backend to hook on to</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -818,14 +818,14 @@ concepts for easy data I/O and bucket/object exploration.</p>
 </div>
 <div class="section" id="encryptedinterface">
 <h2><a class="reference internal" href="#cottoncandy.interfaces.EncryptedInterface" title="cottoncandy.interfaces.EncryptedInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">EncryptedInterface</span></code></a><a class="headerlink" href="#encryptedinterface" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="cottoncandy.interfaces.EncryptedInterface">
-<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.interfaces.</code><code class="sig-name descname">EncryptedInterface</code><span class="sig-paren">(</span><em class="sig-param">bucket</em>, <em class="sig-param">access</em>, <em class="sig-param">secret</em>, <em class="sig-param">url</em>, <em class="sig-param">encryption='AES'</em>, <em class="sig-param">key=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.EncryptedInterface">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.interfaces.</span></span><span class="sig-name descname"><span class="pre">EncryptedInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encryption</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'AES'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cottoncandy.interfaces.DefaultInterface" title="cottoncandy.interfaces.DefaultInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.interfaces.DefaultInterface</span></code></a></p>
 <p>Interface that transparently encrypts everything uploaded to the cloud</p>
-<dl class="method">
-<dt id="cottoncandy.interfaces.EncryptedInterface.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">bucket</em>, <em class="sig-param">access</em>, <em class="sig-param">secret</em>, <em class="sig-param">url</em>, <em class="sig-param">encryption='AES'</em>, <em class="sig-param">key=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.__init__" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.EncryptedInterface.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encryption</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'AES'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -833,9 +833,9 @@ concepts for easy data I/O and bucket/object exploration.</p>
 <li><p><strong>access</strong> – </p></li>
 <li><p><strong>secret</strong> – </p></li>
 <li><p><strong>url</strong> – </p></li>
-<li><p><strong>encryption</strong> (<em>'AES' | 'RSA'</em>) – </p></li>
+<li><p><strong>encryption</strong> (<em>'AES'</em><em> | </em><em>'RSA'</em>) – </p></li>
 <li><p><strong>key</strong> (<em>str</em>) – if AES, key; if RSA, filename of .pem format key</p></li>
-<li><p><strong>backend</strong> (<em>'s3'|'gdrive'</em>) – which backend to hook on to</p></li>
+<li><p><strong>backend</strong> (<em>'s3'</em><em>|</em><em>'gdrive'</em>) – which backend to hook on to</p></li>
 <li><p><strong>args</strong> – </p></li>
 <li><p><strong>kwargs</strong> – </p></li>
 </ul>
@@ -843,9 +843,9 @@ concepts for easy data I/O and bucket/object exploration.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.EncryptedInterface.download_stream">
-<code class="sig-name descname">download_stream</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.download_stream" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.EncryptedInterface.download_stream">
+<span class="sig-name descname"><span class="pre">download_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.download_stream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the CloudStream object for an object
 :param self:
 :param object_name:</p>
@@ -859,9 +859,9 @@ concepts for easy data I/O and bucket/object exploration.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.EncryptedInterface.download_to_file">
-<code class="sig-name descname">download_to_file</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.download_to_file" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.EncryptedInterface.download_to_file">
+<span class="sig-name descname"><span class="pre">download_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.download_to_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download cloud object to a file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -873,9 +873,9 @@ concepts for easy data I/O and bucket/object exploration.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.EncryptedInterface.upload_from_file">
-<code class="sig-name descname">upload_from_file</code><span class="sig-paren">(</span><em class="sig-param">local_file_name</em>, <em class="sig-param">object_name=None</em>, <em class="sig-param">ExtraArgs={'ACL': 'authenticated-read'}</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.upload_from_file" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.EncryptedInterface.upload_from_file">
+<span class="sig-name descname"><span class="pre">upload_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ExtraArgs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ACL':</span> <span class="pre">'authenticated-read'}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.upload_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a file to the cloud.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -895,9 +895,9 @@ the full file name as the object name.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.EncryptedInterface.upload_object">
-<code class="sig-name descname">upload_object</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">body</em>, <em class="sig-param">acl='authenticated-read'</em>, <em class="sig-param">**metadata</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.upload_object" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.EncryptedInterface.upload_object">
+<span class="sig-name descname"><span class="pre">upload_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'authenticated-read'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.EncryptedInterface.upload_object" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -905,14 +905,14 @@ the full file name as the object name.</p></li>
 </div>
 <div class="section" id="filesysteminterface">
 <h2><a class="reference internal" href="#cottoncandy.interfaces.FileSystemInterface" title="cottoncandy.interfaces.FileSystemInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileSystemInterface</span></code></a><a class="headerlink" href="#filesysteminterface" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="cottoncandy.interfaces.FileSystemInterface">
-<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.interfaces.</code><code class="sig-name descname">FileSystemInterface</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.interfaces.</span></span><span class="sig-name descname"><span class="pre">FileSystemInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cottoncandy.interfaces.BasicInterface" title="cottoncandy.interfaces.BasicInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.interfaces.BasicInterface</span></code></a></p>
 <p>Emulate some file system functionality.</p>
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.__init__" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -932,9 +932,9 @@ the full file name as the object name.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.cp">
-<code class="sig-name descname">cp</code><span class="sig-paren">(</span><em class="sig-param">source_name</em>, <em class="sig-param">dest_name</em>, <em class="sig-param">source_bucket=None</em>, <em class="sig-param">dest_bucket=None</em>, <em class="sig-param">overwrite=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.cp" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.cp">
+<span class="sig-name descname"><span class="pre">cp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_bucket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_bucket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.cp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy an object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -951,9 +951,9 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">source_
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.download_directory">
-<code class="sig-name descname">download_directory</code><span class="sig-paren">(</span><em class="sig-param">directory</em>, <em class="sig-param">disk_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.download_directory" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.download_directory">
+<span class="sig-name descname"><span class="pre">download_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disk_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.download_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download an entire directory
 NOTE: currently only tested on s3</p>
 <dl class="field-list simple">
@@ -967,22 +967,22 @@ NOTE: currently only tested on s3</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.get_browser">
-<code class="sig-name descname">get_browser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.get_browser" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.get_browser">
+<span class="sig-name descname"><span class="pre">get_browser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.get_browser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an object which can be tab-completed
 to browse the contents of the bucket as if it were a file-system</p>
 <p>See documentation for <code class="docutils literal notranslate"><span class="pre">cottoncandy.get_browser</span></code></p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.get_object_owner">
-<code class="sig-name descname">get_object_owner</code><span class="sig-paren">(</span><em class="sig-param">object_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.get_object_owner" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.get_object_owner">
+<span class="sig-name descname"><span class="pre">get_object_owner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.get_object_owner" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.glob">
-<code class="sig-name descname">glob</code><span class="sig-paren">(</span><em class="sig-param">pattern</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.glob" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.glob">
+<span class="sig-name descname"><span class="pre">glob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.glob" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of object names in the cloud storage
 that match the glob pattern.</p>
 <dl class="field-list simple">
@@ -1029,9 +1029,9 @@ be increased.</p>
 <p>If more than 10^6 objects, provide <code class="docutils literal notranslate"><span class="pre">page_size=10**7</span></code> kwarg.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.glob_google_drive">
-<code class="sig-name descname">glob_google_drive</code><span class="sig-paren">(</span><em class="sig-param">pattern</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.glob_google_drive" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.glob_google_drive">
+<span class="sig-name descname"><span class="pre">glob_google_drive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.glob_google_drive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Globbing on google drive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1040,9 +1040,9 @@ be increased.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.glob_s3">
-<code class="sig-name descname">glob_s3</code><span class="sig-paren">(</span><em class="sig-param">pattern</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.glob_s3" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.glob_s3">
+<span class="sig-name descname"><span class="pre">glob_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.glob_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Globbing on S3</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1054,9 +1054,9 @@ be increased.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.ls">
-<code class="sig-name descname">ls</code><span class="sig-paren">(</span><em class="sig-param">pattern</em>, <em class="sig-param">page_size=1000</em>, <em class="sig-param">limit=1000</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.ls" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.ls">
+<span class="sig-name descname"><span class="pre">ls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.ls" title="Permalink to this definition">¶</a></dt>
 <dd><p>File-system like search for S3 objects</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1078,9 +1078,9 @@ be increased.</p>
 otherwise, the search might not return all matching objects in store.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.lsdir">
-<code class="sig-name descname">lsdir</code><span class="sig-paren">(</span><em class="sig-param">path='/'</em>, <em class="sig-param">limit=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.lsdir" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.lsdir">
+<span class="sig-name descname"><span class="pre">lsdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.lsdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>List the contents of a directory</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1095,9 +1095,9 @@ otherwise, the search might not return all matching objects in store.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.mv">
-<code class="sig-name descname">mv</code><span class="sig-paren">(</span><em class="sig-param">source_name</em>, <em class="sig-param">dest_name</em>, <em class="sig-param">source_bucket=None</em>, <em class="sig-param">dest_bucket=None</em>, <em class="sig-param">overwrite=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.mv" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.mv">
+<span class="sig-name descname"><span class="pre">mv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_bucket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_bucket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.mv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move an object (make copy and delete old object)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1114,9 +1114,9 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">source_
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.rm">
-<code class="sig-name descname">rm</code><span class="sig-paren">(</span><em class="sig-param">object_name</em>, <em class="sig-param">recursive=False</em>, <em class="sig-param">delete=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.rm" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.rm">
+<span class="sig-name descname"><span class="pre">rm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.rm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete an object, or a subtree (‘path/to/stuff’).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1141,9 +1141,9 @@ similar in behavior to ‘rm -r /path/to/directory’.</p></li>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="cottoncandy.interfaces.FileSystemInterface.search">
-<code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param">pattern</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.search" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.FileSystemInterface.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.FileSystemInterface.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the objects matching the glob pattern</p>
 <p>See <code class="docutils literal notranslate"><span class="pre">glob</span></code> documentation for details</p>
 </dd></dl>
@@ -1153,15 +1153,14 @@ similar in behavior to ‘rm -r /path/to/directory’.</p></li>
 </div>
 <div class="section" id="interfaceobject">
 <h2><a class="reference internal" href="#cottoncandy.interfaces.InterfaceObject" title="cottoncandy.interfaces.InterfaceObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterfaceObject</span></code></a><a class="headerlink" href="#interfaceobject" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="cottoncandy.interfaces.InterfaceObject">
-<em class="property">class </em><code class="sig-prename descclassname">cottoncandy.interfaces.</code><code class="sig-name descname">InterfaceObject</code><a class="headerlink" href="#cottoncandy.interfaces.InterfaceObject" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.InterfaceObject">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.interfaces.</span></span><span class="sig-name descname"><span class="pre">InterfaceObject</span></span><a class="headerlink" href="#cottoncandy.interfaces.InterfaceObject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="cottoncandy.interfaces.InterfaceObject.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.InterfaceObject.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="cottoncandy.interfaces.InterfaceObject.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.interfaces.InterfaceObject.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1181,7 +1180,7 @@ similar in behavior to ‘rm -r /path/to/directory’.</p></li>
     </p>
     <p>
         &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
     </p>
   </div>
 </footer>
