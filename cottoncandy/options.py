@@ -55,7 +55,7 @@ def generate_AES_key(bytes = 32):
         from Crypto import Random
         return Random.get_random_bytes(bytes)
     except ImportError:
-        print('PyCrypto not install. Reading from /dev/random instead')
+        print('PyCrypto/PyCryptoDome not installed. Reading from /dev/random instead')
         with open('/dev/random', 'r') as rand:
             return rand.read(bytes)
 
