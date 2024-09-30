@@ -96,6 +96,7 @@ Thanks for using cottoncandy!
     aesKey = config.get('encryption', 'key')
     if aesKey == 'auto':
         newKey = generate_AES_key()
+        # this prepends `b'` and appends `'` to the string
         aesKey = str(b64encode(newKey))
         config.set("encryption", 'key', aesKey)
 

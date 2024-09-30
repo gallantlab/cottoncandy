@@ -23,10 +23,11 @@ force_bucket_creation = string2bool(force_bucket_creation)
 
 encryption = options.config.get('encryption', 'method')
 doencryption = options.config.get('encryption', 'key')
-if string2bool(doencryption):
-    encryptionKey = b64decode()
-else:
+if doencryption in ['False', 'false', 'f', 'n', 'no', '0']:
     encryptionKey = False
+else:
+    # remove the `b'` and `'` introduced by str() during key gen
+    encryptionKey = b64decode(doencryption[2:-1])
 
 def get_interface(bucket_name=default_bucket,
                   ACCESS_KEY=ACCESS_KEY,
