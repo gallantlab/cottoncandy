@@ -150,22 +150,6 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
 >>> cci = cc.get_interface(backend='gdrive')
 ```
 
-### Encryption
-
-`cottoncandy`provides a transparent encryption interface for AWS S3 and Google Drive. This requires the `pycrypto` package. 
-
-**WARNING**: Encryption is an advance feature. Make sure to create a backup of the encryption keys  (stored in `~/.config/cottoncandy/options.cfg`). If you lose your encryption keys you will not be able to recover your data!
-
-```python
->>> import cottoncandy as cc
->>> cci = cc.get_encrypted_interface('my_bucket_name',
-                                      ACCESS_KEY='FAKEACCESSKEYTEXT',
-                                      SECRET_KEY='FAKESECRETKEYTEXT',
-                                      endpoint_url='https://s3.amazonaws.com')                               
-```
-
-
-
 ### Contributing
 * If you find any issues with `cottoncandy`, please report it by submitting an issue on GitHub.
 * If you wish to contribute, please submit a pull request. Include information as to how you ran the tests and the full output log if possible. Running tests on AWS can incur costs. 
