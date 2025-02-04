@@ -23,6 +23,7 @@ default_bucket = options.config.get('basic', 'default_bucket')
 force_bucket_creation = options.config.get('basic', 'force_bucket_creation')
 force_bucket_creation = string2bool(force_bucket_creation)
 
+
 def get_interface(bucket_name=default_bucket,
                   ACCESS_KEY=ACCESS_KEY,
                   SECRET_KEY=SECRET_KEY,

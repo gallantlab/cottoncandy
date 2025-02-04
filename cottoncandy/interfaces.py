@@ -42,7 +42,7 @@ from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_s
                     MAGIC_CHECK, THREADS)
 from .options import config
 
-DO_COMPRESSION = config.get('compression', 'do_compression').lower() in ('true', 't', 'y','yes')
+DO_COMPRESSION = config.get('compression', 'do_compression').lower() in ('true', 't', 'y', 'yes')
 COMPRESSION_SMALL = config.get('compression', 'small_array')
 COMPRESSION_LARGE = config.get('compression', 'large_array')
 
@@ -62,12 +62,11 @@ except ImportError:
     warn('numcodecs python library not available')
 
 
-
 # ------------------
 # Cloud Interfaces
 # ------------------
 
-class InterfaceObject(object):
+class InterfaceObject:
     pass
 
 
@@ -189,7 +188,7 @@ class BasicInterface(InterfaceObject):
         bucket = self.get_bucket()
         try:
             bucket.delete()
-        except botocore.exceptions.ClientError as e:
+        except botocore.exceptions.ClientError:
             print("Bucket not empty. To delete, first empty the bucket.")
 
     def set_bucket(self, bucket_name):
@@ -381,7 +380,7 @@ class BasicInterface(InterfaceObject):
                                                recursive=recursive,
                                                ExtraArgs=ExtraArgs,
                                                threads = threads)
-        print('Uploaded "%s" to "%s"'%(disk_path, cloud_path))
+        print('Uploaded "%s" to "%s"' % (disk_path, cloud_path))
 
     @clean_object_name
     def download_to_file(self, object_name, file_name, threads = THREADS):
@@ -414,7 +413,6 @@ class BasicInterface(InterfaceObject):
             Object byte contents
         """
         return self.download_stream(object_name, threads).content.read()
-
 
     @clean_object_name
     def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, threads = 1, **metadata):
@@ -480,6 +478,7 @@ class BasicInterface(InterfaceObject):
         self.exists_object(object_name, raise_err=True)
         obj = self.download_object(object_name, threads = threads)
         return pickle.loads(obj)
+
 
 class ArrayInterface(BasicInterface):
     """Provides numpy.array concepts.
@@ -596,12 +595,12 @@ class ArrayInterface(BasicInterface):
 
             if large_array and compression == 'gzip':
                 # Raise exception for specification of gzip w/ large array
-                raise ValueError(("gzip does not support compression of >2GB arrays. "
-                                  "Try `compression='Zstd'` instead."))
+                raise ValueError("gzip does not support compression of >2GB arrays. "
+                                  "Try `compression='Zstd'` instead.")
 
         order = 'C' if array.flags.carray else 'F'
         if ((not array.flags['%s_CONTIGUOUS' % order] and six.PY2) or
-            (not array.flags['C_CONTIGUOUS'] and six.PY3)):
+                (not array.flags['C_CONTIGUOUS'] and six.PY3)):
             warn('Non-contiguous array. Creating copy (will use extra memory)...')
 
             if six.PY3 and order == 'F':
@@ -646,9 +645,9 @@ class ArrayInterface(BasicInterface):
             compressor = numcodecs.get_codec(dict(id=compression.lower()))
             filestream = StringIO(compressor.encode(array))
             data_nbytes = get_fileobject_size(filestream)
-            print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
+            print('Compressed to %0.2f%% the size' % (data_nbytes / float(orig_nbytes) * 100))
         else:
-            raise ValueError('Unknown compression scheme: %s'%compression)
+            raise ValueError('Unknown compression scheme: %s' % compression)
         response = self.upload_object(object_name, filestream, acl=acl, threads = threads, **meta)
         return response
 
@@ -795,8 +794,6 @@ class ArrayInterface(BasicInterface):
                 datadict[subdir] = arr
             else:
                 datadict[subdir] = self.cloud2dict(path, threads = threads)
-
-            
 
         if verbose:
             print('Downloaded arrays in "%s"' % object_root)
@@ -1077,8 +1074,8 @@ class FileSystemInterface(BasicInterface):
             object_names = self.lsdir(prefix, limit = limit)
         else:
             object_list = self.get_objects(filter = dict(Prefix = prefix),
-                                                  page_size = page_size,
-                                                  limit = limit)
+                                           page_size = page_size,
+                                           limit = limit)
             object_names = objects2names(object_list)
 
         # remove trailing '/'

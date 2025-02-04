@@ -37,8 +37,9 @@ JSONEXT = ['.json']
 # Browsing objects
 #------------------
 
-class BrowserObject(object):
+class BrowserObject:
     pass
+
 
 class S3FSLike(BrowserObject):
     '''Base class for file-system-like backend_interface to S3
@@ -144,7 +145,7 @@ class S3Directory(S3FSLike):
                 # modify name for tab-completion purposes
                 sdir_copy = sdir[:]
                 # clean numbers
-                sdir_copy = 'NUM_%s'%sdir_copy if has_start_digit(sdir) else sdir_copy
+                sdir_copy = 'NUM_%s' % (sdir_copy if has_start_digit(sdir) else sdir_copy)
                 # clean extension
                 fl, ext = os.path.splitext(sdir_copy)
                 kk = fl+'_DOT_'+ext[1:] if ext else sdir_copy
@@ -168,13 +169,13 @@ class S3Directory(S3FSLike):
     def __repr__(self):
         if len(self._subdirs):
             details = (__package__, self.interface.bucket_name, self._curdir)
-            return "%s-path <bucket:%s> %s"%details
+            return "%s-path <bucket:%s> %s" % details
         else:
             # no children, it's gotta be an object b/c we're in S3
             obj = self.interface.get_object(self._fullpath)
             size = get_object_size(obj)
             details = (__package__, self.interface.bucket_name, size)
-            return "%s-file <bucket:%s> [%0.01fMB]"%details
+            return "%s-file <bucket:%s> [%0.01fMB]" % details
 
     def __len__(self):
         return len(self._subdirs)
@@ -222,10 +223,10 @@ class S3HDF5(S3Directory):
                 shape =  obmeta['shape']
                 size = get_object_size(obj)
                 details = (__package__, self.interface.bucket_name, size, shape)
-                return "%s-dataset <bucket:%s [%0.01fMB:shape=(%s)]>"%details
+                return "%s-dataset <bucket:%s [%0.01fMB:shape=(%s)]>" % details
         # otherwise it's the file itself
         details = (__package__, self.interface.bucket_name,self._curdir, len(self._subdirs))
-        return "<%s-group <bucket:%s> (%s: %i keys)>"%details
+        return "<%s-group <bucket:%s> (%s: %i keys)>" % details
 
     def __dir__(self):
         return ['load', 'keys'] + list(self._subdirs.keys())
@@ -243,8 +244,8 @@ class S3HDF5(S3Directory):
             if key in self._subdirs:
                 dataset_path = os.path.join(self._fullpath, self._subdirs[key])
             else:
-                raise ValueError('"%s" not in %s'%(key, dataset_path))
+                raise ValueError('"%s" not in %s' % (key, dataset_path))
 
         if self.interface.exists_object(dataset_path):
             return self.interface.download_raw_array(dataset_path)
-        print('Specify key to download:\n%s'%','.join(sorted(self._subdirs.keys())))
+        print('Specify key to download:\n%s' % ','.join(sorted(self._subdirs.keys())))

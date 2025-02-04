@@ -8,6 +8,7 @@ except ImportError:
 
 from . import appdirs
 
+
 def get_key_from_s3fs():
     '''If user has s3fs-fuse keys,return them
     '''
@@ -24,7 +25,7 @@ def get_key_from_environ():
         ak = os.environ['AWS_ACCESS_KEY'],
         sk = os.environ['AWS_SECRET_KEY']
         return ak, sk
-    except:
+    except KeyError:
         return
 
 
