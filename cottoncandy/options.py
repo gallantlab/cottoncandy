@@ -1,10 +1,7 @@
 import os
 import sys
 
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
+import configparser
 
 from . import appdirs
 
@@ -42,10 +39,7 @@ def get_keys():
 def get_config():
     config = configparser.ConfigParser()
     with open(os.path.join(cwd, 'defaults.cfg'), 'r') as defaults_file:
-        if sys.version_info.major == 2:
-            config.readfp(defaults_file)
-        else:
-            config.read_file(defaults_file)
+        config.read_file(defaults_file)
     return config
 
 cwd = os.path.split(os.path.abspath(__file__))[0]

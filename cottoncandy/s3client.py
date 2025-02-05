@@ -12,10 +12,7 @@ from botocore.utils import fix_s3_host
 from cottoncandy.utils import *
 from .backend import CCBackEnd, CloudStream
 
-try:
-    from urllib import unquote
-except ImportError:
-    from urllib.parse import unquote
+from urllib.parse import unquote
 
 
 class S3Client(CCBackEnd):

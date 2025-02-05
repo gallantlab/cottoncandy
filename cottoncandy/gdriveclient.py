@@ -22,9 +22,6 @@ except ImportError:
         except ImportError:
             print('Not ipython')
 
-if sys.version_info.major > 2:
-    raw_input = input  # future compatibility
-
 
 class GDriveClient(CCBackEnd):
     """
@@ -58,7 +55,7 @@ class GDriveClient(CCBackEnd):
         # get credentials
         authenticator.LoadCredentialsFile(credentials)
         if authenticator.credentials is None:  # no credentials
-            response = raw_input('No credentials. Authenticate with local web browser? [y]/n > ')
+            response = input('No credentials. Authenticate with local web browser? [y]/n > ')
             if response.lower() in ['y', 'yes'] or len(response) == 0:
                 authenticator.LocalWebserverAuth()
             else:

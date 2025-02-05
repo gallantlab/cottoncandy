@@ -3,10 +3,7 @@ import json
 import glob
 import shutil
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import BytesIO as StringIO
+from io import BytesIO as StringIO
 
 from .backend import CCBackEnd, CloudStream
 from .utils import sanitize_metadata

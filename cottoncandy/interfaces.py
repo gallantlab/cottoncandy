@@ -1,23 +1,14 @@
 import json
 import six
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import pickle
 
-try:
-    from urllib import unquote
-except ImportError:
-    from urllib.parse import unquote
+from urllib.parse import unquote
 
 import fnmatch
 from gzip import GzipFile
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import BytesIO as StringIO
+from io import BytesIO as StringIO
 
 
 import cottoncandy.browser

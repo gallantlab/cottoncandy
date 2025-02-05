@@ -10,10 +10,7 @@ from dateutil.tz import tzlocal
 from functools import wraps
 
 
-try:
-    from urllib import unquote
-except ImportError:
-    from urllib.parse import unquote
+from urllib.parse import unquote
 
 
 import numpy as np
