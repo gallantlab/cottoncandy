@@ -4,12 +4,9 @@
 from __future__ import absolute_import
 
 import os
-from base64 import b64decode
 
 from cottoncandy import options
 
-from .browser import BrowserObject
-from .interfaces import InterfaceObject
 from .utils import get_keys, string2bool
 
 __version__ = "0.3.0"
