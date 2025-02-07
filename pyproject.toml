@@ -70,7 +70,7 @@ packages = ["cottoncandy"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-cottoncandy = ["defaults.cfg"]
+cottoncandy = ["defaults.cfg", "py.typed"]
 
 [tool.setuptools.dynamic]
 version = {attr = "cottoncandy.__version__"}
