@@ -1471,7 +1471,7 @@ class EncryptedInterface(DefaultInterface):
 
         if not object_name:
             object_name = local_file_name
-        with open(local_file_name) as f:
+        with open(local_file_name, 'rb') as f:
             return self.upload_object(object_name, f, ExtraArgs['ACL'])
 
     def download_to_file(self, object_name, file_name):

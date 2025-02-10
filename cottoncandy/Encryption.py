@@ -238,7 +238,7 @@ class AESEncryption(Encryption):
                         # pad the end chunk if necessary - AES needs things to be in 16-byte blocks
                         padSize = 16 - (len(this_chunk) + FILE_LENGTH_FIELD_SIZE) % 16
                         padding = ' ' * padSize
-                        this_chunk += padding
+                        this_chunk += padding.encode()
                         this_chunk += file_length_field  # record the actual file length so we can get ride of the padding on decryption
                         is_final_chunk = True
 
@@ -292,7 +292,7 @@ class AESEncryption(Encryption):
                 # pad the end chunk if necessary
                 padSize = 16 - (len(this_chunk) + FILE_LENGTH_FIELD_SIZE) % 16
                 padding = ' ' * padSize
-                this_chunk += padding
+                this_chunk += padding.encode()
                 this_chunk += file_length_field
                 is_final_chunk = True
 
