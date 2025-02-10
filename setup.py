@@ -60,7 +60,7 @@ def main(**kwargs):
           include_package_data=True,
           long_description=long_description,
           install_requires=['six', 'botocore', 'boto3', 'python-dateutil',
-                            'PyDrive', 'pycrypto'],
+                            'PyDrive', 'pycryptodome'],
           **kwargs)
 
 if __name__ == "__main__":

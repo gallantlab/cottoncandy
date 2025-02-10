@@ -1,7 +1,7 @@
 To set up Google Drive access, you need to jump through many hoops.
 
 #### Python dependencies
-You need to have `pydrive` and `pycrypto` installed.
+You need to have `pydrive` and `pycryptodome` installed.
 
 #### Google Drive API setup
 1. Go to https://console.developers.google.com

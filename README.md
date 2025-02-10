@@ -152,7 +152,7 @@ See the [Google Drive setup instructions](https://github.com/gallantlab/cottonca
 
 ### Encryption
 
-`cottoncandy`provides a transparent encryption interface for AWS S3 and Google Drive. This requires the `pycrypto` package. 
+`cottoncandy`provides a transparent encryption interface for AWS S3 and Google Drive. This requires the `pycryptodome` package. 
 
 **WARNING**: Encryption is an advance feature. Make sure to create a backup of the encryption keys  (stored in `~/.config/cottoncandy/options.cfg`). If you lose your encryption keys you will not be able to recover your data!
 
