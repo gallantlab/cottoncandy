@@ -38,6 +38,8 @@ extra = [
 test = [
     "codecov",
     "flake8",
+    "ipython", # IPython is needed for something in gdriveclient
+    "mypy",
     "pytest",
     "pytest-cov",
     "pytest-rerunfailures",
