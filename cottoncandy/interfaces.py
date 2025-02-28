@@ -9,7 +9,7 @@ from urllib.parse import unquote
 from warnings import warn
 
 import six
-from typing import Any, List, Literal, Optional, Union
+from typing import Any, Iterable, List, Literal, Optional, Union
 
 import cottoncandy.browser
 from cottoncandy.backend import FileNotFoundError
@@ -992,6 +992,8 @@ class ArrayInterface(BasicInterface):
                              shape = shape)
         elif arrtype == 'dia':
             arr = dia_matrix((d['data'], d['offsets']), shape = shape)
+        else:
+            raise ValueError(f"unsupported sparse array type: {arrtype}")
 
         return arr
 
@@ -1066,7 +1068,7 @@ class FileSystemInterface(BasicInterface):
 
         # get objects that match common prefix
         if not has_real_magic(pattern):
-            object_names = self.lsdir(prefix, limit = limit)
+            object_names: Iterable[str] = self.lsdir(prefix, limit = limit)
         else:
             object_list = self.get_objects(filter = dict(Prefix = prefix),
                                            page_size = page_size,
