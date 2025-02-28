@@ -133,4 +133,4 @@ def get_browser(bucket_name: str=default_bucket,
 
     return S3Directory('/', interface=interface)
 
-__all__ = ['get_interface', 'get_browser', 'interfaces', 'browser']
+__all__ = ['get_interface', 'get_browser', 'interfaces', 'browser', 'DefaultInterface']
