@@ -866,7 +866,7 @@ class ArrayInterface(BasicInterface):
         for idx, (chunk_coord, chunk_arr) in enumerate(generator):
             chunk_arr = chunk_arr.copy()
             total_upload += chunk_arr.nbytes
-            txt = (idx + 1, total_upload / MB, arr.nbytes / np.float(MB))
+            txt = (idx + 1, total_upload / MB, arr.nbytes / float(MB))
             print('uploading %i: %0.02fMB/%0.02fMB' % txt)
 
             part_name = self.pathjoin(object_name, 'pt%04i' % idx)

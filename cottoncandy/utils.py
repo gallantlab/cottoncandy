@@ -430,7 +430,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
     for chunk_idx, chunk_coords in enumerate(iterator):
         beg = [chunk_shapes[dim]*cc for dim, cc in enumerate(chunk_coords)]
         end = [min(chunk_shapes[dim]*(cc+1), shape[dim])for dim, cc in enumerate(chunk_coords)]
-        slicers = list(map(lambda dim_lims: slice(dim_lims[0],dim_lims[1]), zip(beg,end)))
+        slicers = tuple(map(lambda dim_lims: slice(dim_lims[0],dim_lims[1]), zip(beg,end)))
         yield chunk_coords, arr[slicers]
 
 
