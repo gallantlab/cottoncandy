@@ -10,9 +10,9 @@ import cottoncandy as cc
 
 directory = 'testcc'
 
-# Check if S3 environment variables are set
+# Check if S3 environment variables are set and not empty
 required_env_vars = ['DL_BUCKET_NAME', 'DL_ACCESS_KEY', 'DL_SECRET_KEY', 'DL_URL']
-s3_env_vars_present = all(env_var in os.environ for env_var in required_env_vars)
+s3_env_vars_present = all(env_var in os.environ and os.environ[env_var] for env_var in required_env_vars)
 
 # Only include S3 client if environment variables are set
 all_clients = ["local"]
