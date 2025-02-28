@@ -314,7 +314,7 @@ class BasicInterface(InterfaceObject):
         else:
             print(self.backend_interface.list_objects())
 
-    # With the abstraction of the cloud interface, and the encrypting interface, all file I/O methods
+    # With the abstraction of the cloud interface, and the local interface, all file I/O methods
     # should be calling upload_object() and download_stream() instead of directly interfacing with the
     # CCBackEnd object or the actual cloud APIs
 
@@ -866,7 +866,7 @@ class ArrayInterface(BasicInterface):
         for idx, (chunk_coord, chunk_arr) in enumerate(generator):
             chunk_arr = chunk_arr.copy()
             total_upload += chunk_arr.nbytes
-            txt = (idx + 1, total_upload / MB, arr.nbytes / np.float(MB))
+            txt = (idx + 1, total_upload / MB, arr.nbytes / float(MB))
             print('uploading %i: %0.02fMB/%0.02fMB' % txt)
 
             part_name = self.pathjoin(object_name, 'pt%04i' % idx)
@@ -1413,69 +1413,3 @@ class DefaultInterface(FileSystemInterface,
         """
         super(DefaultInterface, self).__init__(*args, **kwargs)
 
-class EncryptedInterface(DefaultInterface):
-    """
-    Interface that transparently encrypts everything uploaded to the cloud
-    """
-    def __init__(self, bucket, access, secret, url, encryption='AES', key=None, *args, **kwargs):
-        """
-
-        Parameters
-        ----------
-        bucket
-        access
-        secret
-        url
-        encryption : 'AES' | 'RSA'
-        key : str
-            if AES, key; if RSA, filename of .pem format key
-        backend : 's3'|'gdrive'
-            which backend to hook on to
-        args
-        kwargs
-        """
-        from .Encryption import AESEncryption, RSAAESEncryption
-
-        super(EncryptedInterface, self).__init__(bucket_name = bucket, ACCESS_KEY = access, SECRET_KEY = secret,
-                                                 url = url, *args, **kwargs)
-
-        if encryption not in ['AES', 'RSA']:
-            raise ValueError('Encryption type {} not recognised. Currently AES and RSA are available'.format(encryption))
-        self.encryption = encryption
-        if encryption == 'AES':
-            self.encryptor = AESEncryption(key)
-        else:
-            self.encryptor = RSAAESEncryption(key)
-
-    # File I/O methods that encrypt object streams before passing them to the backend
-    def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
-
-        if self.encryption == 'AES':
-            encrypted_stream = self.encryptor.encrypt_stream(body)
-            return self.backend_interface.upload_stream(encrypted_stream, object_name, metadata, acl)
-        else:
-            encrypted_stream, encrypted_key = self.encryptor.encrypt_stream(body)
-            metadata['key'] = b64encode(encrypted_key)
-            return self.backend_interface.upload_stream(encrypted_stream, object_name, metadata, acl)
-
-    def download_stream(self, object_name):
-
-        stream = self.backend_interface.download_stream(object_name)
-        if self.encryption == 'AES':
-            stream.content = self.encryptor.decrypt_stream(stream.content)
-        else:
-            stream.content = self.encryptor.decrypt_stream(stream.content, b64decode(stream.metadata['key']))
-        return stream
-
-    def upload_from_file(self, local_file_name, object_name=None, ExtraArgs=dict(ACL=DEFAULT_ACL)):
-
-        if not object_name:
-            object_name = local_file_name
-        with open(local_file_name) as f:
-            return self.upload_object(object_name, f, ExtraArgs['ACL'])
-
-    def download_to_file(self, object_name, file_name):
-
-        with open(file_name, 'wb') as local_file:
-            stream = self.download_stream(object_name)
-            local_file.write(stream.content.read())
