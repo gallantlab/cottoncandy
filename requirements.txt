@@ -1,8 +1,12 @@
 wheel>=0.31.1
 numpy>=1.6.0
 scipy>=0.9.0
-botocore<=1.19
-boto3>=1.2.3, <=1.15
+botocore
+# New boto API is unsupported by some 3rd party services
+# https://github.com/boto/boto3/issues/4400#issuecomment-2605410470
+boto3>1.15,<1.36
+# urllib3 pin is required but unspecified for botocore
+urllib3>=1.26
 dask[array]
 cloudpickle>=0.2.2
 toolz>=0.7.4
