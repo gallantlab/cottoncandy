@@ -12,7 +12,7 @@ from .browser import BrowserObject
 from .interfaces import InterfaceObject
 from .utils import get_keys, string2bool
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 ACCESS_KEY = options.config.get('login', 'access_key')
 SECRET_KEY = options.config.get('login', 'secret_key')
