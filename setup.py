@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import re
 import sys
 
 try:
@@ -15,8 +16,18 @@ if len(set(('develop', 'bdist_wheel', 'bdist_egg', 'bdist_rpm', 'bdist',
     from setuptools.command.install import install
 else:
     # use standard library
-    from distutils.core import setup
     from distutils.command.install import install
+    from distutils.core import setup
+
+# get version from cottoncandy/__init__.py
+__version__ = 0.0
+with open('cottoncandy/__init__.py') as f:
+    infos = f.readlines()
+for line in infos:
+    if "__version__" in line:
+        match = re.search(r"__version__ = ['\"]([^'\"]*)['\"]", line)
+        __version__ = match.groups()[0]
+
 
 def set_default_options(optfile):
     import os
@@ -36,7 +47,7 @@ class my_install(install):
         set_default_options(optfile[0])
 
 
-if not 'extra_setuptools_args' in globals():
+if 'extra_setuptools_args' not in globals():
     extra_setuptools_args = dict()
 
 long_description = """
@@ -44,7 +55,7 @@ A python scientific library for storing and accessing numpy array data on S3. Th
 
 def main(**kwargs):
     setup(name="""cottoncandy""",
-          version='0.2.0',
+          version=__version__,
           description="""sugar for S3""",
           author='Anwar O. Nunez-Elizalde',
           author_email='anwarnunez@gmail.com',
