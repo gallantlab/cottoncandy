@@ -1,4 +1,6 @@
 import time
+import tempfile
+import os
 
 import numpy as np
 
@@ -31,7 +33,8 @@ def test_upload_from_file(cci, object_name):
 
     # byte round trip
     content = b'abcdefg123457890'
-    flname = '/tmp/test.txt'
+    fd, flname = tempfile.mkstemp(suffix='.txt')
+    os.close(fd)  # Close the file descriptor
     with open(flname, 'wb') as fl:
         fl.write(content)
 
@@ -40,9 +43,16 @@ def test_upload_from_file(cci, object_name):
     dat = cci.download_object(object_name)
     assert dat == content
 
+    # Clean up temporary file
+    try:
+        os.unlink(flname)
+    except FileNotFoundError:
+        pass
+
     # string roundtrip
     content = 'abcdefg123457890'
-    flname = '/tmp/test.txt'
+    fd, flname = tempfile.mkstemp(suffix='.txt')
+    os.close(fd)  # Close the file descriptor
     with open(flname, 'w') as fl:
         fl.write(content)
 
@@ -51,6 +61,12 @@ def test_upload_from_file(cci, object_name):
     dat = cci.download_object(object_name).decode()
     assert dat == content
     cci.rm(object_name, recursive=True)
+
+    # Clean up temporary file
+    try:
+        os.unlink(flname)
+    except FileNotFoundError:
+        pass
 
 
 def test_upload_json(cci, object_name):
