@@ -2,15 +2,17 @@
 '''
 
 from __future__ import absolute_import
+
 import os
 from base64 import b64decode
-__all__ = []
+
+from cottoncandy import options
 
 from .browser import BrowserObject
 from .interfaces import InterfaceObject
-from .utils import string2bool, get_keys
+from .utils import get_keys, string2bool
 
-from cottoncandy import options
+__version__ = "0.2.0"
 
 ACCESS_KEY = options.config.get('login', 'access_key')
 SECRET_KEY = options.config.get('login', 'secret_key')
@@ -115,8 +117,8 @@ def get_browser(bucket_name=default_bucket,
     >>> browser.sweet_project.sub01_awesome_analysis_DOT_grp.result_model01
     <cottoncandy-dataset <bucket:my_bucket_name [1.00MB:shape=(10000)]>
     """
-    from cottoncandy.interfaces import DefaultInterface
     from cottoncandy.browser import S3Directory
+    from cottoncandy.interfaces import DefaultInterface
 
     if (ACCESS_KEY is False) and (SECRET_KEY is False):
         from .utils import get_keys
