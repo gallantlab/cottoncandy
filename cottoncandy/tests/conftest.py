@@ -6,6 +6,7 @@ import sys
 import tempfile
 
 import pytest
+
 import cottoncandy as cc
 
 directory = 'testcc'
@@ -39,7 +40,7 @@ def cci(request):
             backend="s3",
             verbose=False,
         )
-        cci.wait_time = 2.0  # Account for Wasabi lag by waiting N [seconds]
+        cci.wait_time = 0.5  # Account for Wasabi lag by waiting N [seconds]
         yield cci
 
     elif request.param == "local":
