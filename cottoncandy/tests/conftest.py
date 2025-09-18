@@ -4,6 +4,7 @@ Define some global variables accessible from all tests (with pytest fixture).
 import os
 import sys
 import tempfile
+import uuid
 
 import pytest
 
@@ -23,7 +24,8 @@ if s3_env_vars_present:
 
 @pytest.fixture(scope="session")
 def object_name():
-    name = os.path.join(directory, f"py{sys.version[:6]}", 'test')
+    unique_id = str(uuid.uuid4())[:8]
+    name = os.path.join(directory, f"py{sys.version[:6]}", f'test_{unique_id}')
     return name
 
 
