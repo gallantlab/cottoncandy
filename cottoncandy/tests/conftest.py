@@ -10,7 +10,10 @@ import pytest
 
 import cottoncandy as cc
 
-directory = 'testcc'
+# We need to use a unique directory for each test run to avoid conflicts
+# when running tests in parallel (e.g., in CI).
+unique_id = str(uuid.uuid4())[:8]
+directory = f"testcc_{unique_id}"
 
 # Check if S3 environment variables are set and not empty
 required_env_vars = ['DL_BUCKET_NAME', 'DL_ACCESS_KEY', 'DL_SECRET_KEY', 'DL_URL']
