@@ -61,7 +61,7 @@ Documentation = "http://gallantlab.github.io/cottoncandy/"
 "Bug Tracker" = "https://github.com/gallantlab/cottoncandy/issues"
 
 [tool.pytest.ini_options]
-addopts = "--cov=. --cov-report xml:coverage.xml"
+addopts = "--cov=. --cov-report xml"
 
 [tool.ruff]
 exclude = ["appdirs.py", "*.ipynb"]
