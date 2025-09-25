@@ -6,6 +6,9 @@ import re
 import string
 import zlib
 from functools import wraps
+from typing import cast, Any, Callable, TypeVar, Union
+
+
 from urllib.parse import unquote
 
 import numpy as np
@@ -51,7 +54,7 @@ def sanitize_metadata(metadict):
     return outdict
 
 
-def pathjoin(a, *p):
+def pathjoin(a: str, *p: str) -> str:
     """Join two or more pathname components, inserting SEPARATOR as needed.
     If any component is an absolute path, all previous path components
     will be discarded.  An empty last part will result in a path that
@@ -67,7 +70,7 @@ def pathjoin(a, *p):
     return path
 
 
-def string2bool(mstring):
+def string2bool(mstring: str) -> Union[bool, None]:
     '''
     '''
     truth_value = False
@@ -79,7 +82,7 @@ def string2bool(mstring):
     return truth_value
 
 
-def bytes2human(nbytes):
+def bytes2human(nbytes: int) -> str:
     '''Return string representation of bytes.
 
     Parameters
@@ -127,7 +130,7 @@ def get_object_size(boto_s3_object):
     return boto_s3_object.meta.data['ContentLength']/2.**20
 
 
-def get_fileobject_size(file_object):
+def get_fileobject_size(file_object) -> int:
     '''Return byte size of file-object
 
     Parameters
@@ -253,14 +256,18 @@ def print_objects(object_list):
 ##############################
 
 
-def clean_object_name(input_function):
+# Decorator typing from mypy docs:
+# https://mypy.readthedocs.io/en/stable/generics.html#declaring-decorators
+F = TypeVar('F', bound=Callable[..., Any])
+
+def clean_object_name(input_function: F) -> F:
     '''Remove leading "/" from object_name
 
     This is important for compatibility with S3fs.
     S3fs does not list objects with a "/" prefix.
     '''
     @wraps(input_function)
-    def iremove_root(self, object_name, *args, **kwargs):
+    def iremove_root(self, object_name: str, *args: Any, **kwargs: Any) -> Any:
         object_name = re.sub('//+', '/', object_name)
 
         if object_name == '':
@@ -269,7 +276,7 @@ def clean_object_name(input_function):
             object_name = object_name[1:]
 
         return input_function(self, object_name, *args, **kwargs)
-    return iremove_root
+    return cast(F, iremove_root)
 
 
 def remove_root(string_):
@@ -330,7 +337,7 @@ def remove_trivial_magic(s):
     return s[:-1] # remove '*' at end
 
 
-def split_uri(uri, pattern='s3://', separator='/'):
+def split_uri(uri: str, pattern: str='s3://', separator: str='/') -> tuple[str, str]:
     """Convert a URI to a bucket, object name tuple.
 
     's3://bucket/path/to/thing' -> ('bucket', 'path/to/thing')
