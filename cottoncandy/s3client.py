@@ -9,6 +9,7 @@ from urllib.parse import unquote
 
 import boto3
 import botocore
+import botocore.exceptions # ty wants this explicitly imported
 from boto3.s3.transfer import TransferConfig
 from botocore.utils import fix_s3_host
 from dateutil.tz import tzlocal

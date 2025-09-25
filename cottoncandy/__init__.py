@@ -20,9 +20,7 @@ ENDPOINT_URL: str = options.config.get('login', 'endpoint_url')
 DEFAULT_SIGNATURE_VERSION = options.config.get('basic', 'signature_version')
 
 default_bucket: str = options.config.get('basic', 'default_bucket')
-force_bucket_creation = options.config.get('basic', 'force_bucket_creation')
-force_bucket_creation: bool = string2bool(force_bucket_creation)
-
+force_bucket_creation: bool = string2bool(options.config.get('basic', 'force_bucket_creation'))
 
 def get_interface(bucket_name: str=default_bucket,
                   ACCESS_KEY: str=ACCESS_KEY,
