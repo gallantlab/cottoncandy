@@ -2,6 +2,7 @@
 '''
 
 
+from typing import Literal
 import os
 
 from cottoncandy import options
@@ -11,24 +12,24 @@ from .utils import get_keys, string2bool
 
 __version__ = "0.4.0"
 
-ACCESS_KEY = options.config.get('login', 'access_key')
-SECRET_KEY = options.config.get('login', 'secret_key')
-ENDPOINT_URL = options.config.get('login', 'endpoint_url')
+ACCESS_KEY: str = options.config.get('login', 'access_key')
+SECRET_KEY: str = options.config.get('login', 'secret_key')
+ENDPOINT_URL: str = options.config.get('login', 'endpoint_url')
 DEFAULT_SIGNATURE_VERSION = options.config.get('basic', 'signature_version')
 
-default_bucket = options.config.get('basic', 'default_bucket')
+default_bucket: str = options.config.get('basic', 'default_bucket')
 force_bucket_creation = options.config.get('basic', 'force_bucket_creation')
-force_bucket_creation = string2bool(force_bucket_creation)
+force_bucket_creation: bool = string2bool(force_bucket_creation)
 
 
-def get_interface(bucket_name=default_bucket,
-                  ACCESS_KEY=ACCESS_KEY,
-                  SECRET_KEY=SECRET_KEY,
-                  endpoint_url=ENDPOINT_URL,
-                  force_bucket_creation=force_bucket_creation,
-                  verbose=True,
-                  backend='s3',
-                  **kwargs):
+def get_interface(bucket_name: str=default_bucket,
+                  ACCESS_KEY: str=ACCESS_KEY,
+                  SECRET_KEY: str=SECRET_KEY,
+                  endpoint_url: str=ENDPOINT_URL,
+                  force_bucket_creation: bool=force_bucket_creation,
+                  verbose: bool=True,
+                  backend: Literal['s3', 'gdrive', 'local']='s3',
+                  **kwargs) -> InterfaceObject:
     """Return an interface to the cloud.
 
     Parameters
@@ -38,7 +39,7 @@ def get_interface(bucket_name=default_bucket,
     SECRET_KEY : str
     endpoint_url : str
         The URL for the S3 gateway
-    backend : 's3'|'gdrive'
+    backend : 's3'|'gdrive'|'local'
         What backend to hook on to
     kwargs :
         S3 only. kwargs passed to botocore. For example,
@@ -82,10 +83,10 @@ def get_interface(bucket_name=default_bucket,
     return interface
 
 
-def get_browser(bucket_name=default_bucket,
-                ACCESS_KEY=ACCESS_KEY,
-                SECRET_KEY=SECRET_KEY,
-                endpoint_url=ENDPOINT_URL):
+def get_browser(bucket_name: str=default_bucket,
+                ACCESS_KEY: str=ACCESS_KEY,
+                SECRET_KEY: str=SECRET_KEY,
+                endpoint_url: str=ENDPOINT_URL) -> BrowserObject:
     """Browser object that allows you to tab-complete your
     way through your objects
 
