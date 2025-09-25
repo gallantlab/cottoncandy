@@ -25,7 +25,7 @@ dependencies = [
     "numcodecs>=0.5.5",
     "urllib3>=1.26", # newer urllib3 is required but unspecified by botocore
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 extra = [
