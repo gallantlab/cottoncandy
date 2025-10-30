@@ -411,7 +411,7 @@ class GDriveClient(CCBackEnd):
 
     #### File IO functions
 
-    def upload_file(self, file_name, cloud_name=None, permissions=None):
+    def upload_file(self, file_name, cloud_name=None, permissions=None, threads = 1):
         """Uploads from file on disk
 
         Parameters
@@ -468,17 +468,14 @@ class GDriveClient(CCBackEnd):
 
         return True
 
-    def upload_stream(self, stream, name, properties=None, permissions=None):
+    def upload_stream(self, stream, cloud_name, properties, permissions, threads = 1):
         """Upload a stream with a .read() method
 
         Parameters
         ----------
+        threads
         stream : stream
             stream to upload
-        name : str
-            name to use for cloud file
-        properties : dict
-            custom metadata
 
         Returns
         -------
@@ -486,7 +483,7 @@ class GDriveClient(CCBackEnd):
             success of operation
         """
         # cloudName formatting
-        name = re.sub('^./', '', name)
+        name = re.sub('^./', '', cloud_name)
 
         # not current dir
         current_directory = None
@@ -524,11 +521,8 @@ class GDriveClient(CCBackEnd):
 
         return True
 
-    def upload_multipart(self, stream, cloud_name, properties=None, permissions=None, buffersize = -1, verbose = False):
-        return self.upload_stream(stream, cloud_name, properties, permissions)
 
-
-    def download_to_file(self, drive_file, local_file=None):
+    def download_to_file(self, drive_file, local_file=None, threads = 1):
         """Download a file to disk
 
         Parameters
@@ -557,7 +551,7 @@ class GDriveClient(CCBackEnd):
 
         return True
 
-    def download_stream(self, drive_file):
+    def download_stream(self, drive_file, threads = 1):
         """Downloads a file to memory
 
         Parameters
