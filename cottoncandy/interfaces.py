@@ -460,7 +460,7 @@ class BasicInterface(InterfaceObject):
         	number of threads to use for uploading
         """
         object_to_upload = StringIO(pickle.dumps(data_object))
-        response = self.upload_object(object_name, object_to_upload, acl=acl, threads = threads **metadata)
+        response = self.upload_object(object_name, object_to_upload, acl=acl, threads = threads, **metadata)
         return response
 
     @clean_object_name
