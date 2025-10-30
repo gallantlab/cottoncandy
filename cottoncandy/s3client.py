@@ -378,7 +378,6 @@ class S3Client(CCBackEnd):
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
 								multipart_threshold = MPU_THRESHOLD)
-        print(config)
         return s3_object.upload_file(file_name, Config = config)
 
     def download_to_file(self, object_name, local_name, threads):
