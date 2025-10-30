@@ -329,6 +329,8 @@ class BasicInterface(InterfaceObject):
         ----------
         self
         object_name
+        threads: int
+        	number of threads to use for downloading
 
         Returns
         -------
@@ -350,6 +352,8 @@ class BasicInterface(InterfaceObject):
             the full file name as the object name.
         ExtraArgs : dict
             Defaults ``dict(ACL=DEFAULT_ACL)``
+        threads: int
+        	number of threads to use for uploading
 
         Returns
         -------
@@ -388,6 +392,8 @@ class BasicInterface(InterfaceObject):
         object_name : str
         file_name : str
             Absolute path where the data will be downloaded on disk
+        threads: int
+        	number of threads to use for downloading
         """
         return self.backend_interface.download_to_file(object_name, file_name, threads)
 
@@ -399,6 +405,8 @@ class BasicInterface(InterfaceObject):
         Parameters
         ---------
         object_name : str
+        threads: int
+        	number of threads to use for downloading
 
         Returns
         -------
@@ -417,6 +425,7 @@ class BasicInterface(InterfaceObject):
         object_name : str
         ddict : dict to upload
         metadata : dict, optional
+        threads: int
         """
         json_data = json.dumps(ddict)
         return self.upload_object(object_name, StringIO(json_data.encode()), acl, threads, **metadata)
@@ -428,6 +437,7 @@ class BasicInterface(InterfaceObject):
         Parameters
         ----------
         object_name : str
+        threads: int
 
         Returns
         -------
@@ -446,6 +456,8 @@ class BasicInterface(InterfaceObject):
         ----------
         object_name : str
         data_object : object
+        threads: int
+        	number of threads to use for uploading
         """
         object_to_upload = StringIO(pickle.dumps(data_object))
         response = self.upload_object(object_name, object_to_upload, acl=acl, threads = threads **metadata)
@@ -458,6 +470,8 @@ class BasicInterface(InterfaceObject):
         Parameters
         ----------
         object_name : str
+        threads: int
+        	number of threads to use for downloading
 
         Returns
         -------
@@ -503,6 +517,8 @@ class ArrayInterface(BasicInterface):
         object_name : str
         array : numpy.ndarray
         acl : ACL for this object
+        threads: int
+        	number of threads to use for uploading
         **metadata : extra kwargs are uploaded to object metadata
 
         Returns
@@ -527,6 +543,8 @@ class ArrayInterface(BasicInterface):
         Parameters
         ----------
         object_name : str
+        threads: int
+        	number of connection threads to use
 
         Returns
         -------
@@ -553,6 +571,8 @@ class ArrayInterface(BasicInterface):
             NB: Zstd appears to be the only one that supports >2GB arrays.
         acl : str
             ACL for the object
+        threads: int
+        	number of connection threads to use
         **metadata : optional
 
         Notes
@@ -641,6 +661,8 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
         buffersize  : optional (defaults 2^16)
+        threads: int
+        	number of connection threads to use
 
         Returns
         -------
@@ -707,6 +729,8 @@ class ArrayInterface(BasicInterface):
             conceptualized as implementing an HDF-like group
         verbose : bool
             Whether to print object_name after completion
+        threads: int
+        	number of connection threads to use
         """
         for k, v in array_dict.items():
             name = self.pathjoin(object_name, k)
@@ -734,6 +758,8 @@ class ArrayInterface(BasicInterface):
             Whether to print object_root after completion
         keys : A list of strings
             Specify which keys to download
+        threads: int
+        	number of connection threads to use
 
         Returns
         -------
@@ -810,6 +836,8 @@ class ArrayInterface(BasicInterface):
             ``axis=None`` is WIP and atm works fine for near isotropic matrices
         buffersize : scalar (default: 100MB)
             Byte size of the desired array chunks
+        threads: int
+        	number of connection threads to use
 
         Returns
         -------
@@ -900,6 +928,8 @@ class ArrayInterface(BasicInterface):
         arr : scipy.sparse.spmatrix
             A scipy.sparse array to be saved. If type is DOK or LIL,
             it will be converted to csr before saving
+        threads: int
+        	number of connection threads to use
         """
         if isinstance(arr, csr_matrix):
             attrs = ['data', 'indices', 'indptr']
@@ -938,6 +968,8 @@ class ArrayInterface(BasicInterface):
         ----------
         object_name : str
             The object name for the sparse array to be retrieved.
+        threads: int
+        	number of connection threads to use
 
         Returns
         -------
