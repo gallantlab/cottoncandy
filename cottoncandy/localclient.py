@@ -48,11 +48,12 @@ class LocalClient(CCBackEnd):
             bucket_name = self.path
         return os.path.isfile(os.path.join(bucket_name, cloud_name))
 
-    def upload_stream(self, stream, cloud_name, metadata, permissions):
+    def upload_stream(self, stream, cloud_name, metadata, permissions, threads = 1):
         """Uploads a stream object with a .read() function
 
         Parameters
         ----------
+        threads
         stream : stream
             streaming object, e.g. StringIO(json.dumps(my_dict)) (no metadata)
         cloud_name : str
@@ -74,7 +75,7 @@ class LocalClient(CCBackEnd):
         with open(metadata_file_name, 'w') as local_file:
             json.dump(metadata, local_file, indent=4)
 
-    def upload_file(self, file_name, cloud_name, permissions):
+    def upload_file(self, file_name, cloud_name, permissions, threads = 1):
         """Uploads a file from disk
 
         Parameters
@@ -99,32 +100,7 @@ class LocalClient(CCBackEnd):
             overwrite=True,
         )
 
-    def upload_multipart(self, stream, cloud_name, metadata, permissions,
-                         buffersize, verbose):
-        """Multi-part upload for large stream objects
-
-        Parameters
-        ----------
-        stream : stream
-            streaming object
-        cloud_name : str
-            name to use on cloud
-        metadata : dict
-            custom metadata
-        permissions : str?
-            permissions for this file
-        buffersize : int
-            s3 uploading buffersize
-        verbose : bool
-            s3 verbosity
-
-        Returns
-        -------
-        bool, upload success
-        """
-        return self.upload_stream(stream, cloud_name, metadata, permissions)
-
-    def download_stream(self, cloud_name):
+    def download_stream(self, cloud_name, threads = 1):
         """Downloads a object to an in-memory stream
 
         Parameters
@@ -151,7 +127,7 @@ class LocalClient(CCBackEnd):
 
         return CloudStream(content, sanitize_metadata(metadata))
 
-    def download_to_file(self, cloud_name, file_name):
+    def download_to_file(self, cloud_name, file_name, threads = 1):
         """Downloads an object directly to disk
 
         Parameters
