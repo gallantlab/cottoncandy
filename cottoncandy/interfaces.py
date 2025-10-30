@@ -25,8 +25,6 @@ try:
 except ImportError:
     from io import BytesIO as StringIO
 
-from base64 import b64decode, b64encode
-
 
 import cottoncandy.browser
 import os
@@ -41,7 +39,7 @@ from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_s
                     has_magic, remove_root, mk_aws_path, string2bool,
                     GzipInputStream,
                     DEFAULT_ACL, MPU_CHUNKSIZE, MPU_THRESHOLD, DASK_CHUNKSIZE, MB, SEPARATOR,
-                    MAGIC_CHECK)
+                    MAGIC_CHECK, THREADS)
 from .options import config
 
 DO_COMPRESSION = config.get('compression', 'do_compression').lower() in ('true', 't', 'y','yes')
@@ -319,14 +317,12 @@ class BasicInterface(InterfaceObject):
     # CCBackEnd object or the actual cloud APIs
 
     @clean_object_name
-    def upload_object(self, object_name, body, acl=DEFAULT_ACL, **metadata):
+    def upload_object(self, object_name, body, acl=DEFAULT_ACL, threads = THREADS, **metadata):
         # First check size of object to see if MPU is necessary
-        if get_fileobject_size(body) > MPU_THRESHOLD:
-            self.mpu_fileobject(object_name, body, acl=acl, **metadata)
-        else:
-            self.backend_interface.upload_stream(body, object_name, metadata, permissions=acl)
 
-    def download_stream(self, object_name):
+        self.backend_interface.upload_stream(body, object_name, metadata, permissions = acl, threads = threads)
+
+    def download_stream(self, object_name, threads = THREADS):
         """
         Returns the CloudStream object for an object
         Parameters
@@ -338,10 +334,11 @@ class BasicInterface(InterfaceObject):
         -------
         CloudStream object
         """
-        return self.backend_interface.download_stream(object_name)
+        return self.backend_interface.download_stream(object_name, threads)
 
     def upload_from_file(self, flname, object_name=None,
-                         ExtraArgs=dict(ACL=DEFAULT_ACL)):
+                         ExtraArgs=dict(ACL=DEFAULT_ACL),
+                         threads = THREADS):
         """Upload a file to the cloud.
 
         Parameters
@@ -358,10 +355,10 @@ class BasicInterface(InterfaceObject):
         -------
         response : boto3 response
         """
-        return self.backend_interface.upload_file(flname, object_name, ExtraArgs['ACL'])
+        return self.backend_interface.upload_file(flname, object_name, ExtraArgs['ACL'], threads)
 
     def upload_from_directory(self, disk_path, cloud_path=None,
-                              recursive=False, ExtraArgs=dict(ACL=DEFAULT_ACL)):
+                              recursive=False, ExtraArgs=dict(ACL=DEFAULT_ACL), threads = THREADS):
         '''Upload a directory to the cloud
         '''
         from glob import glob
@@ -373,16 +370,17 @@ class BasicInterface(InterfaceObject):
             flpath = os.path.join(disk_path, flname)
             obname = self.pathjoin(cloud_path, flname)
             if os.path.isfile(flpath):
-                self.upload_from_file(flpath, obname, ExtraArgs=ExtraArgs)
+                self.upload_from_file(flpath, obname, ExtraArgs=ExtraArgs, threads = threads)
             elif os.path.isdir(flpath):
                 if recursive:
                     self.upload_from_directory(flpath, obname,
                                                recursive=recursive,
-                                               ExtraArgs=ExtraArgs)
+                                               ExtraArgs=ExtraArgs,
+                                               threads = threads)
         print('Uploaded "%s" to "%s"'%(disk_path, cloud_path))
 
     @clean_object_name
-    def download_to_file(self, object_name, file_name):
+    def download_to_file(self, object_name, file_name, threads = THREADS):
         """Download cloud object to a file
 
         Parameters
@@ -391,10 +389,10 @@ class BasicInterface(InterfaceObject):
         file_name : str
             Absolute path where the data will be downloaded on disk
         """
-        return self.backend_interface.download_to_file(object_name, file_name)
+        return self.backend_interface.download_to_file(object_name, file_name, threads)
 
     @clean_object_name
-    def download_object(self, object_name):
+    def download_object(self, object_name, threads = THREADS):
         """Download object raw data.
         This simply calls the object body ``read()`` method.
 
@@ -407,38 +405,11 @@ class BasicInterface(InterfaceObject):
         byte_data : str
             Object byte contents
         """
-        return self.download_stream(object_name).content.read()
-
-    @clean_object_name
-    def mpu_fileobject(self, object_name, file_object,
-                       buffersize=MPU_CHUNKSIZE, verbose=True, acl=DEFAULT_ACL, **metadata):
-        """Multi-part upload for a file-object.
-
-        This automatically creates a multipart upload of an object.
-        Useful for large objects that are loaded in memory. This avoids
-        having to write the file to disk and then using ``upload_from_file``.
-
-        Parameters
-        ----------
-        object_name : str
-        file_object :
-            file-like object (e.g. StringIO, file, etc)
-        buffersize  : int, (defaults to 100MB)
-            Byte size of the individual parts to create.
-        verbose     : bool
-            verbosity flag of whether to print mpu information to stdout
-        **metadata  : optional
-            Metadata to store along with MPU object
-        """
-        return self.backend_interface.upload_multipart(file_object, object_name, metadata,
-                                                       buffersize=buffersize,
-                                                       permissions=acl,
-                                                       verbose=verbose)
-
+        return self.download_stream(object_name, threads).content.read()
 
 
     @clean_object_name
-    def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, **metadata):
+    def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, threads = 1, **metadata):
         """Upload a dict as a JSON using ``json.dumps``
 
         Parameters
@@ -448,10 +419,10 @@ class BasicInterface(InterfaceObject):
         metadata : dict, optional
         """
         json_data = json.dumps(ddict)
-        return self.upload_object(object_name, StringIO(json_data.encode()), acl, **metadata)
+        return self.upload_object(object_name, StringIO(json_data.encode()), acl, threads, **metadata)
 
     @clean_object_name
-    def download_json(self, object_name):
+    def download_json(self, object_name, threads = 1):
         """Download a JSON object
 
         Parameters
@@ -464,11 +435,11 @@ class BasicInterface(InterfaceObject):
             Dictionary representation of JSON file
         """
         self.exists_object(object_name, raise_err=True)
-        obj = self.download_object(object_name)
+        obj = self.download_object(object_name, threads = threads)
         return json.loads(obj.decode())
 
     @clean_object_name
-    def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL, **metadata):
+    def upload_pickle(self, object_name, data_object, acl=DEFAULT_ACL, threads = THREADS, **metadata):
         """Upload an object using pickle: ``pickle.dumps``
 
         Parameters
@@ -477,11 +448,11 @@ class BasicInterface(InterfaceObject):
         data_object : object
         """
         object_to_upload = StringIO(pickle.dumps(data_object))
-        response = self.upload_object(object_name, object_to_upload, acl=acl, **metadata)
+        response = self.upload_object(object_name, object_to_upload, acl=acl, threads = threads **metadata)
         return response
 
     @clean_object_name
-    def download_pickle(self, object_name):
+    def download_pickle(self, object_name, threads = THREADS):
         """Download a pickle object
 
         Parameters
@@ -493,7 +464,7 @@ class BasicInterface(InterfaceObject):
         data_object : object
         """
         self.exists_object(object_name, raise_err=True)
-        obj = self.download_object(object_name)
+        obj = self.download_object(object_name, threads = threads)
         return pickle.loads(obj)
 
 class ArrayInterface(BasicInterface):
@@ -520,7 +491,7 @@ class ArrayInterface(BasicInterface):
         super(ArrayInterface, self).__init__(*args, **kwargs)
 
     @clean_object_name
-    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL, **metadata):
+    def upload_npy_array(self, object_name, array, acl=DEFAULT_ACL, threads = THREADS, **metadata):
         """Upload a np.ndarray using ``np.save``
 
         This method creates a copy of the array in memory
@@ -546,11 +517,11 @@ class ArrayInterface(BasicInterface):
         arr_strio = StringIO()
         np.save(arr_strio, array)
         arr_strio.seek(0)
-        response = self.upload_object(object_name, arr_strio, acl, **metadata)
+        response = self.upload_object(object_name, arr_strio, acl, threads, **metadata)
         return response
 
     @clean_object_name
-    def download_npy_array(self, object_name):
+    def download_npy_array(self, object_name, threads = THREADS):
         """Download a np.ndarray uploaded using ``np.save`` with ``np.load``.
 
         Parameters
@@ -562,11 +533,11 @@ class ArrayInterface(BasicInterface):
         array : np.ndarray
         """
         self.exists_object(object_name, raise_err=True)
-        array = np.load(StringIO(self.download_object(object_name)))
+        array = np.load(StringIO(self.download_object(object_name, threads)))
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name, array, compression=DO_COMPRESSION, acl=DEFAULT_ACL, **metadata):
+    def upload_raw_array(self, object_name, array, compression=DO_COMPRESSION, acl=DEFAULT_ACL, threads = THREADS, **metadata):
         """Upload a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -658,11 +629,11 @@ class ArrayInterface(BasicInterface):
             print('Compressed to %0.2f%% the size'%(data_nbytes / float(orig_nbytes) * 100))
         else:
             raise ValueError('Unknown compression scheme: %s'%compression)
-        response = self.upload_object(object_name, filestream, acl=acl, **meta)
+        response = self.upload_object(object_name, filestream, acl=acl, threads = threads, **meta)
         return response
 
     @clean_object_name
-    def download_raw_array(self, object_name, buffersize=2**16, **kwargs):
+    def download_raw_array(self, object_name, buffersize=2**16, threads = THREADS, **kwargs):
         """Download a binary np.ndarray and return an np.ndarray object
         This method downloads an array without any disk or memory overhead.
 
@@ -682,7 +653,7 @@ class ArrayInterface(BasicInterface):
         """
         self.exists_object(object_name, raise_err=True)
 
-        arraystream = self.download_stream(object_name)
+        arraystream = self.download_stream(object_name, threads = threads)
 
         shape = arraystream.metadata['shape']
         shape = tuple(map(int, shape.split(',')) if shape else ())
@@ -725,7 +696,7 @@ class ArrayInterface(BasicInterface):
 
     @clean_object_name
     def dict2cloud(self, object_name, array_dict, acl=DEFAULT_ACL,
-                   verbose=True, **metadata):
+                   verbose=True, threads = THREADS, **metadata):
         """Upload an arbitrary depth dictionary containing arrays
 
         Parameters
@@ -741,17 +712,17 @@ class ArrayInterface(BasicInterface):
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
-                _ = self.dict2cloud(name, v, acl=acl, **metadata)
+                _ = self.dict2cloud(name, v, acl=acl, threads = threads, **metadata)
             elif isinstance(v, np.ndarray):
-                _ = self.upload_raw_array(name, v, acl=acl, **metadata)
+                _ = self.upload_raw_array(name, v, acl=acl, threads = threads, **metadata)
             else:  # try converting to array
-                _ = self.upload_raw_array(name, np.asarray(v), acl=acl)
+                _ = self.upload_raw_array(name, np.asarray(v), threads = threads, acl=acl)
 
         if verbose:
             print('uploaded arrays in "%s"' % object_name)
 
     @clean_object_name
-    def cloud2dict(self, object_root, verbose=True, keys=None, **metadata):
+    def cloud2dict(self, object_root, verbose=True, keys=None, threads = THREADS, **metadata):
         """Download all the arrays of the object branch and return a dictionary.
         This is the complement to ``dict2cloud``
 
@@ -791,13 +762,13 @@ class ArrayInterface(BasicInterface):
             if self.exists_object(path):
                 # TODO: allow non-array things
                 try:
-                    arr = self.download_raw_array(path)
+                    arr = self.download_raw_array(path, threads = threads)
                 except KeyError as e:
                     print('Could not download "%s: missing %s from metadata"' % (path, e))
                     arr = None
                 datadict[subdir] = arr
             else:
-                datadict[subdir] = self.cloud2dict(path)
+                datadict[subdir] = self.cloud2dict(path, threads = threads)
 
             
 
@@ -825,7 +796,7 @@ class ArrayInterface(BasicInterface):
         return S3Directory(object_root, interface = self)
 
     @clean_object_name
-    def upload_dask_array(self, object_name, arr, axis=-1, buffersize=DASK_CHUNKSIZE, **metakwargs):
+    def upload_dask_array(self, object_name, arr, axis=-1, buffersize=DASK_CHUNKSIZE, threads = THREADS, **metakwargs):
         """Upload an array in chunks and store the metadata to reconstruct
         the complete matrix with ``dask``.
 
@@ -872,7 +843,7 @@ class ArrayInterface(BasicInterface):
             part_name = self.pathjoin(object_name, 'pt%04i' % idx)
             metadata['dask'].append((chunk_coord, part_name))
             metadata['chunk_sizes'].append(chunk_arr.shape)
-            self.upload_raw_array(part_name, chunk_arr)
+            self.upload_raw_array(part_name, chunk_arr, threads = threads)
 
         # convert to dask convention (sorry)
         details = [t[0] for t in metadata['dask']]
@@ -887,7 +858,7 @@ class ArrayInterface(BasicInterface):
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
 
     @clean_object_name
-    def download_dask_array(self, object_name, dask_name='array'):
+    def download_dask_array(self, object_name, dask_name='array', threads = THREADS):
         """Downloads a split matrix as a ``dask.array.Array`` object
 
         This uses the stored object metadata to reconstruct the full
@@ -919,7 +890,7 @@ class ArrayInterface(BasicInterface):
         return da.Array(dask, dask_name, chunks, shape = shape, dtype = dtype)
 
     @clean_object_name
-    def upload_sparse_array(self, object_name, arr):
+    def upload_sparse_array(self, object_name, arr, threads = THREADS):
         """Uploads a scipy.sparse array as a folder of array objects
 
         Parameters
@@ -953,14 +924,14 @@ class ArrayInterface(BasicInterface):
 
         # Upload parts
         for attr in attrs:
-            self.upload_raw_array(self.pathjoin(object_name, attr), getattr(arr, attr))
+            self.upload_raw_array(self.pathjoin(object_name, attr), getattr(arr, attr), threads = threads)
 
         # Upload metadata
         metadata = dict(type = arrtype, attrs = attrs, shape = arr.shape)
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata)
 
     @clean_object_name
-    def download_sparse_array(self, object_name):
+    def download_sparse_array(self, object_name, threads = THREADS):
         """Downloads a scipy.sparse array
 
         Parameters
@@ -981,7 +952,7 @@ class ArrayInterface(BasicInterface):
         # Get data
         d = dict()
         for attr in metadata['attrs']:
-            d[attr] = self.download_raw_array(self.pathjoin(object_name, attr))
+            d[attr] = self.download_raw_array(self.pathjoin(object_name, attr), threads = threads)
 
         if arrtype == 'csr':
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
