@@ -354,7 +354,7 @@ class S3Client(CCBackEnd):
         byteStream.seek(0)
         return CloudStream(byteStream, sanitize_metadata(s3_object.metadata))
 
-    def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL, threads = 10):
+    def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL, threads = THREADS):
         """Upload a file to S3.
 
         Parameters
