@@ -327,10 +327,10 @@ class BasicInterface(InterfaceObject):
         Returns the CloudStream object for an object
         Parameters
         ----------
-        self
-        object_name
-        threads: int
-        	number of threads to use for downloading
+        object_name : str
+            Name of the object to download.
+        threads : int
+            Number of threads to use for downloading.
 
         Returns
         -------
