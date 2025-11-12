@@ -45,6 +45,8 @@ MANDATORY_BUCKET_PREFIX = options.config.get('basic', 'mandatory_bucket_prefix')
 
 ISBOTO_VERBOSE = options.config.get('login', 'verbose_boto')
 
+THREADS = int(options.config.get('basic', 'threads'))
+
 ##############################
 # misc functions
 ##############################

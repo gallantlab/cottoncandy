@@ -30,11 +30,12 @@ class CCBackEnd(object):
         pass
 
     @abstractmethod
-    def upload_stream(self, stream, cloud_name, metadata, permissions):
+    def upload_stream(self, stream, cloud_name, metadata, permissions, threads):
         """Uploads a stream object with a .read() function
 
         Parameters
         ----------
+        threads
         stream : stream
             streaming object
         cloud_name : str
@@ -43,6 +44,8 @@ class CCBackEnd(object):
             custom metadata for this file
         permissions : str?
             permissions for this file
+        threads : int
+            number of threads to use
 
         Returns
         -------
@@ -51,17 +54,20 @@ class CCBackEnd(object):
         pass
 
     @abstractmethod
-    def upload_file(self, file_name, cloud_name, permissions):
+    def upload_file(self, file_name, cloud_name, permissions, threads):
         """Uploads a file from disk
 
         Parameters
         ----------
+        threads
         file_name : str
             name of file to upload
         cloud_name : str
             name to use on the cloud
         permissions : str?
             permissions for this file
+        threads : int
+            number of threads to use
 
         Returns
         -------
@@ -69,39 +75,18 @@ class CCBackEnd(object):
         """
         pass
 
-    @abstractmethod
-    def upload_multipart(self, stream, cloud_name, metadata, permissions, buffersize, verbose):
-        """Multi-part upload for large stream objects
-
-        Parameters
-        ----------
-        stream : stream
-            streaming object
-        cloud_name : str
-            name to use on cloud
-        metadata : dict
-            custom metadata
-        permissions : str?
-            permissions for this file
-        buffersize : int
-            s3 uploading buffersize
-        verbose : bool
-            s3 verbosity
-
-        Returns
-        -------
-        bool, upload success
-        """
-        pass
 
     @abstractmethod
-    def download_stream(self, cloud_name):
+    def download_stream(self, cloud_name, threads):
         """Downloads a object to an in-memory stream
 
         Parameters
         ----------
+        threads
         cloud_name : str
             name of object to download
+        threads : int
+            number of threads to use
 
         Returns
         -------
@@ -110,15 +95,18 @@ class CCBackEnd(object):
         pass
 
     @abstractmethod
-    def download_to_file(self, cloud_name, file_name):
+    def download_to_file(self, cloud_name, file_name, threads):
         """Downloads an object directly to disk
 
         Parameters
         ----------
+        threads
         cloud_name : str
             name of object to download
         file_name : str
             name on disk to use
+        threads : int
+            number of threads to use
 
         Returns
         -------

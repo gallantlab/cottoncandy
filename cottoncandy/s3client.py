@@ -3,6 +3,7 @@
 from __future__ import print_function
 from functools import reduce
 import boto3
+from boto3.s3.transfer import TransferConfig
 import botocore
 import logging
 from io import BytesIO
@@ -309,13 +310,12 @@ class S3Client(CCBackEnd):
         bucket_name = self.get_bucket_name(bucket_name)
         return self.connection.Object(bucket_name = bucket_name, key = object_name)
 
-    def upload_stream(self, body, object_name, metadata, permissions=DEFAULT_ACL):
+    def upload_stream(self, stream, cloud_name, metadata, permissions, threads):
         """Uploads a stream
 
         Parameters
         ----------
-        object_name
-        body : stream
+        threads
         permissions
         metadata
 
@@ -323,10 +323,14 @@ class S3Client(CCBackEnd):
         -------
 
         """
-        obj = self.get_s3_object(object_name)
-        return obj.put(Body=body, ACL=permissions, Metadata=metadata)
+        obj = self.get_s3_object(cloud_name)
+        config = TransferConfig(max_concurrency = threads,
+                                multipart_chunksize = MPU_CHUNKSIZE,
+                                multipart_threshold = MPU_THRESHOLD)
+        return obj.upload_fileobj(stream, ExtraArgs = {'ACL': permissions, 'Metadata': metadata},
+                                                Config = config)
 
-    def download_stream(self, object_name):
+    def download_stream(self, object_name, threads):
         """Download object raw data.
         This simply calls the object body ``read()`` method.
 
@@ -342,9 +346,15 @@ class S3Client(CCBackEnd):
         if not self.check_file_exists(object_name):
             raise IOError('Object "%s" does not exist' % object_name)
         s3_object = self.get_s3_object(object_name)
-        return CloudStream(BytesIO(s3_object.get()['Body'].read()), sanitize_metadata(s3_object.metadata))
+        config = TransferConfig(max_concurrency = threads,
+                                multipart_chunksize = MPU_CHUNKSIZE,
+                                multipart_threshold = MPU_THRESHOLD)
+        byteStream = BytesIO()
+        s3_object.download_fileobj(byteStream, Config = config)
+        byteStream.seek(0)
+        return CloudStream(byteStream, sanitize_metadata(s3_object.metadata))
 
-    def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL):
+    def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL, threads = THREADS):
         """Upload a file to S3.
 
         Parameters
@@ -365,9 +375,12 @@ class S3Client(CCBackEnd):
         if cloud_name is None:
             cloud_name = file_name
         s3_object = self.get_s3_object(cloud_name)
-        return s3_object.upload_file(file_name, ExtraArgs = dict(ACL = permissions))
+        config = TransferConfig(max_concurrency = threads,
+                                multipart_chunksize = MPU_CHUNKSIZE,
+                                multipart_threshold = MPU_THRESHOLD)
+        return s3_object.upload_file(file_name, ExtraArgs={'ACL': permissions}, Config = config)
 
-    def download_to_file(self, object_name, local_name):
+    def download_to_file(self, object_name, local_name, threads):
         """Download S3 object to a file
 
         Parameters
@@ -378,92 +391,10 @@ class S3Client(CCBackEnd):
         """
         assert self.check_file_exists(object_name)  # make sure object exists
         s3_object = self.get_s3_object(object_name)
-        return s3_object.download_file(local_name)
-
-    def upload_multipart(self, file_object, object_name, metadata, permissions=DEFAULT_ACL,
-                         buffersize=MPU_CHUNKSIZE, verbose=True, **kwargs):
-        """Multi-part upload for a python file-object.
-
-        This automatically creates a multipart upload of an object.
-        Useful for large objects that are loaded in memory. This avoids
-        having to write the file to disk and then using ``upload_from_file``.
-
-        Parameters
-        ----------
-        object_name : str
-        file_object :
-            file-like python object (e.g. StringIO, file, etc)
-        buffersize  : int
-            Byte size of the individual parts to create.
-            Defaults to 100MB
-        verbose     : bool
-            verbosity flag of whether to print mpu information to stdout
-        metadata  : optional
-            Metadata to store along with MPU object
-        permissions : str?
-            permissions for this file
-        """
-        client=self.connection.meta.client
-
-        mpu = client.create_multipart_upload(Bucket=self.bucket_name,
-                                             ACL=permissions,
-                                             Key=object_name,
-                                             Metadata=metadata)
-
-        # get size
-        nbytes_total = get_fileobject_size(file_object)
-        file_object.seek(0)
-
-        # check if our buffersize is sensible
-        if nbytes_total < buffersize:
-            npotential = nbytes_total / float(MIN_MPU_SIZE)
-            if npotential > 10:
-                # 10MB sensible minimum for 50MB < x < 100MB (default)
-                buffersize = MIN_MPU_SIZE * 2
-            else:
-                # this file is smaller than chunksize by a little
-                buffersize = MIN_MPU_SIZE
-
-        # figure out parts split
-        nparts = int(np.floor(nbytes_total / float(buffersize)))
-        last_part_offset = int(nbytes_total - nparts * buffersize)
-
-        # make sure we can upload
-        assert nbytes_total < MAX_MPU_SIZE  # 5TB
-        assert buffersize >= MIN_MPU_SIZE  # 5MB
-        assert nparts < MAX_MPU_PARTS  # 10,000
-        assert nbytes_total > buffersize
-
-        mpu_info = dict(Parts = [])
-        if verbose:
-            print('MPU: %0.02fMB file in %i parts' % (nbytes_total / (2. ** 20), nparts))
-
-        for chunk_idx in range(nparts):
-            part_number = chunk_idx + 1
-            if part_number == nparts:
-                buffersize += last_part_offset
-            txt = (part_number, nparts, buffersize / (2. ** 20), nbytes_total / (2. ** 20))
-            if verbose:
-                print('Uploading %i/%i: %0.02fMB of %0.02fMB' % txt)
-
-            data_chunk = file_object.read(buffersize)
-            response = client.upload_part(Bucket = self.bucket_name,
-                                          Key = object_name,
-                                          UploadId = mpu['UploadId'],
-                                          PartNumber = part_number,
-                                          Body = data_chunk)
-
-            # store the part info
-            part_info = dict(PartNumber = part_number,
-                             ETag = response['ETag'])
-            mpu_info['Parts'].append(part_info)
-
-        # finalize
-        mpu_response = client.complete_multipart_upload(Bucket = self.bucket_name,
-                                                        Key = object_name,
-                                                        UploadId = mpu['UploadId'],
-                                                        MultipartUpload = mpu_info)
-        return mpu_response
+        config = TransferConfig(max_concurrency = threads,
+                                multipart_chunksize = MPU_CHUNKSIZE,
+                                multipart_threshold = MPU_THRESHOLD)
+        return s3_object.download_file(local_name, Config = config)
 
     def copy(self, source, destination, source_bucket, destination_bucket, overwrite):
         source_bucket = self.get_bucket_name(source_bucket)
