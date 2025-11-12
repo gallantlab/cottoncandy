@@ -146,3 +146,30 @@ def test_dict2cloud(cci, object_name):
         for k, v in content['deep'].items():
             assert np.allclose(v, dat['deep'][k])
         cci.rm(object_name, recursive=True)
+
+
+def test_copy(cci, object_name):
+    # Tests that the object contents _and_ metadata are copied correctly
+    dest_object_name = object_name + '_temp'
+    for content in content_generator():
+        cci.upload_raw_array(object_name, content)
+        time.sleep(cci.wait_time)
+        cci.cp(object_name, dest_object_name, overwrite=True)
+        assert cci.exists_object(object_name)
+        dat = cci.download_raw_array(dest_object_name)
+        assert np.allclose(dat, content)
+        cci.rm(object_name)
+        cci.rm(dest_object_name)
+
+
+def test_move(cci, object_name):
+    # Tests that the object contents _and_ metadata are moved correctly
+    dest_object_name = object_name + '_temp'
+    for content in content_generator():
+        cci.upload_raw_array(object_name, content)
+        time.sleep(cci.wait_time)
+        cci.mv(object_name, dest_object_name, overwrite=True)
+        assert not cci.exists_object(object_name)
+        dat = cci.download_raw_array(dest_object_name)
+        assert np.allclose(dat, content)
+        cci.rm(dest_object_name)
