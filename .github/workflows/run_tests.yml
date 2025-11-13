@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, "3.10", "3.11"]
+        python-version: [3.9, "3.10", "3.11", "3.12", "3.13", "3.14"]
       max-parallel: 5
       fail-fast: false
 
@@ -33,12 +33,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
-        pip install -e .
+        pip install -e .[extra] --group test
 
     - name: Lint with flake8
       run: |
-        pip install -q flake8
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
@@ -51,8 +49,7 @@ jobs:
         DL_ACCESS_KEY: ${{ secrets.DL_ACCESS_KEY }} 
         DL_URL: ${{ secrets.DL_URL }} 
       run: |
-        pip install -q pytest pytest-cov codecov pytest-rerunfailures
-        pytest --reruns 2 --cov=./
+        pytest --reruns 2
 
     - name: Run codecov
       run: |

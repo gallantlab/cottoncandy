@@ -29,21 +29,19 @@ Jupyter Notebook examples using cottoncandy to
 
 * Explore OpenNeuro nifti data: [**view notebook**](https://nbviewer.jupyter.org/github/gallantlab/cottoncandy/blob/main/cottoncandy/examples/ccexample_openneuro.ipynb) ([launch](https://colab.research.google.com/github/gallantlab/cottoncandy/blob/main/cottoncandy/examples/ccexample_openneuro.ipynb)
 using google colab)
+
 ## Installation
 
-Directly from the repo:
-
-Clone the repo from GitHub and do the usual python install from the command line
-
-```
-$ git clone https://github.com/gallantlab/cottoncandy.git
-$ cd cottoncandy
-$ sudo python setup.py install
-```
-With pip:
+Install the latest stable release via pip:
 
 ```
 $ pip install cottoncandy
+```
+
+Or the development version from GitHub:
+
+```
+$ pip install git+https://github.com/gallantlab/cottoncandy.git
 ```
 
 ### Configuration file
@@ -57,11 +55,11 @@ The configuration file is created the first time you import cottoncandy and it i
 
 By default, cottoncandy sets object and bucket permissions to ``authenticated-read``. If you wish to keep all your objects private, modify your configuration file and set ``default_acl = private``. See [AWS ACL overview](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) for more information on S3 permissions.
 
-Advanced (for admins): One can customize the cottoncandy system install by cloning the repo and modifying `defaults.cfg`. For example, one can set the default encyption key across the system for all users (`key = SoMeEncypTionKey`). When a user first uses cottoncandy, this deault value will be copied to their personal configuration file. Note however that the user can still overwrite that value. 
+Advanced (for admins): One can customize the cottoncandy system install by cloning the repo and modifying `defaults.cfg`. For example, one can set the default encyption key across the system for all users (`key = SoMeEncypTionKey`). When a user first uses cottoncandy, this default value will be copied to their personal configuration file. Note however that the user can still overwrite that value.
 
 
 ## Getting started
-Setup the connection (endpoint, access and secret keys can be specified in the configuration file instead)::
+Setup the connection (endpoint, access and secret keys can be specified in the configuration file instead):
 
 ```python
 >>> import cottoncandy as cc
