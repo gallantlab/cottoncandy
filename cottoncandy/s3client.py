@@ -142,8 +142,11 @@ class S3Client(CCBackEnd):
         try:
             self.connection.meta.client.head_bucket(Bucket = bucket_name)
         except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] in ["404", "403"]:
+            if e.response['Error']['Code'] == "404":
                 exists = False
+            elif e.response['Error']['Code'] == "403":
+                # 403 Forbidden means bucket exists but we lack HeadBucket permission
+                exists = True
             else:
                 raise e
         else:
