@@ -1,8 +1,23 @@
 from abc import ABCMeta, abstractmethod
+from io import BytesIO
+from typing import NamedTuple, BinaryIO, Optional
 
 
 class FileNotFoundError(RuntimeError):
     """File not found error"""
+
+
+class CloudStream(NamedTuple):
+    """
+    A simple unified representation of an object downloaded from the cloud.
+     .content is a streaming object with a .read() function
+     .metadata is a dictionary of the custom metadata of this object
+
+    TODO: unified metadata
+    """
+    #content: BytesIO
+    content: BinaryIO
+    metadata: dict[str, str]
 
 
 class CCBackEnd:
@@ -16,12 +31,12 @@ class CCBackEnd:
 
     ## Basic File IO
     @abstractmethod
-    def check_file_exists(self, file_name, bucket_name):
+    def check_file_exists(self, cloud_name: str, bucket_name: Optional[str] = None) -> bool:
         """Checks whether a file exists on the cloud
 
         Parameters
         ----------
-        file_name : str
+        cloud_name : str
             file on cloud
         bucket_name : str
             (s3) bucket to check in
@@ -33,7 +48,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def upload_stream(self, stream, cloud_name, metadata, permissions, threads):
+    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict, permissions: Optional[str], threads: int):
         """Uploads a stream object with a .read() function
 
         Parameters
@@ -57,7 +72,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def upload_file(self, file_name, cloud_name, permissions, threads):
+    def upload_file(self, file_name: str, cloud_name: str, permissions: str, threads: int):
         """Uploads a file from disk
 
         Parameters
@@ -80,7 +95,7 @@ class CCBackEnd:
 
 
     @abstractmethod
-    def download_stream(self, cloud_name, threads):
+    def download_stream(self, cloud_name: str, threads: int) -> CloudStream:
         """Downloads a object to an in-memory stream
 
         Parameters
@@ -98,7 +113,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def download_to_file(self, cloud_name, file_name, threads):
+    def download_to_file(self, cloud_name: str, file_name: str, threads: int):
         """Downloads an object directly to disk
 
         Parameters
@@ -120,7 +135,7 @@ class CCBackEnd:
     ## Basic File management
 
     @abstractmethod
-    def list_directory(self, path, limit):
+    def list_directory(self, path: str, limit: int) -> list[str]:
         """Lists the content of a directory
 
         Parameters
@@ -130,12 +145,12 @@ class CCBackEnd:
 
         Returns
         -------
-
+        list[str]
         """
         pass
 
     @abstractmethod
-    def list_objects(self):
+    def list_objects(self) -> list[str]:
         """Gets all objects contained by backend
 
         Returns
@@ -145,7 +160,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def copy(self, source, destination, source_bucket, destination_bucket, overwrite):
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
         """Copies an object
 
         Parameters
@@ -168,25 +183,30 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def move(self, source, destination, source_bucket, destination_bucket, overwrite):
+    def move(self, source: str, destination: str, source_bucket: str, destination_bucket: str, overwrite: bool) -> bool:
         """Moves an object
 
         Parameters
         ----------
-        source
-        destination
-        source_bucket
-        destination_bucket
-        overwrite
+        source: str
+            origin path
+        destination: str
+            destination path
+        source_bucket: str
+            (s3) origin bucket
+        destination_bucket: str
+            (s3) destination bucket
+        overwrite: bool
+            overwrite if destination exists?
 
         Returns
         -------
-
+        bool, move success
         """
         pass
 
     @abstractmethod
-    def delete(self, file_name, recursive=False, delete=False):
+    def delete(self, cloud_name: str, recursive: bool = False, delete: bool = False) -> bool:
         """Deletes an object
 
         Parameters
@@ -200,13 +220,13 @@ class CCBackEnd:
 
         Returns
         -------
-
+        bool, delete success
         """
         pass
 
     @property
     @abstractmethod
-    def size(self):
+    def size(self) -> int:
         """Size of stored cloud items in bytes
 
         Returns
@@ -214,16 +234,3 @@ class CCBackEnd:
         int
         """
         pass
-
-
-class CloudStream:
-    """
-    A simple unified representation of an object downloaded from the cloud.
-     .content is a streaming object with a .read() function
-     .metadata is a dictionary of the custom metadata of this object
-
-    TODO: unified metadata
-    """
-    def __init__(self, stream, metadata):
-        self.content = stream
-        self.metadata = metadata
