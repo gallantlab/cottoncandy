@@ -5,6 +5,7 @@ import logging
 import os
 from functools import reduce
 from io import BytesIO
+from typing import BinaryIO, Optional
 from urllib.parse import unquote
 
 import boto3
@@ -103,7 +104,7 @@ class S3Client(CCBackEnd):
             logging.getLogger('boto3').setLevel(logging.WARNING)
             logging.getLogger('botocore').setLevel(logging.WARNING)
 
-    def get_bucket_name(self, bucket_name):
+    def get_bucket_name(self, bucket_name: Optional[str] = None) -> Optional[str]:
         """
 
         Parameters
@@ -120,17 +121,18 @@ class S3Client(CCBackEnd):
         return bucket_name
 
     @clean_object_name
-    def check_file_exists(self, object_name, bucket_name=None):
+    def check_file_exists(self, cloud_name: str, bucket_name: Optional[str] = None) -> bool:
         """Check whether object exists in bucket
 
         Parameters
         ----------
-        object_name : str
-            The object name
-        bucket_name
+        cloud_name : str
+            The cloud name
+        bucket_name : str
+            The bucket name. If None, use the current bucket.
         """
         bucket_name = self.get_bucket_name(bucket_name)
-        ob = self.connection.Object(key = object_name, bucket_name = bucket_name)
+        ob = self.connection.Object(key = cloud_name, bucket_name = bucket_name)
 
         try:
             ob.load()
@@ -328,7 +330,7 @@ class S3Client(CCBackEnd):
         bucket_name = self.get_bucket_name(bucket_name)
         return self.connection.Object(bucket_name = bucket_name, key = object_name)
 
-    def upload_stream(self, stream, cloud_name, metadata, permissions, threads):
+    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict, permissions: Optional[str], threads: int):
         """Uploads a stream
 
         Parameters
@@ -348,22 +350,22 @@ class S3Client(CCBackEnd):
         return obj.upload_fileobj(stream, ExtraArgs = {'ACL': permissions, 'Metadata': metadata},
                                                 Config = config)
 
-    def download_stream(self, object_name, threads):
+    def download_stream(self, cloud_name: str, threads: int) -> CloudStream:
         """Download object raw data.
         This simply calls the object body ``read()`` method.
 
         Parameters
         ---------
-        object_name : str
+        cloud_name : str
 
         Returns
         -------
         stream
             file-like stream of object data
         """
-        if not self.check_file_exists(object_name):
-            raise IOError('Object "%s" does not exist' % object_name)
-        s3_object = self.get_s3_object(object_name)
+        if not self.check_file_exists(cloud_name):
+            raise IOError('Object "%s" does not exist' % cloud_name)
+        s3_object = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
                                 multipart_threshold = MPU_THRESHOLD)
@@ -372,7 +374,7 @@ class S3Client(CCBackEnd):
         byteStream.seek(0)
         return CloudStream(byteStream, sanitize_metadata(s3_object.metadata))
 
-    def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL, threads = THREADS):
+    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: str = DEFAULT_ACL, threads: int = THREADS):
         """Upload a file to S3.
 
         Parameters
@@ -398,23 +400,23 @@ class S3Client(CCBackEnd):
                                 multipart_threshold = MPU_THRESHOLD)
         return s3_object.upload_file(file_name, ExtraArgs={'ACL': permissions}, Config = config)
 
-    def download_to_file(self, object_name, local_name, threads):
+    def download_to_file(self, cloud_name: str, local_name: str, threads: int):
         """Download S3 object to a file
 
         Parameters
         ----------
-        object_name : str
+        cloud_name : str
         local_name : str
             Absolute path where the data will be downloaded on disk
         """
-        assert self.check_file_exists(object_name)  # make sure object exists
-        s3_object = self.get_s3_object(object_name)
+        assert self.check_file_exists(cloud_name)  # make sure object exists
+        s3_object = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
                                 multipart_threshold = MPU_THRESHOLD)
         return s3_object.download_file(local_name, Config = config)
 
-    def copy(self, source, destination, source_bucket, destination_bucket, overwrite):
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
         source_bucket = self.get_bucket_name(source_bucket)
         dest_bucket = source_bucket if (destination_bucket is None) else destination_bucket
         dest_bucket = self.get_bucket_name(dest_bucket)
@@ -429,7 +431,7 @@ class S3Client(CCBackEnd):
         ob_new.copy_from(CopySource = fpath)
         return ob_new
 
-    def move(self, source, destination, source_bucket, destination_bucket, overwrite):
+    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
         new_ob = self.copy(source, destination, source_bucket, destination_bucket, overwrite)
         old_ob = self.get_s3_object(source, bucket_name = source_bucket)
         old_ob.delete()
