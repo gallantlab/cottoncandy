@@ -1394,7 +1394,7 @@ class DefaultInterface(FileSystemInterface,
             The URL for the S3 gateway
         force_bucket_creation : bool
             Create requested bucket if it doesn't exist
-        backend : 's3'|'gdrive'
+        backend : 's3'|'gdrive'|'local'
             which backend to hook on to
 
         Returns
