@@ -2,6 +2,7 @@
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 
 import logging
+import os
 from functools import reduce
 from io import BytesIO
 from urllib.parse import unquote
@@ -10,10 +11,30 @@ import boto3
 import botocore
 from boto3.s3.transfer import TransferConfig
 from botocore.utils import fix_s3_host
-
-from cottoncandy.utils import *
+from dateutil.tz import tzlocal
 
 from .backend import CCBackEnd, CloudStream
+
+#from .utils import *
+from .utils import (
+    DEFAULT_ACL,
+    ISBOTO_VERBOSE,
+    MANDATORY_BUCKET_PREFIX,
+    MPU_CHUNKSIZE,
+    MPU_THRESHOLD,
+    SEPARATOR,
+    THREADS,
+    bytes2human,
+    clean_object_name,
+    has_real_magic,
+    mk_aws_path,
+    pathjoin,
+    remove_root,
+    remove_trivial_magic,
+    sanitize_metadata,
+    string2bool,
+    unquote_names,
+)
 
 
 class S3Client(CCBackEnd):
