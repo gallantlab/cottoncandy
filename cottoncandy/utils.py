@@ -1,19 +1,16 @@
 '''Helper functions
 '''
+import itertools
 import os
 import re
-import six
-import zlib
 import string
-import itertools
-from dateutil.tz import tzlocal
+import zlib
 from functools import wraps
-
-
 from urllib.parse import unquote
 
-
 import numpy as np
+import six
+from dateutil.tz import tzlocal
 
 from cottoncandy import options
 

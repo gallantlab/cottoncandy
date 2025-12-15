@@ -3,14 +3,12 @@
 import os
 import re
 
-from cottoncandy.utils import (clean_object_name,
-                               get_object_size,
-                               has_start_digit,
-                               sanitize_metadata,
-                               )
-
-
-
+from cottoncandy.utils import (
+    clean_object_name,
+    get_object_size,
+    has_start_digit,
+    sanitize_metadata,
+)
 
 # globals
 ##############################

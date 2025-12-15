@@ -1,18 +1,19 @@
 # emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
-from __future__ import print_function
-from functools import reduce
-import boto3
-from boto3.s3.transfer import TransferConfig
-import botocore
+
 import logging
+from functools import reduce
 from io import BytesIO
-
-from botocore.utils import fix_s3_host
-from cottoncandy.utils import *
-from .backend import CCBackEnd, CloudStream
-
 from urllib.parse import unquote
+
+import boto3
+import botocore
+from boto3.s3.transfer import TransferConfig
+from botocore.utils import fix_s3_host
+
+from cottoncandy.utils import *
+
+from .backend import CCBackEnd, CloudStream
 
 
 class S3Client(CCBackEnd):

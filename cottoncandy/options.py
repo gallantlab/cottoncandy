@@ -1,7 +1,5 @@
-import os
-import sys
-
 import configparser
+import os
 
 from . import appdirs
 

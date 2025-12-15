@@ -1,31 +1,42 @@
+import fnmatch
 import json
+import os
+import pickle
+import re
+from gzip import GzipFile
+from io import BytesIO as StringIO
+from urllib.parse import unquote
+from warnings import warn
+
 import six
 
-import pickle
-
-from urllib.parse import unquote
-
-import fnmatch
-from gzip import GzipFile
-
-from io import BytesIO as StringIO
-
-
 import cottoncandy.browser
-import os
-import re
-
 from cottoncandy.backend import FileNotFoundError
 
-from .s3client import S3Client, botocore
-from warnings import warn
-from .utils import (pathjoin, clean_object_name, print_objects, get_fileobject_size, read_buffered,
-                    generate_ndarray_chunks, remove_trivial_magic, has_real_magic, objects2names,
-                    has_magic, remove_root, mk_aws_path, string2bool,
-                    GzipInputStream,
-                    DEFAULT_ACL, DASK_CHUNKSIZE, MB, SEPARATOR,
-                    MAGIC_CHECK, THREADS)
 from .options import config
+from .s3client import S3Client, botocore
+from .utils import (
+    DASK_CHUNKSIZE,
+    DEFAULT_ACL,
+    MAGIC_CHECK,
+    MB,
+    SEPARATOR,
+    THREADS,
+    GzipInputStream,
+    clean_object_name,
+    generate_ndarray_chunks,
+    get_fileobject_size,
+    has_magic,
+    has_real_magic,
+    mk_aws_path,
+    objects2names,
+    pathjoin,
+    print_objects,
+    read_buffered,
+    remove_root,
+    remove_trivial_magic,
+    string2bool,
+)
 
 DO_COMPRESSION = config.get('compression', 'do_compression').lower() in ('true', 't', 'y', 'yes')
 COMPRESSION_SMALL = config.get('compression', 'small_array')
@@ -33,11 +44,7 @@ COMPRESSION_LARGE = config.get('compression', 'large_array')
 
 try:
     import numpy as np
-    from scipy.sparse import (coo_matrix,
-                            csr_matrix,
-                            csc_matrix,
-                            bsr_matrix,
-                            dia_matrix)
+    from scipy.sparse import bsr_matrix, coo_matrix, csc_matrix, csr_matrix, dia_matrix
 except ImportError:
     warn('numpy/scipy not available')
 

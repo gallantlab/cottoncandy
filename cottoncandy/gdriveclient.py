@@ -1,11 +1,12 @@
-from __future__ import print_function
+
+import re
+
+import six
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from pydrive.files import GoogleDriveFile, FileNotUploadedError, ApiRequestError
-from .backend import CCBackEnd, FileNotFoundError, CloudStream
-import six
-import sys
-import re
+from pydrive.files import ApiRequestError, FileNotUploadedError, GoogleDriveFile
+
+from .backend import CCBackEnd, CloudStream, FileNotFoundError
 
 # Ipython autocomplete
 try:
