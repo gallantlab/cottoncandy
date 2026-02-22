@@ -15,7 +15,6 @@ from dateutil.tz import tzlocal
 
 from .backend import CCBackEnd, CloudStream
 
-#from .utils import *
 from .utils import (
     DEFAULT_ACL,
     ISBOTO_VERBOSE,
