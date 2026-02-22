@@ -1,23 +1,16 @@
 '''Helper functions
 '''
+import itertools
 import os
 import re
-import six
-import zlib
 import string
-import urllib
-import itertools
-from dateutil.tz import tzlocal
+import zlib
 from functools import wraps
-
-
-try:
-    from urllib import unquote
-except ImportError:
-    from urllib.parse import unquote
-
+from urllib.parse import unquote
 
 import numpy as np
+import six
+from dateutil.tz import tzlocal
 
 from cottoncandy import options
 
@@ -57,6 +50,7 @@ def sanitize_metadata(metadict):
         outdict[key.lower()] = val
     return outdict
 
+
 def pathjoin(a, *p):
     """Join two or more pathname components, inserting SEPARATOR as needed.
     If any component is an absolute path, all previous path components
@@ -71,6 +65,7 @@ def pathjoin(a, *p):
         else:
             path += SEPARATOR + b
     return path
+
 
 def string2bool(mstring):
     '''
@@ -99,22 +94,22 @@ def bytes2human(nbytes):
     '''
     if nbytes == 0:
         return '0.00B'
-    mapper = {0 : 'B',
-              10 : 'KB',
-              20 : 'MB',
-              30 : 'GB',
-              40 : 'TB',
-              50 : 'PB',
-              60 : 'EB',
-              70 : 'ZB',
+    mapper = {0: 'B',
+              10: 'KB',
+              20: 'MB',
+              30: 'GB',
+              40: 'TB',
+              50: 'PB',
+              60: 'EB',
+              70: 'ZB',
               }
 
     exps = sorted(mapper.keys())
     exp_coeff = np.log2(nbytes)
-    exp_closest = int((exps[np.abs(exps - exp_coeff).argmin()]))
+    exp_closest = int(exps[np.abs(exps - exp_coeff).argmin()])
     if np.log10(nbytes/2.**exp_closest) < 0:
         exp_closest -= 10
-    return '%0.02f%s'%(nbytes/2.**exp_closest, mapper[exp_closest])
+    return '%0.02f%s' % (nbytes/2.**exp_closest, mapper[exp_closest])
 
 
 def get_object_size(boto_s3_object):
@@ -183,7 +178,7 @@ def get_key_from_environ():
     '''
     try:
         return os.environ['AWS_ACCESS_KEY'], os.environ['AWS_SECRET_KEY']
-    except:
+    except KeyError:
         return
 
 
@@ -248,7 +243,7 @@ def print_objects(object_list):
         maxlen = max(map(len, object_names))
         dates = [t.last_modified.astimezone(tzlocal()).strftime('%Y/%m/%d (%H:%M:%S)')\
                  for t in object_list]
-        padding = '{0: <%i} {1} {2}M'%(min(maxlen+3, 70))
+        padding = '{0: <%i} {1} {2}M' % (min(maxlen+3, 70))
         sizes = [round(t.meta.data['Size']/2.**20,1) for t in object_list]
         info = [padding.format(name[-100:],date,size) for name,date,size in zip(object_names, dates, sizes)]
         print('\n'.join(info))
@@ -289,11 +284,13 @@ def remove_root(string_):
 ##############################
 
 check_digits = re.compile('[0-9]')
+MAGIC_CHECK = re.compile('[*?[]')
+
 
 def has_start_digit(s):
     return check_digits.match(s) is not None
 
-MAGIC_CHECK = re.compile('[*?[]')
+
 
 def has_magic(s):
     '''Check string to see if it has any glob magic
@@ -465,7 +462,8 @@ def read_buffered(frm, to, buffersize=64):
         else:
             raise("Unknown python version") # not sure six will ever do anything here (6=2x3)
 
-class GzipInputStream(object):
+
+class GzipInputStream:
     """Simple class that allow streaming reads from GZip files
     (from https://gist.github.com/beaufour/4205533).
 

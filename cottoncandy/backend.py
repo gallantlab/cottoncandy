@@ -1,13 +1,16 @@
 from abc import ABCMeta, abstractmethod
 
+
 class FileNotFoundError(RuntimeError):
     """File not found error"""
 
-class CCBackEnd(object):
+
+class CCBackEnd:
     """
     Interface for cottoncandy backends
     """
     __metaclass__ = ABCMeta
+
     def __init__(self):
         pass
 
@@ -212,7 +215,8 @@ class CCBackEnd(object):
         """
         pass
 
-class CloudStream(object):
+
+class CloudStream:
     """
     A simple unified representation of an object downloaded from the cloud.
      .content is a streaming object with a .read() function

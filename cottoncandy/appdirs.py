@@ -23,9 +23,9 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     str = str
 
+
 class AppDirsError(Exception):
     pass
-
 
 
 def user_data_dir(appname, appauthor=None, version=None, roaming=False):
@@ -168,6 +168,7 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
         path = os.path.join(path, version)
     return path
 
+
 def user_log_dir(appname, appauthor=None, version=None, opinion=True):
     r"""Return full path to the user-specific log dir for this application.
 
@@ -221,18 +222,22 @@ class AppDirs(object):
         self.appauthor = appauthor
         self.version = version
         self.roaming = roaming
+
     @property
     def user_data_dir(self):
         return user_data_dir(self.appname, self.appauthor,
             version=self.version, roaming=self.roaming)
+
     @property
     def site_data_dir(self):
         return site_data_dir(self.appname, self.appauthor,
             version=self.version)
+
     @property
     def user_cache_dir(self):
         return user_cache_dir(self.appname, self.appauthor,
             version=self.version)
+
     @property
     def user_log_dir(self):
         return user_log_dir(self.appname, self.appauthor,
@@ -261,6 +266,7 @@ def _get_win_folder_from_registry(csidl_name):
     dir, type = winreg.QueryValueEx(key, shell_folder_name)
     return dir
 
+
 def _get_win_folder_with_pywin32(csidl_name):
     from win32com.shell import shellcon, shell
     dir = shell.SHGetFolderPath(0, getattr(shellcon, csidl_name), 0, 0)
@@ -286,6 +292,7 @@ def _get_win_folder_with_pywin32(csidl_name):
     except UnicodeError:
         pass
     return dir
+
 
 def _get_win_folder_with_ctypes(csidl_name):
     import ctypes

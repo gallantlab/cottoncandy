@@ -1,18 +1,11 @@
-import os
-import json
 import glob
+import json
+import os
 import shutil
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import BytesIO as StringIO
+from io import BytesIO as StringIO
 
 from .backend import CCBackEnd, CloudStream
-from .utils import sanitize_metadata
-from .utils import remove_root
-from .utils import remove_trivial_magic
-from .utils import SEPARATOR
+from .utils import SEPARATOR, remove_root, remove_trivial_magic, sanitize_metadata
 
 METADATA_SUFFIX = ".meta.json"
 

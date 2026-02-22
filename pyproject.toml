@@ -61,6 +61,10 @@ Documentation = "http://gallantlab.github.io/cottoncandy/"
 [tool.pytest.ini_options]
 addopts = "--cov=. --cov-report xml:coverage.xml"
 
+[tool.ruff]
+exclude = ["appdirs.py", "*.ipynb"]
+line-length = 127
+
 [tool.setuptools]
 packages = ["cottoncandy"]
 include-package-data = true

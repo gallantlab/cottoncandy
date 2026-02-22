@@ -1,25 +1,39 @@
 # emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
-from __future__ import print_function
-from functools import reduce
-import boto3
-from boto3.s3.transfer import TransferConfig
-import botocore
-import logging
-from io import BytesIO
 
+import logging
+import os
+from functools import reduce
+from io import BytesIO
+from urllib.parse import unquote
+
+import boto3
+import botocore
+from boto3.s3.transfer import TransferConfig
 from botocore.utils import fix_s3_host
-from cottoncandy.utils import *
+from dateutil.tz import tzlocal
+
 from .backend import CCBackEnd, CloudStream
 
-try:
-    from urllib import unquote
-except ImportError:
-    from urllib.parse import unquote
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+from .utils import (
+    DEFAULT_ACL,
+    ISBOTO_VERBOSE,
+    MANDATORY_BUCKET_PREFIX,
+    MPU_CHUNKSIZE,
+    MPU_THRESHOLD,
+    SEPARATOR,
+    THREADS,
+    bytes2human,
+    clean_object_name,
+    has_real_magic,
+    mk_aws_path,
+    pathjoin,
+    remove_root,
+    remove_trivial_magic,
+    sanitize_metadata,
+    string2bool,
+    unquote_names,
+)
 
 
 class S3Client(CCBackEnd):
