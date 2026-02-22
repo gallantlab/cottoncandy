@@ -130,7 +130,7 @@ class S3Directory(S3FSLike):
                 # modify name for tab-completion purposes
                 sdir_copy = sdir[:]
                 # clean numbers
-                sdir_copy = 'NUM_%s' % (sdir_copy if has_start_digit(sdir) else sdir_copy)
+                sdir_copy = 'NUM_%s' % sdir_copy if has_start_digit(sdir) else sdir_copy
                 # clean extension
                 fl, ext = os.path.splitext(sdir_copy)
                 kk = fl+'_DOT_'+ext[1:] if ext else sdir_copy
