@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 from io import BytesIO as StringIO
-from typing import Optional
+from typing import BinaryIO, Optional
 
 from .backend import CCBackEnd, CloudStream
 from .utils import SEPARATOR, remove_root, remove_trivial_magic, sanitize_metadata
@@ -42,7 +42,7 @@ class LocalClient(CCBackEnd):
             bucket_name = self.path
         return os.path.isfile(os.path.join(bucket_name, cloud_name))
 
-    def upload_stream(self, stream, cloud_name, metadata, permissions, threads = 1):
+    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict[str, str], permissions: Optional[str] = None, threads: int = 1) -> None:
         """Uploads a stream object with a .read() function
 
         Parameters
@@ -69,7 +69,7 @@ class LocalClient(CCBackEnd):
         with open(metadata_file_name, 'w') as local_file:
             json.dump(metadata, local_file, indent=4)
 
-    def upload_file(self, file_name, cloud_name, permissions, threads = 1):
+    def upload_file(self, file_name: str, cloud_name: str, permissions: Optional[str] = None, threads: int = 1) -> None:
         """Uploads a file from disk
 
         Parameters
@@ -95,7 +95,7 @@ class LocalClient(CCBackEnd):
             copy_metadata=False,
         )
 
-    def download_stream(self, cloud_name, threads = 1):
+    def download_stream(self, cloud_name: str, threads: int = 1) -> CloudStream:
         """Downloads a object to an in-memory stream
 
         Parameters
@@ -310,7 +310,7 @@ class LocalClient(CCBackEnd):
 
         return total_size
 
-    def _remove_path_and_metadata(self, file_list: list[str], path: Optional[str] = None):
+    def _remove_path_and_metadata(self, file_list: list[str], path: Optional[str] = None) -> list[str]:
         """Removes path from filenames, removes .meta.json files from the list.
         """
         if path is None:
