@@ -57,5 +57,8 @@ def cci(request):
         cci.wait_time = 0.001
         yield cci
 
+    else:
+        raise ValueError("Invalid client type")
+
     # cleanup the directory entirely
     cci.rm(directory, recursive=True)
