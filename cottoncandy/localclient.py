@@ -224,7 +224,7 @@ class LocalClient(CCBackEnd):
             shutil.copy(source_metadata, destination_metadata)
 
         auto_makedirs(destination)
-        return shutil.copy(source, destination)
+        shutil.copy(source, destination)
 
     def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> bool:
         """Moves an object
@@ -252,7 +252,9 @@ class LocalClient(CCBackEnd):
         source_metadata = os.path.join(source_bucket, source + METADATA_SUFFIX)
         destination_metadata = os.path.join(destination_bucket, destination + METADATA_SUFFIX)
         auto_makedirs(destination)
-        return shutil.move(source, destination) and shutil.move(source_metadata, destination_metadata)
+        shutil.move(source, destination)
+        shutil.move(source_metadata, destination_metadata)
+        return True
 
     def delete(self, cloud_name: str, recursive: bool = False, delete: bool = False) -> bool:
         """Deletes an object
