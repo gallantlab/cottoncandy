@@ -437,7 +437,7 @@ class S3Client(CCBackEnd):
         old_ob.delete()
         return new_ob
 
-    def list_directory(self, path, limit):
+    def list_directory(self, path: str, limit: int) -> list[str]:
         """List the contents of a "directory"
 
         Parameters
