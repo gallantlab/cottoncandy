@@ -768,7 +768,7 @@ class ArrayInterface(BasicInterface):
                 keys = [keys]
             subdirs = keys
         else:
-            subdirs = self.lsdir(object_root)
+            subdirs = self.lsdir(object_root) # type: ignore
             subdirs = [os.path.split(t)[-1] for t in subdirs]
 
 
