@@ -75,7 +75,7 @@ def pathjoin(a: str, *p: str) -> str:
 def string2bool(mstring: str) -> Union[bool, None]:
     '''
     '''
-    truth_value = False
+    truth_value: Union[bool, None] = False
     if mstring in ['True','true', 'tru', 't',
                    'y','yes', '1']:
         truth_value = True
@@ -459,7 +459,8 @@ def read_buffered(frm: BinaryIO, to: npt.NDArray, buffersize: int = 64) -> None:
         else:
             vw = to.view()
         vw.shape = (-1,)                # Must be a ravel-able object
-        vw.dtype = np.dtype('uint8')    # 256 values in each byte
+        # 256 values in each byte
+        vw.dtype = np.dtype('uint8')    # type: ignore[misc]
 
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize

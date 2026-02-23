@@ -106,11 +106,11 @@ class BasicInterface(InterfaceObject):
                                               **kwargs)
         elif backend == 'gdrive':
             from .gdriveclient import GDriveClient
-            self.backend_interface = GDriveClient(ACCESS_KEY, SECRET_KEY)
+            self.backend_interface = GDriveClient(ACCESS_KEY, SECRET_KEY) # type: ignore[assignment]
         elif backend == 'local':
             from .localclient import LocalClient
             assert bucket_name is not None, "Must specify bucket_name for 'local' backend (this is the local path to use)"
-            self.backend_interface = LocalClient(path=bucket_name)
+            self.backend_interface = LocalClient(path=bucket_name) # type: ignore[assignment]
         else:
             raise ValueError('Bad backend')
 
