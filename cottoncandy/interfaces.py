@@ -9,7 +9,7 @@ from urllib.parse import unquote
 from warnings import warn
 
 import six
-from typing import Any, Iterable, List, Literal, Optional, Union
+from typing import Any, Iterable, List, Literal, TypedDict, Optional, Union
 
 import cottoncandy.browser
 from cottoncandy.backend import FileNotFoundError
@@ -55,7 +55,7 @@ try:
 except ImportError:
     warn('numcodecs python library not available')
 
-NestedArrayDict = dict[str, Union[npt.NDArray, 'NestedArrayDict']]
+NestedArrayDict = dict[str, Union[npt.NDArray, None, 'NestedArrayDict']]
 
 
 # ------------------
@@ -70,10 +70,10 @@ class BasicInterface(InterfaceObject):
     """Basic cottoncandy interface to the cloud.
     """
 
-    def __init__(self, bucket_name,
-                 ACCESS_KEY, SECRET_KEY, url=None,
-                 force_bucket_creation=False,
-                 verbose=True, backend='s3', **kwargs):
+    def __init__(self, bucket_name: Union[str, None],
+                 ACCESS_KEY: str, SECRET_KEY: str, url: str,
+                 force_bucket_creation: bool = False,
+                 verbose: bool = True, backend: str='s3', **kwargs):
         """
         Parameters
         ----------
@@ -717,7 +717,7 @@ class ArrayInterface(BasicInterface):
         Parameters
         ----------
         object_name : str
-        array_dict  : dict
+        array_dict  : dict[str, Union[npt.NDArray, 'NestedArrayDict']]
             An arbitrary depth dictionary of arrays. This can be
             conceptualized as implementing an HDF-like group
         verbose : bool
@@ -846,11 +846,20 @@ class ArrayInterface(BasicInterface):
         * my_array_name/pt0001
         * my_array_name/metadata.json
         """
-        metadata = dict(shape = arr.shape,
-                        dtype = arr.dtype.str,
-                        dask = [],
-                        chunk_sizes = [],
-                        )
+        class DaskArrayMetadata(TypedDict):
+            shape: tuple[int, ...]
+            dtype: str
+            dask: list[tuple[tuple[int, ...], str]]
+            chunk_sizes: list[tuple[int, ...]]
+            chunks: list[list[int]]
+
+        metadata: DaskArrayMetadata = {
+            'shape': arr.shape,
+            'dtype': arr.dtype.str,
+            'dask': [],
+            'chunk_sizes': [],
+            'chunks': [],
+        }
 
         generator = generate_ndarray_chunks(arr, axis = axis, buffersize = buffersize)
         total_upload = 0.0
@@ -867,7 +876,7 @@ class ArrayInterface(BasicInterface):
 
         # convert to dask convention (sorry)
         details = [t[0] for t in metadata['dask']]
-        dimension_sizes = [dict() for idx in range(arr.ndim)]
+        dimension_sizes: list[dict[int, int]] = [dict() for idx in range(arr.ndim)]
         for dim, chunks in enumerate(zip(*details)):
             for sample_idx, chunk_idx in enumerate(chunks):
                 if chunk_idx not in dimension_sizes[dim]:
