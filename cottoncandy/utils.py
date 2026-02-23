@@ -7,7 +7,7 @@ import re
 import string
 import zlib
 from functools import wraps
-from typing import Optional, cast, Any, BinaryIO, Callable, TypeVar, Union
+from typing import Iterator, Optional, cast, Any, BinaryIO, Callable, TypeVar, Union
 
 
 from urllib.parse import unquote
@@ -132,7 +132,7 @@ def get_object_size(boto_s3_object):
     return boto_s3_object.meta.data['ContentLength']/2.**20
 
 
-def get_fileobject_size(file_object) -> int:
+def get_fileobject_size(file_object: BinaryIO) -> int:
     '''Return byte size of file-object
 
     Parameters
@@ -222,7 +222,7 @@ def objects2names(objects):
     return [unquote(t.key) for t in objects]
 
 
-def unquote_names(object_names):
+def unquote_names(object_names: list[str]) -> list[str]:
     '''Clean URL names from a list.
 
     Parameters
@@ -281,7 +281,7 @@ def clean_object_name(input_function: F) -> F:
     return cast(F, iremove_root)
 
 
-def remove_root(string_):
+def remove_root(string_: str) -> str:
     '''remove leading "/" from a string'''
     if string_[0] == SEPARATOR:
         string_ = string_[1:]
@@ -301,7 +301,7 @@ def has_start_digit(s):
 
 
 
-def has_magic(s):
+def has_magic(s: str) -> bool:
     '''Check string to see if it has any glob magic
     '''
     return MAGIC_CHECK.search(s) is not None
@@ -321,13 +321,13 @@ def has_trivial_magic(s):
         return False
 
 
-def has_real_magic(s):
+def has_real_magic(s: str) -> bool:
     '''Check if string has non-trivial glob pattern
     '''
     return has_magic(s) and (not has_trivial_magic(s))
 
 
-def remove_trivial_magic(s):
+def remove_trivial_magic(s: str) -> str:
     '''
     * xxx/*      -> xxx/
     * xxx/       -> xxx/
@@ -351,7 +351,7 @@ def split_uri(uri: str, pattern: str='s3://', separator: str='/') -> tuple[str, 
     return bucket, path
 
 
-def mk_aws_path(path):
+def mk_aws_path(path: str) -> str:
     """Make the `path` behave as expected when querying S3 with
     `list_objects`.
 
@@ -376,7 +376,7 @@ def mk_aws_path(path):
 ##############################
 
 
-def generate_ndarray_chunks(arr: npt.NDArray, axis: Optional[int]=None, buffersize: int=100*MB):
+def generate_ndarray_chunks(arr: npt.NDArray, axis: Optional[int]=None, buffersize: int=100*MB) -> Iterator[tuple[tuple[int, ...], npt.NDArray]]:
     '''A generator that splits an array into chunks of desired byte size
 
     Parameters
@@ -442,7 +442,7 @@ def generate_ndarray_chunks(arr: npt.NDArray, axis: Optional[int]=None, buffersi
         yield chunk_coords, arr[slicers]
 
 
-def read_buffered(frm: BinaryIO, to: npt.NDArray, buffersize: int = 64):
+def read_buffered(frm: BinaryIO, to: npt.NDArray, buffersize: int = 64) -> None:
     '''Fill a numpy n-d array with file-like object contents
 
     Parameters
@@ -482,7 +482,7 @@ class GzipInputStream(BytesIO):
     Adapted from: http://effbot.org/librarybook/zlib-example-4.py
     """
 
-    def __init__(self, fileobj, block_size=16384):
+    def __init__(self, fileobj: BinaryIO, block_size: int=16384):
         """
         Initialize with the given file-like object.
 
@@ -539,7 +539,7 @@ class GzipInputStream(BytesIO):
     def tell(self):
         return self._offset
 
-    def read(self, size: int = 0):
+    def read(self, size: Optional[int] = 0) -> bytes:
         self.__fill(size)
         if size:
             data = self._data[:size]
@@ -556,7 +556,8 @@ class GzipInputStream(BytesIO):
             raise StopIteration()
         return line
 
-    def readline(self):
+    def readline(self, size: Optional[int] = None):
+        assert size is None
         # make sure we have an entire line
         while self._zip and "\n" not in self._data:
             self.__fill(len(self._data) + 512)
@@ -566,7 +567,8 @@ class GzipInputStream(BytesIO):
             return self.read()
         return self.read(pos)
 
-    def readlines(self):
+    def readlines(self, size: Optional[int] = None):
+        assert size is None
         lines = []
         while True:
             line = self.readline()
