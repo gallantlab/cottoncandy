@@ -288,6 +288,7 @@ class S3Client(CCBackEnd):
         suspicious round numbers.
         TODO(anunez): Remove this note when the bug is fixed.
         """
+        assert self.bucket_name is not None, 'Must specify bucket to get size'
         assert self.check_bucket_exists(self.bucket_name)
         obs = self.list_objects(limit = limit, page_size = page_size)
         object_sizes = [t.size for t in obs]
@@ -418,6 +419,7 @@ class S3Client(CCBackEnd):
 
     def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
         source_bucket = self.get_bucket_name(source_bucket)
+        assert source_bucket is not None, 'Source bucket must be specified'
         dest_bucket = source_bucket if (destination_bucket is None) else destination_bucket
         dest_bucket = self.get_bucket_name(dest_bucket)
 
