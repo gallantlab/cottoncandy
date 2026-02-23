@@ -7,7 +7,7 @@ import re
 import string
 import zlib
 from functools import wraps
-from typing import Iterator, Optional, cast, Any, BinaryIO, Callable, TypeVar, Union
+from typing import Iterable, Iterator, Optional, cast, Any, BinaryIO, Callable, TypeVar, Union
 
 
 from urllib.parse import unquote
@@ -423,7 +423,7 @@ def generate_ndarray_chunks(arr: npt.NDArray, axis: Optional[int]=None, buffersi
 
     logii = ((np.log(buffersize) - np.log(arr.itemsize)) - logsum)/factor
     ii = int(np.ceil(np.exp(logii)))
-    dim_nchunks = map(lambda x: int(np.ceil(x/ii)) + 1, shape)
+    dim_nchunks: Iterable[int] = map(lambda x: int(np.ceil(x/ii)) + 1, shape)
 
     if axis is not None:
         # only slicing one dimension

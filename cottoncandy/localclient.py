@@ -69,7 +69,7 @@ class LocalClient(CCBackEnd):
         with open(metadata_file_name, 'w') as local_file:
             json.dump(metadata, local_file, indent=4)
 
-    def upload_file(self, file_name: str, cloud_name: str, permissions: Optional[str] = None, threads: int = 1) -> None:
+    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: Optional[str] = None, threads: int = 1) -> None:
         """Uploads a file from disk
 
         Parameters
@@ -84,6 +84,8 @@ class LocalClient(CCBackEnd):
         -------
         bool, upload success
         """
+        if cloud_name is None:
+            cloud_name = file_name
         destination = os.path.join(self.path, cloud_name)
         auto_makedirs(destination)
         self.copy(

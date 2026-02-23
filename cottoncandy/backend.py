@@ -72,7 +72,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def upload_file(self, file_name: str, cloud_name: str, permissions: str, threads: int):
+    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: Optional[str] = None, threads: int = 1):
         """Uploads a file from disk
 
         Parameters
