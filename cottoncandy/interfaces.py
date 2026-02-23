@@ -109,6 +109,7 @@ class BasicInterface(InterfaceObject):
             self.backend_interface = GDriveClient(ACCESS_KEY, SECRET_KEY)
         elif backend == 'local':
             from .localclient import LocalClient
+            assert bucket_name is not None, "Must specify bucket_name for 'local' backend (this is the local path to use)"
             self.backend_interface = LocalClient(path=bucket_name)
         else:
             raise ValueError('Bad backend')
@@ -673,7 +674,8 @@ class ArrayInterface(BasicInterface):
         shape = arraystream.metadata['shape']
         shape = tuple(map(int, shape.split(',')) if shape else ())
         dtype = np.dtype(arraystream.metadata['dtype'])
-        order = arraystream.metadata.get('order', 'C')
+        order: Literal['C', 'F'] = arraystream.metadata.get('order', 'C')
+        assert order in ['C', 'F'], f'Invalid array order in metadata: {order}'
         array = np.empty(tuple(shape), dtype = dtype, order = order)
 
         body = arraystream.content
