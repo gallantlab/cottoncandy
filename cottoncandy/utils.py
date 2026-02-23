@@ -559,10 +559,10 @@ class GzipInputStream(BytesIO):
     def readline(self, size: Optional[int] = None):
         assert size is None
         # make sure we have an entire line
-        while self._zip and "\n" not in self._data:
+        while self._zip and b"\n" not in self._data:
             self.__fill(len(self._data) + 512)
 
-        pos = string.find(self._data, "\n") + 1
+        pos = self._data.find(b"\n") + 1
         if pos <= 0:
             return self.read()
         return self.read(pos)
