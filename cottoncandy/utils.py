@@ -1,17 +1,19 @@
 '''Helper functions
 '''
+from io import BytesIO
 import itertools
 import os
 import re
 import string
 import zlib
 from functools import wraps
-from typing import cast, Any, Callable, TypeVar, Union
+from typing import Optional, cast, Any, BinaryIO, Callable, TypeVar, Union
 
 
 from urllib.parse import unquote
 
 import numpy as np
+import numpy.typing as npt
 import six
 from dateutil.tz import tzlocal
 
@@ -47,7 +49,7 @@ THREADS = int(options.config.get('basic', 'threads'))
 # misc functions
 ##############################
 
-def sanitize_metadata(metadict):
+def sanitize_metadata(metadict: dict[str, str]) -> dict[str, str]:
     outdict = {}
     for key,val in metadict.items():
         outdict[key.lower()] = val
@@ -374,7 +376,7 @@ def mk_aws_path(path):
 ##############################
 
 
-def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
+def generate_ndarray_chunks(arr: npt.NDArray, axis: Optional[int]=None, buffersize: int=100*MB):
     '''A generator that splits an array into chunks of desired byte size
 
     Parameters
@@ -440,7 +442,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
         yield chunk_coords, arr[slicers]
 
 
-def read_buffered(frm, to, buffersize=64):
+def read_buffered(frm: BinaryIO, to: npt.NDArray, buffersize: int = 64):
     '''Fill a numpy n-d array with file-like object contents
 
     Parameters
@@ -467,10 +469,10 @@ def read_buffered(frm, to, buffersize=64):
         elif six.PY3:
             vw.data[start:end] = frm.read(end - start)
         else:
-            raise("Unknown python version") # not sure six will ever do anything here (6=2x3)
+            raise Exception("Unknown python version") # not sure six will ever do anything here (6=2x3)
 
 
-class GzipInputStream:
+class GzipInputStream(BytesIO):
     """Simple class that allow streaming reads from GZip files
     (from https://gist.github.com/beaufour/4205533).
 
@@ -517,7 +519,7 @@ class GzipInputStream:
     def __iter__(self):
         return self
 
-    def seek(self, offset, whence=0):
+    def seek(self, offset: int, whence: int = 0):
         if whence == 0:
             position = offset
         elif whence == 1:
@@ -532,10 +534,12 @@ class GzipInputStream:
             if not self.read(min(position - self._offset, self.BLOCK_SIZE)):
                 break
 
+        return position
+
     def tell(self):
         return self._offset
 
-    def read(self, size=0):
+    def read(self, size: int = 0):
         self.__fill(size)
         if size:
             data = self._data[:size]
