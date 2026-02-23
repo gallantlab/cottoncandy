@@ -83,7 +83,7 @@ class S3Client(CCBackEnd):
 
         self.connection = S3Client.connect(access_key, secret_key, s3url, **kwargs)
         self.url = s3url
-        self.bucket_name = None
+        self.bucket_name: Optional[str] = None
 
         if bucket:
             # bucket given
@@ -467,7 +467,7 @@ class S3Client(CCBackEnd):
         if 'CommonPrefixes' in response:
             # we got common paths
             object_list: list[list[str]] = [list(t.values()) for t in response['CommonPrefixes']]
-            object_names = object_names + list(reduce(lambda x, y: x + y, object_list))
+            object_names = object_names + list(reduce(lambda x, y: x + y, object_list)) # type: ignore[operator]
         if 'Contents' in response:
             # we got objects on the leaf nodes
             object_names += unquote_names([t['Key'] for t in response['Contents']])
