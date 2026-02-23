@@ -131,7 +131,7 @@ browser.sweet_project.sub02_awesome_analysis_DOT_grp
 
 `cottoncandy` allows users to modify connection settings via `botocore`. For example, the user can define the connection time out for downloads, and the number of times to retry dropped S3 requests.
 
-```
+```python
 from botocore.client import Config
 config = Config(connect_timeout=60, read_timeout=60, retries=dict(max_attempts=10))
 cci = cc.get_interface('my_bucket_name', config=config)
