@@ -1,12 +1,13 @@
 import os
 import tempfile
 import time
+from typing import Literal
 
 import numpy as np
 
 
 def content_generator():
-    orders = ['C', 'F']
+    orders: list[Literal['C', 'F']] = ['C', 'F']
     types = [
         'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
         'uint8', 'uint16', 'uint32', 'int', 'float'
