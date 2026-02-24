@@ -4,7 +4,6 @@ from io import BytesIO
 import itertools
 import os
 import re
-import string
 import zlib
 from functools import wraps
 from typing import Iterable, Iterator, Optional, cast, Any, BinaryIO, Callable, TypeVar, Union
