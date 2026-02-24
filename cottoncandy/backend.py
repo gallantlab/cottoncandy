@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-from io import BytesIO
 from typing import NamedTuple, BinaryIO, Optional
 
 
