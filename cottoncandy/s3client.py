@@ -331,7 +331,7 @@ class S3Client(CCBackEnd):
         bucket_name = self.get_bucket_name(bucket_name)
         return self.connection.Object(bucket_name = bucket_name, key = object_name)
 
-    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict, permissions: Optional[str], threads: int) -> None:
+    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict[str, str], permissions: Optional[str], threads: int) -> None:
         """Uploads a stream
 
         Parameters

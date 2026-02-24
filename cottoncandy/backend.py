@@ -47,7 +47,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict, permissions: Optional[str], threads: int):
+    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict[str, str], permissions: Optional[str], threads: int):
         """Uploads a stream object with a .read() function
 
         Parameters
@@ -182,7 +182,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def move(self, source: str, destination: str, source_bucket: str, destination_bucket: str, overwrite: bool) -> bool:
+    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> bool:
         """Moves an object
 
         Parameters
