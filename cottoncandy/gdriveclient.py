@@ -15,11 +15,11 @@ try:
 except ImportError:
     try:
         # support >=ipython-0.11, <ipython-1.0
-        from IPython.core.ipapi import get as get_ipython
+        from IPython.core.ipapi import get as get_ipython  # type: ignore
     except ImportError:
         # support <ipython-0.11
         try:
-            from IPython.ipapi import get as get_ipython
+            from IPython.ipapi import get as get_ipython  # type: ignore
         except ImportError:
             print('Not ipython')
 

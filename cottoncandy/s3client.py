@@ -5,10 +5,12 @@ import logging
 import os
 from functools import reduce
 from io import BytesIO
+from typing import BinaryIO, Optional
 from urllib.parse import unquote
 
 import boto3
 import botocore
+import botocore.exceptions # ty wants this explicitly imported
 from boto3.s3.transfer import TransferConfig
 from botocore.utils import fix_s3_host
 from dateutil.tz import tzlocal
@@ -43,7 +45,7 @@ class S3Client(CCBackEnd):
     """
 
     @staticmethod
-    def connect(ACCESS_KEY, SECRET_KEY, url, **kwargs):
+    def connect(ACCESS_KEY: str, SECRET_KEY: str, url: str, **kwargs):
         """Connect to S3 using boto
 
         Parameters
@@ -66,7 +68,7 @@ class S3Client(CCBackEnd):
         s3.meta.client.meta.events.unregister('before-sign.s3', fix_s3_host)
         return s3
 
-    def __init__(self, bucket, access_key, secret_key, s3url, force_bucket_creation=False, **kwargs):
+    def __init__(self, bucket: Optional[str], access_key: str, secret_key: str, s3url: str, force_bucket_creation: bool=False, **kwargs):
         """Constructor
 
         Parameters
@@ -81,7 +83,7 @@ class S3Client(CCBackEnd):
 
         self.connection = S3Client.connect(access_key, secret_key, s3url, **kwargs)
         self.url = s3url
-        self.bucket_name = None
+        self.bucket_name: Optional[str] = None
 
         if bucket:
             # bucket given
@@ -102,7 +104,7 @@ class S3Client(CCBackEnd):
             logging.getLogger('boto3').setLevel(logging.WARNING)
             logging.getLogger('botocore').setLevel(logging.WARNING)
 
-    def get_bucket_name(self, bucket_name):
+    def get_bucket_name(self, bucket_name: Optional[str] = None) -> Optional[str]:
         """
 
         Parameters
@@ -119,17 +121,18 @@ class S3Client(CCBackEnd):
         return bucket_name
 
     @clean_object_name
-    def check_file_exists(self, object_name, bucket_name=None):
+    def check_file_exists(self, cloud_name: str, bucket_name: Optional[str] = None) -> bool:
         """Check whether object exists in bucket
 
         Parameters
         ----------
-        object_name : str
-            The object name
-        bucket_name
+        cloud_name : str
+            The cloud name
+        bucket_name : str
+            The bucket name. If None, use the current bucket.
         """
         bucket_name = self.get_bucket_name(bucket_name)
-        ob = self.connection.Object(key = object_name, bucket_name = bucket_name)
+        ob = self.connection.Object(key = cloud_name, bucket_name = bucket_name)
 
         try:
             ob.load()
@@ -142,7 +145,7 @@ class S3Client(CCBackEnd):
             exists = True
         return exists
 
-    def check_bucket_exists(self, bucket_name):
+    def check_bucket_exists(self, bucket_name: str):
         """Check whether the bucket exists
 
         Parameters
@@ -167,7 +170,7 @@ class S3Client(CCBackEnd):
             exists = True
         return exists
 
-    def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
+    def create_bucket(self, bucket_name: str, acl: str=DEFAULT_ACL):
         """Create a new bucket
 
         Parameters
@@ -186,7 +189,7 @@ class S3Client(CCBackEnd):
         self.connection.create_bucket(Bucket = bucket_name, ACL = acl)
         self.set_current_bucket(bucket_name)
 
-    def set_current_bucket(self, bucket_name):
+    def set_current_bucket(self, bucket_name: str):
         """Sets which bucket to use
 
         Parameters
@@ -262,7 +265,7 @@ class S3Client(CCBackEnd):
     def size(self):
         return self.get_current_bucket_size()
 
-    def get_current_bucket_size(self, limit=10 ** 6, page_size=10 ** 6):
+    def get_current_bucket_size(self, limit: int=10 ** 6, page_size: int=10 ** 6) -> int:
         """Counts the size of all objects in the current bucket.
 
         Parameters
@@ -285,6 +288,7 @@ class S3Client(CCBackEnd):
         suspicious round numbers.
         TODO(anunez): Remove this note when the bug is fixed.
         """
+        assert self.bucket_name is not None, 'Must specify bucket to get size'
         assert self.check_bucket_exists(self.bucket_name)
         obs = self.list_objects(limit = limit, page_size = page_size)
         object_sizes = [t.size for t in obs]
@@ -312,7 +316,7 @@ class S3Client(CCBackEnd):
         print('\n'.join(info))
 
     @clean_object_name
-    def get_s3_object(self, object_name, bucket_name=None):
+    def get_s3_object(self, object_name: str, bucket_name: Optional[str] = None):
         """Get a boto3 object. Create it if it doesn't exist
 
         Parameters
@@ -327,7 +331,7 @@ class S3Client(CCBackEnd):
         bucket_name = self.get_bucket_name(bucket_name)
         return self.connection.Object(bucket_name = bucket_name, key = object_name)
 
-    def upload_stream(self, stream, cloud_name, metadata, permissions, threads):
+    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict[str, str], permissions: Optional[str], threads: int) -> None:
         """Uploads a stream
 
         Parameters
@@ -347,22 +351,22 @@ class S3Client(CCBackEnd):
         return obj.upload_fileobj(stream, ExtraArgs = {'ACL': permissions, 'Metadata': metadata},
                                                 Config = config)
 
-    def download_stream(self, object_name, threads):
+    def download_stream(self, cloud_name: str, threads: int) -> CloudStream:
         """Download object raw data.
         This simply calls the object body ``read()`` method.
 
         Parameters
         ---------
-        object_name : str
+        cloud_name : str
 
         Returns
         -------
         stream
             file-like stream of object data
         """
-        if not self.check_file_exists(object_name):
-            raise IOError('Object "%s" does not exist' % object_name)
-        s3_object = self.get_s3_object(object_name)
+        if not self.check_file_exists(cloud_name):
+            raise IOError('Object "%s" does not exist' % cloud_name)
+        s3_object = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
                                 multipart_threshold = MPU_THRESHOLD)
@@ -371,7 +375,7 @@ class S3Client(CCBackEnd):
         byteStream.seek(0)
         return CloudStream(byteStream, sanitize_metadata(s3_object.metadata))
 
-    def upload_file(self, file_name, cloud_name=None, permissions=DEFAULT_ACL, threads = THREADS):
+    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: Optional[str] = None, threads: int = THREADS) -> None:
         """Upload a file to S3.
 
         Parameters
@@ -397,24 +401,25 @@ class S3Client(CCBackEnd):
                                 multipart_threshold = MPU_THRESHOLD)
         return s3_object.upload_file(file_name, ExtraArgs={'ACL': permissions}, Config = config)
 
-    def download_to_file(self, object_name, local_name, threads):
+    def download_to_file(self, cloud_name: str, local_name: str, threads: int):
         """Download S3 object to a file
 
         Parameters
         ----------
-        object_name : str
+        cloud_name : str
         local_name : str
             Absolute path where the data will be downloaded on disk
         """
-        assert self.check_file_exists(object_name)  # make sure object exists
-        s3_object = self.get_s3_object(object_name)
+        assert self.check_file_exists(cloud_name)  # make sure object exists
+        s3_object = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
                                 multipart_threshold = MPU_THRESHOLD)
         return s3_object.download_file(local_name, Config = config)
 
-    def copy(self, source, destination, source_bucket, destination_bucket, overwrite):
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
         source_bucket = self.get_bucket_name(source_bucket)
+        assert source_bucket is not None, 'Source bucket must be specified'
         dest_bucket = source_bucket if (destination_bucket is None) else destination_bucket
         dest_bucket = self.get_bucket_name(dest_bucket)
 
@@ -428,13 +433,13 @@ class S3Client(CCBackEnd):
         ob_new.copy_from(CopySource = fpath)
         return ob_new
 
-    def move(self, source, destination, source_bucket, destination_bucket, overwrite):
+    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
         new_ob = self.copy(source, destination, source_bucket, destination_bucket, overwrite)
         old_ob = self.get_s3_object(source, bucket_name = source_bucket)
         old_ob.delete()
         return new_ob
 
-    def list_directory(self, path, limit):
+    def list_directory(self, path: str, limit: int) -> list[str]:
         """List the contents of a "directory"
 
         Parameters
@@ -458,26 +463,26 @@ class S3Client(CCBackEnd):
                                                               Delimiter = SEPARATOR,
                                                               Prefix = path,
                                                               MaxKeys = limit)
-        object_names = []
+        object_names: list[str] = []
         if 'CommonPrefixes' in response:
             # we got common paths
-            object_list = [list(t.values()) for t in response['CommonPrefixes']]
-            object_names += reduce(lambda x, y: x + y, object_list)
+            object_list: list[list[str]] = [list(t.values()) for t in response['CommonPrefixes']]
+            object_names = object_names + list(reduce(lambda x, y: x + y, object_list)) # type: ignore[operator]
         if 'Contents' in response:
             # we got objects on the leaf nodes
             object_names += unquote_names([t['Key'] for t in response['Contents']])
         return [os.path.normpath(n) for n in object_names]
 
-    def delete(self, object_name, recursive=False, delete=False):
+    def delete(self, cloud_name: str, recursive: bool=False, delete: bool=False):
         raise RuntimeError('Deleting on S3 backend is implemented by cottoncandy interface object')
 
-    def get_object_metadata(self, object_name):
+    def get_object_metadata(self, object_name: str) -> dict[str, str]:
         """Get metadata associated with an object"""
         s3_object = self.get_s3_object(object_name)
         metadata = sanitize_metadata(s3_object.metadata)
         return metadata
 
-    def get_object_size(self, object_name):
+    def get_object_size(self, object_name: str) -> int:
         """Get the size in bytes of an object"""
         s3_object = self.get_s3_object(object_name)
         size = s3_object.content_length
