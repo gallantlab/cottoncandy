@@ -76,3 +76,7 @@ cottoncandy = ["defaults.cfg", "py.typed"]
 
 [tool.setuptools.dynamic]
 version = {attr = "cottoncandy.__version__"}
+
+[tool.mypy]
+allow_redefinition = true
+disable_error_code = "import-untyped"
