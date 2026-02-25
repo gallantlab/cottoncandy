@@ -83,3 +83,7 @@ skip = '.git*,*.svg,*.css,*.min.*,docs,*.map,.npm,.cache'
 check-hidden = true
 ignore-regex = '^\s*"image/\S+": ".*'
 # ignore-words-list = ''
+
+[tool.mypy]
+allow_redefinition = true
+disable_error_code = "import-untyped"
