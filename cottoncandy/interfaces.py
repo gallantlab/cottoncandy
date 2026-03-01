@@ -512,7 +512,7 @@ class ArrayInterface(BasicInterface):
 
         Returns
         -------
-        reponse : boto3 upload response
+        response : boto3 upload response
 
         See Also
         --------

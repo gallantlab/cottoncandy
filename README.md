@@ -55,7 +55,7 @@ The configuration file is created the first time you import cottoncandy and it i
 
 By default, cottoncandy sets object and bucket permissions to ``authenticated-read``. If you wish to keep all your objects private, modify your configuration file and set ``default_acl = private``. See [AWS ACL overview](http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html) for more information on S3 permissions.
 
-Advanced (for admins): One can customize the cottoncandy system install by cloning the repo and modifying `defaults.cfg`. For example, one can set the default encyption key across the system for all users (`key = SoMeEncypTionKey`). When a user first uses cottoncandy, this default value will be copied to their personal configuration file. Note however that the user can still overwrite that value.
+Advanced (for admins): One can customize the cottoncandy system install by cloning the repo and modifying `defaults.cfg`. For example, one can set the default encryption key across the system for all users (`key = SoMeEncypTionKey`). When a user first uses cottoncandy, this default value will be copied to their personal configuration file. Note however that the user can still overwrite that value.
 
 
 ## Getting started
