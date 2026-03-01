@@ -77,7 +77,7 @@ version = {attr = "cottoncandy.__version__"}
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git*,*.svg,*.css,*.min.*'
+skip = '.git*,*.svg,*.css,*.min.*,docs,*.map,.npm,.cache'
 check-hidden = true
 ignore-regex = '^\s*"image/\S+": ".*'
 # ignore-words-list = ''
