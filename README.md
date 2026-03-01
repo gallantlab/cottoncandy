@@ -139,7 +139,7 @@ cci = cc.get_interface('my_bucket_name', config=config)
 
 ### Google Drive backend
 
-`cottoncandy` can also use Google Drive as a back-end. This equires a `client_secrets.json` file in your `~/.config/cottoncandy` folder and the [pydrive](https://github.com/googledrive/PyDrive) package. 
+`cottoncandy` can also use Google Drive as a back-end. This requires a `client_secrets.json` file in your `~/.config/cottoncandy` folder and the [pydrive](https://github.com/googledrive/PyDrive) package. 
 
 See the [Google Drive setup instructions](https://github.com/gallantlab/cottoncandy/blob/main/google_drive_setup_instructions.md) for more details.
 
