@@ -253,7 +253,11 @@ class LocalClient(CCBackEnd):
         source_metadata = os.path.join(source_bucket, source + METADATA_SUFFIX)
         destination_metadata = os.path.join(destination_bucket, destination + METADATA_SUFFIX)
         auto_makedirs(destination)
-        return shutil.move(source, destination) and shutil.move(source_metadata, destination_metadata)
+        shutil.move(source, destination)
+        shutil.move(source_metadata, destination_metadata)
+        # Clean up empty parent directories at source to mimic S3 behavior
+        self._cleanup_empty_dirs(os.path.dirname(source))
+        return True
 
     def delete(self, cloud_name, recursive=False, delete=False):
         """Deletes an object
@@ -277,11 +281,15 @@ class LocalClient(CCBackEnd):
             cloud_metadata_name = cloud_name + METADATA_SUFFIX
             if os.path.isfile(cloud_metadata_name):
                 os.remove(cloud_metadata_name)
-        else:
+            # Clean up empty parent directories to mimic S3 behavior
+            self._cleanup_empty_dirs(os.path.dirname(cloud_name))
+        elif os.path.isdir(cloud_name):
             if recursive:
                 shutil.rmtree(cloud_name)
             else:
                 os.rmdir(cloud_name)
+
+        return True
 
     @property
     def size(self):
@@ -344,8 +352,35 @@ class LocalClient(CCBackEnd):
         size = os.path.getsize(file_name)
         return size
 
+    def _cleanup_empty_dirs(self, dir_path: str) -> None:
+        """Remove empty parent directories up to self.path.
 
-def auto_makedirs(destination):
+        This mimics S3 behavior where directories don't exist independently -
+        they only exist as part of object keys. When the last file in a
+        directory is deleted, the directory should disappear.
+
+        Parameters
+        ----------
+        dir_path : str
+            The directory path to start cleaning from
+        """
+        # Normalize paths for comparison
+        dir_path = os.path.normpath(dir_path)
+        root_path = os.path.normpath(self.path)
+
+        # Walk up the directory tree
+        while dir_path != root_path and dir_path.startswith(root_path):
+            # Only remove if directory exists and is empty
+            if os.path.isdir(dir_path) and len(os.listdir(dir_path)) == 0:
+                os.rmdir(dir_path)
+                dir_path = os.path.dirname(dir_path)
+            else:
+                # Stop if directory is not empty or doesn't exist
+                break
+
+
+
+def auto_makedirs(destination: str) -> None:
     """Create directory tree if destination does not exist."""
     if not os.path.exists(os.path.dirname(destination)):
         os.makedirs(os.path.dirname(destination))
