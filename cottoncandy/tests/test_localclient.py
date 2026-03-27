@@ -1,4 +1,5 @@
 from io import BytesIO
+import os
 import time
 
 from ..localclient import LocalClient
@@ -15,7 +16,7 @@ def test_delete_cleans_up_empty_directories(cci, object_name):
     time.sleep(cci.wait_time)
 
     # Verify file exists
-    assert cci.exists_object(nested_file)
+    assert cci.exists_object(nested_file) and cci.download_object(nested_file) == content
 
     # Delete the file
     cci.rm(nested_file)
@@ -23,10 +24,11 @@ def test_delete_cleans_up_empty_directories(cci, object_name):
 
     # Verify file is deleted
     assert not cci.exists_object(nested_file)
+    assert not cci.exists_object(object_name + '/subdir1/subdir2')
+    assert not cci.exists_object(object_name + '/subdir1')
 
-    # For local client, verify that empty parent directories are cleaned up
+    # For local client, verify that empty parent directories are cleaned up on disk
     if isinstance(cci.backend_interface, LocalClient):
-        import os
         subdir2_path = os.path.join(cci.backend_interface.path, object_name, 'subdir1', 'subdir2')
         subdir1_path = os.path.join(cci.backend_interface.path, object_name, 'subdir1')
         object_path = os.path.join(cci.backend_interface.path, object_name)
@@ -35,6 +37,17 @@ def test_delete_cleans_up_empty_directories(cci, object_name):
         assert not os.path.exists(subdir2_path), "subdir2 should be removed after deleting its only file"
         assert not os.path.exists(subdir1_path), "subdir1 should be removed after becoming empty"
         assert not os.path.exists(object_path), "object_name dir should be removed after becoming empty"
+
+    # Try creating objects in place of the deleted directories.
+    cci.upload_object(object_name + '/subdir1/subdir2', BytesIO(content))
+    assert cci.exists_object(object_name + '/subdir1/subdir2') \
+        and cci.download_object(object_name + '/subdir1/subdir2') == content
+    cci.rm(object_name + '/subdir1/subdir2')
+
+    cci.upload_object(object_name + '/subdir1', BytesIO(content))
+    assert cci.exists_object(object_name + '/subdir1') \
+        and cci.download_object(object_name + '/subdir1') == content
+    cci.rm(object_name + '/subdir1')
 
 
 def test_move_cleans_up_empty_directories(cci, object_name):
@@ -57,11 +70,12 @@ def test_move_cleans_up_empty_directories(cci, object_name):
 
     # Verify file was moved
     assert not cci.exists_object(source_file)
+    assert not cci.exists_object(object_name + '/source/nested')
+    assert not cci.exists_object(object_name + '/source')
     assert cci.exists_object(dest_file)
 
-    # For local client, verify that empty parent directories at source are cleaned up
+    # For local client, verify that empty parent directories at source are cleaned up on disk
     if isinstance(cci.backend_interface, LocalClient):
-        import os
         source_nested_path = os.path.join(cci.backend_interface.path, object_name, 'source', 'nested')
         source_path = os.path.join(cci.backend_interface.path, object_name, 'source')
 
@@ -75,9 +89,19 @@ def test_move_cleans_up_empty_directories(cci, object_name):
 
     # Verify cleanup also works for destination
     if isinstance(cci.backend_interface, LocalClient):
-        import os
         dest_path = os.path.join(cci.backend_interface.path, object_name, 'dest')
         object_path = os.path.join(cci.backend_interface.path, object_name)
 
         assert not os.path.exists(dest_path), "dest dir should be removed after deleting its only file"
         assert not os.path.exists(object_path), "object_name dir should be removed after becoming empty"
+
+    # Try creating objects in place of the deleted directories.
+    cci.upload_object(object_name + '/source/nested', BytesIO(content))
+    assert cci.exists_object(object_name + '/source/nested') \
+        and cci.download_object(object_name + '/source/nested') == content
+    cci.rm(object_name + '/source/nested')
+
+    cci.upload_object(object_name + '/source', BytesIO(content))
+    assert cci.exists_object(object_name + '/source') \
+        and cci.download_object(object_name + '/source') == content
+    cci.rm(object_name + '/source')
