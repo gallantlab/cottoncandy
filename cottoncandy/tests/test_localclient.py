@@ -26,6 +26,7 @@ def test_delete_cleans_up_empty_directories(cci, object_name):
     assert not cci.exists_object(nested_file)
     assert not cci.exists_object(object_name + '/subdir1/subdir2')
     assert not cci.exists_object(object_name + '/subdir1')
+    assert len(cci.glob(object_name)) == 0
 
     # For local client, verify that empty parent directories are cleaned up on disk
     if isinstance(cci.backend_interface, LocalClient):
@@ -72,7 +73,7 @@ def test_move_cleans_up_empty_directories(cci, object_name):
     assert not cci.exists_object(source_file)
     assert not cci.exists_object(object_name + '/source/nested')
     assert not cci.exists_object(object_name + '/source')
-    assert cci.exists_object(dest_file)
+    assert cci.glob(object_name) == [dest_file]
 
     # For local client, verify that empty parent directories at source are cleaned up on disk
     if isinstance(cci.backend_interface, LocalClient):
