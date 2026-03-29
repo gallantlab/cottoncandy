@@ -368,14 +368,26 @@ class LocalClient(CCBackEnd):
         dir_path = os.path.normpath(dir_path)
         root_path = os.path.normpath(self.path)
 
+        # Ensure the directory is under the root path before attempting cleanup
+        try:
+            if os.path.commonpath([root_path, dir_path]) != root_path:
+                return
+        except ValueError:
+            # Paths on different drives or otherwise incomparable; do nothing
+            return
+
         # Walk up the directory tree
-        while dir_path != root_path and dir_path.startswith(root_path):
-            # Only remove if directory exists and is empty
-            if os.path.isdir(dir_path) and len(os.listdir(dir_path)) == 0:
-                os.rmdir(dir_path)
-                dir_path = os.path.dirname(dir_path)
-            else:
-                # Stop if directory is not empty or doesn't exist
+        while dir_path != root_path:
+            try:
+                # Only remove if directory exists and is empty
+                if os.path.isdir(dir_path) and len(os.listdir(dir_path)) == 0:
+                    os.rmdir(dir_path)
+                    dir_path = os.path.dirname(dir_path)
+                else:
+                    # Stop if directory is not empty or doesn't exist
+                    break
+            except OSError:
+                # Stop cleanup if the directory was removed or changed concurrently
                 break
 
 
