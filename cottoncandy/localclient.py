@@ -281,13 +281,14 @@ class LocalClient(CCBackEnd):
             cloud_metadata_name = cloud_name + METADATA_SUFFIX
             if os.path.isfile(cloud_metadata_name):
                 os.remove(cloud_metadata_name)
-            # Clean up empty parent directories to mimic S3 behavior
-            self._cleanup_empty_dirs(os.path.dirname(cloud_name))
         elif os.path.isdir(cloud_name):
             if recursive:
                 shutil.rmtree(cloud_name)
             else:
                 os.rmdir(cloud_name)
+
+        # Clean up empty parent directories to mimic S3 behavior
+        self._cleanup_empty_dirs(os.path.dirname(cloud_name))
 
         return True
 

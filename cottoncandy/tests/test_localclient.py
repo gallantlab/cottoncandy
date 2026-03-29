@@ -50,6 +50,26 @@ def test_delete_cleans_up_empty_directories(cci, object_name):
         and cci.download_object(object_name + '/subdir1') == content
     cci.rm(object_name + '/subdir1')
 
+    # Test recursive=True also cleans up empty directories
+    # Create the file again
+    cci.upload_object(nested_file, BytesIO(content))
+    time.sleep(cci.wait_time)
+
+    # Verify file exists
+    assert cci.exists_object(nested_file)
+
+    # Delete a subdir with recursive=True
+    cci.rm(object_name + '/subdir1', recursive=True)
+    time.sleep(cci.wait_time)
+
+    # Verify file is deleted
+    assert not cci.exists_object(nested_file)
+
+    # Verify empty directories are cleaned up (same checks as above)
+    if isinstance(cci.backend_interface, LocalClient):
+        object_path = Path(cci.backend_interface.path) / object_name
+        assert len(list(object_path.glob('**'))) == 0, "object_name dir should be removed after becoming empty"
+
 
 def test_move_cleans_up_empty_directories(cci, object_name):
     '''Test that moving a file also removes empty parent directories at source (S3-like behavior)'''
