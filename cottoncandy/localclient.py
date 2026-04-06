@@ -169,7 +169,7 @@ class LocalClient(CCBackEnd):
         results = self._remove_path_and_metadata(results)
         return results
 
-    def list_objects(self, **kwargs):
+    def list_objects(self, **kwargs) -> list[str]:
         """Gets all objects contained by backend
 
         Returns
@@ -289,7 +289,7 @@ class LocalClient(CCBackEnd):
         return True
 
     @property
-    def size(self):
+    def size(self) -> int:
         """Size of stored cloud items in bytes
 
         Returns
