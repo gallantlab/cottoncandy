@@ -393,6 +393,7 @@ class S3Client(CCBackEnd):
         response : boto3 response
         """
         assert os.path.exists(file_name)
+        assert permissions is not None, 'Permissions must be specified for S3 uploads'
         if cloud_name is None:
             cloud_name = file_name
         s3_object = self.get_s3_object(cloud_name)
