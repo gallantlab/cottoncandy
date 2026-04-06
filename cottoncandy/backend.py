@@ -14,7 +14,6 @@ class CloudStream(NamedTuple):
 
     TODO: unified metadata
     """
-    #content: BytesIO
     content: BinaryIO
     metadata: dict[str, str]
 
@@ -47,7 +46,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict[str, str], permissions: Optional[str], threads: int):
+    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict[str, str], permissions: Optional[str], threads: int) -> None:
         """Uploads a stream object with a .read() function
 
         Parameters
@@ -66,12 +65,12 @@ class CCBackEnd:
 
         Returns
         -------
-        bool, upload success
+        None
         """
         pass
 
     @abstractmethod
-    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: Optional[str] = None, threads: int = 1):
+    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: Optional[str] = None, threads: int = 1) -> None:
         """Uploads a file from disk
 
         Parameters
@@ -88,7 +87,7 @@ class CCBackEnd:
 
         Returns
         -------
-        bool, upload success
+        None
         """
         pass
 
@@ -112,7 +111,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def download_to_file(self, cloud_name: str, file_name: str, threads: int):
+    def download_to_file(self, cloud_name: str, file_name: str, threads: int) -> None:
         """Downloads an object directly to disk
 
         Parameters
@@ -127,7 +126,7 @@ class CCBackEnd:
 
         Returns
         -------
-        bool, download success
+        None
         """
         pass
 
