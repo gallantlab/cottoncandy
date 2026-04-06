@@ -268,8 +268,8 @@ def clean_object_name(input_function: F) -> F:
     S3fs does not list objects with a "/" prefix.
     '''
     @wraps(input_function)
-    def iremove_root(self, object_name: str, *args: Any, **kwargs: Any) -> Any:
-        object_name = re.sub('//+', '/', object_name)
+    def iremove_root(self, cloud_name: str, *args: Any, **kwargs: Any) -> Any:
+        object_name = re.sub('//+', '/', cloud_name)
 
         if object_name == '':
             pass
