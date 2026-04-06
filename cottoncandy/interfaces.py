@@ -9,10 +9,10 @@ from urllib.parse import unquote
 from warnings import warn
 
 import six
-from typing import Any, Iterable, List, Literal, TypedDict, Optional, Union
+from typing import Any, BinaryIO, Iterable, List, Literal, TypedDict, Optional, Union
 
 import cottoncandy.browser
-from cottoncandy.backend import FileNotFoundError
+from cottoncandy.backend import FileNotFoundError, CloudStream
 
 from .options import config
 from .s3client import S3Client, botocore
@@ -139,11 +139,11 @@ class BasicInterface(InterfaceObject):
     def _get_bucket_name(self, bucket_name):
         return self.backend_interface._get_bucket_name(bucket_name)
 
-    def pathjoin(self, a, *p):
+    def pathjoin(self, a: str, *p: str) -> str:
         return pathjoin(a, *p)
 
     @property
-    def bucket_name(self):
+    def bucket_name(self) -> Optional[str]:
         if self.backend == "s3":
             return self.backend_interface.bucket_name
         elif self.backend == "gdrive":
@@ -174,11 +174,11 @@ class BasicInterface(InterfaceObject):
         """Check whether the bucket exists"""
         return self.backend_interface.check_bucket_exists(bucket_name)
 
-    def create_bucket(self, bucket_name, acl=DEFAULT_ACL):
+    def create_bucket(self, bucket_name: str, acl=DEFAULT_ACL) -> None:
         """Create a new bucket"""
         self.backend_interface.create_bucket(bucket_name, acl)
 
-    def rm_bucket(self, bucket_name):
+    def rm_bucket(self, bucket_name: str) -> None:
         '''Remove an empty bucket. Throws an exception when bucket is not empty.
         '''
         self.set_bucket(bucket_name)
@@ -188,7 +188,7 @@ class BasicInterface(InterfaceObject):
         except botocore.exceptions.ClientError:
             print("Bucket not empty. To delete, first empty the bucket.")
 
-    def set_bucket(self, bucket_name):
+    def set_bucket(self, bucket_name: str) -> None:
         """Bucket to use"""
         self.backend_interface.set_current_bucket(bucket_name)
 
@@ -279,17 +279,17 @@ class BasicInterface(InterfaceObject):
         """
         return self.backend_interface.size
 
-    def show_buckets(self):
+    def show_buckets(self) -> None:
         """Show available buckets"""
         self.backend_interface.show_all_buckets()
 
     @clean_object_name
-    def get_object(self, object_name, bucket_name=None):
+    def get_object(self, object_name: str, bucket_name: Optional[str]=None):
         """Get a boto3 object. Create it if it doesn't exist"""
         # NOTE: keeping this in case outside code is using this.
         return self.backend_interface.get_s3_object(object_name, bucket_name)
 
-    def show_objects(self, limit=1000, page_size=1000):
+    def show_objects(self, limit: int=1000, page_size: int=1000) -> None:
         """Print objects in the current bucket"""
         if self.backend == 's3':
             object_list = self.backend_interface.list_objects(limit=limit, page_size=page_size)
@@ -313,12 +313,11 @@ class BasicInterface(InterfaceObject):
     # CCBackEnd object or the actual cloud APIs
 
     @clean_object_name
-    def upload_object(self, object_name, body, acl=DEFAULT_ACL, threads = THREADS, **metadata):
+    def upload_object(self, object_name: str, body: BinaryIO, acl: str=DEFAULT_ACL, threads: int=THREADS, **metadata: str) -> None:
         # First check size of object to see if MPU is necessary
-
         self.backend_interface.upload_stream(body, object_name, metadata, permissions = acl, threads = threads)
 
-    def download_stream(self, object_name, threads = THREADS):
+    def download_stream(self, object_name: str, threads: int = THREADS) -> CloudStream:
         """
         Returns the CloudStream object for an object
         Parameters
@@ -336,7 +335,7 @@ class BasicInterface(InterfaceObject):
 
     def upload_from_file(self, flname: str, object_name: Optional[str]=None,
                          ExtraArgs=dict(ACL=DEFAULT_ACL),
-                         threads: int = THREADS):
+                         threads: int = THREADS) -> None:
         """Upload a file to the cloud.
 
         Parameters
@@ -358,7 +357,7 @@ class BasicInterface(InterfaceObject):
         return self.backend_interface.upload_file(flname, object_name, ExtraArgs['ACL'], threads)
 
     def upload_from_directory(self, disk_path: str, cloud_path: Optional[str]=None,
-                              recursive: bool=False, ExtraArgs=dict(ACL=DEFAULT_ACL), threads: int = THREADS):
+                              recursive: bool=False, ExtraArgs=dict(ACL=DEFAULT_ACL), threads: int = THREADS) -> None:
         '''Upload a directory to the cloud
         '''
         filenames = sorted(os.listdir(disk_path))
@@ -378,7 +377,7 @@ class BasicInterface(InterfaceObject):
         print('Uploaded "%s" to "%s"' % (disk_path, cloud_path))
 
     @clean_object_name
-    def download_to_file(self, object_name: str, file_name: str, threads: int = THREADS):
+    def download_to_file(self, object_name: str, file_name: str, threads: int = THREADS) -> None:
         """Download cloud object to a file
 
         Parameters
@@ -410,7 +409,7 @@ class BasicInterface(InterfaceObject):
         return self.download_stream(object_name, threads).content.read()
 
     @clean_object_name
-    def upload_json(self, object_name, ddict, acl=DEFAULT_ACL, threads: int = 1, **metadata):
+    def upload_json(self, object_name: str, ddict: dict, acl: str = DEFAULT_ACL, threads: int = 1, **metadata: str) -> None:
         """Upload a dict as a JSON using ``json.dumps``
 
         Parameters
@@ -442,7 +441,7 @@ class BasicInterface(InterfaceObject):
         return json.loads(obj.decode())
 
     @clean_object_name
-    def upload_pickle(self, object_name: str, data_object: Any, acl: str=DEFAULT_ACL, threads: int = THREADS, **metadata):
+    def upload_pickle(self, object_name: str, data_object: Any, acl: str=DEFAULT_ACL, threads: int = THREADS, **metadata) -> None:
         """Upload an object using pickle: ``pickle.dumps``
 
         Parameters
@@ -499,7 +498,7 @@ class ArrayInterface(BasicInterface):
         super(ArrayInterface, self).__init__(*args, **kwargs)
 
     @clean_object_name
-    def upload_npy_array(self, object_name: str, array: npt.NDArray, acl: str=DEFAULT_ACL, threads: int = THREADS, **metadata):
+    def upload_npy_array(self, object_name: str, array: npt.NDArray, acl: str=DEFAULT_ACL, threads: int = THREADS, **metadata: str) -> None:
         """Upload a np.ndarray using ``np.save``
 
         This method creates a copy of the array in memory
@@ -549,7 +548,7 @@ class ArrayInterface(BasicInterface):
         return array
 
     @clean_object_name
-    def upload_raw_array(self, object_name: str, array: npt.NDArray, compression: Optional[Union[bool, str]]=DO_COMPRESSION, acl: str=DEFAULT_ACL, threads: int = THREADS, **metadata):
+    def upload_raw_array(self, object_name: str, array: npt.NDArray, compression: Optional[Union[bool, str]]=DO_COMPRESSION, acl: str=DEFAULT_ACL, threads: int = THREADS, **metadata: str) -> None:
         """Upload a binary representation of a np.ndarray
 
         This method reads the array content from memory to upload.
@@ -713,7 +712,7 @@ class ArrayInterface(BasicInterface):
 
     @clean_object_name
     def dict2cloud(self, object_name: str, array_dict: NestedArrayDict, acl: str = DEFAULT_ACL,
-                   verbose: bool = True, threads: int = THREADS, **metadata):
+                   verbose: bool = True, threads: int = THREADS, **metadata: str):
         """Upload an arbitrary depth dictionary containing arrays
 
         Parameters
@@ -731,17 +730,17 @@ class ArrayInterface(BasicInterface):
             name = self.pathjoin(object_name, k)
 
             if isinstance(v, dict):
-                _ = self.dict2cloud(name, v, acl=acl, threads = threads, **metadata)
+                _ = self.dict2cloud(name, v, acl=acl, verbose=verbose, threads = threads, **metadata)
             elif isinstance(v, np.ndarray):
                 _ = self.upload_raw_array(name, v, acl=acl, threads = threads, **metadata)
             else:  # try converting to array
-                _ = self.upload_raw_array(name, np.asarray(v), threads = threads, acl=acl)
+                _ = self.upload_raw_array(name, np.asarray(v), threads = threads, acl=acl, **metadata)
 
         if verbose:
             print('uploaded arrays in "%s"' % object_name)
 
     @clean_object_name
-    def cloud2dict(self, object_root: str, verbose: bool = True, keys=None, threads: int = THREADS, **metadata) -> NestedArrayDict:
+    def cloud2dict(self, object_root: str, verbose: bool = True, keys=None, threads: int = THREADS, **metadata: str) -> NestedArrayDict:
         """Download all the arrays of the object branch and return a dictionary.
         This is the complement to ``dict2cloud``
 
@@ -790,7 +789,7 @@ class ArrayInterface(BasicInterface):
                     arr = None
                 datadict[subdir] = arr
             else:
-                datadict[subdir] = self.cloud2dict(path, threads = threads)
+                datadict[subdir] = self.cloud2dict(path, threads = threads, verbose = verbose, **metadata)
 
         if verbose:
             print('Downloaded arrays in "%s"' % object_root)
@@ -816,7 +815,7 @@ class ArrayInterface(BasicInterface):
         return S3Directory(object_root, interface = self)
 
     @clean_object_name
-    def upload_dask_array(self, object_name: str, arr: npt.NDArray, axis: int = -1, buffersize: int = DASK_CHUNKSIZE, threads: int = THREADS, **metakwargs):
+    def upload_dask_array(self, object_name: str, arr: npt.NDArray, axis: int = -1, buffersize: int = DASK_CHUNKSIZE, threads: int = THREADS, **metakwargs: str) -> None:
         """Upload an array in chunks and store the metadata to reconstruct
         the complete matrix with ``dask``.
 
@@ -886,10 +885,11 @@ class ArrayInterface(BasicInterface):
 
         chunks = [[value for k, value in sorted(sizes.items())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
-        return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, **metakwargs)
+        # TODO: whys is metadata typed wrong?
+        return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, threads=threads, **metakwargs)
 
     @clean_object_name
-    def download_dask_array(self, object_name, dask_name='array', threads = THREADS):
+    def download_dask_array(self, object_name: str, dask_name: str = 'array', threads: int = THREADS) -> Any:
         """Downloads a split matrix as a ``dask.array.Array`` object
 
         This uses the stored object metadata to reconstruct the full
@@ -921,7 +921,7 @@ class ArrayInterface(BasicInterface):
         return da.Array(dask, dask_name, chunks, shape = shape, dtype = dtype)
 
     @clean_object_name
-    def upload_sparse_array(self, object_name: str, arr: Any, threads: int = THREADS):
+    def upload_sparse_array(self, object_name: str, arr: Any, threads: int = THREADS) -> None:
         """Uploads a scipy.sparse array as a folder of array objects
 
         Parameters
@@ -1100,7 +1100,7 @@ class FileSystemInterface(BasicInterface):
         return list(object_names)
 
     @clean_object_name
-    def glob(self, pattern: str, **kwargs):
+    def glob(self, pattern: str, **kwargs) -> List[str]:
         """Return a list of object names in the cloud storage
         that match the glob pattern.
 
@@ -1156,7 +1156,7 @@ class FileSystemInterface(BasicInterface):
         else:
             return self.glob_s3(pattern, **kwargs)
 
-    def glob_google_drive(self, pattern):
+    def glob_google_drive(self, pattern: str) -> List[str]:
         """Globbing on google drive
 
         Parameters
@@ -1188,12 +1188,12 @@ class FileSystemInterface(BasicInterface):
         return matches
 
 
-    def glob_s3(self, pattern, **kwargs):
+    def glob_s3(self, pattern: str, **kwargs) -> List[str]:
         """Globbing on S3
 
         Parameters
         ----------
-        pattern
+        pattern: str
         kwargs
 
         Returns
@@ -1231,7 +1231,7 @@ class FileSystemInterface(BasicInterface):
         return matches
 
     @clean_object_name
-    def download_directory(self, directory: str, disk_name: os.PathLike):
+    def download_directory(self, directory: str, disk_name: os.PathLike) -> None:
         """
         Download an entire directory
         NOTE: currently only tested on s3
@@ -1271,7 +1271,7 @@ class FileSystemInterface(BasicInterface):
             self.download_to_file(f, path)
 
     @clean_object_name
-    def search(self, pattern: str, **kwargs):
+    def search(self, pattern: str, **kwargs) -> None:
         """Print the objects matching the glob pattern
 
         See ``glob`` documentation for details
@@ -1378,7 +1378,7 @@ class FileSystemInterface(BasicInterface):
             "nothing found under '%s"
         print(msg % object_name)
 
-    def get_object_owner(self, object_name):
+    def get_object_owner(self, object_name: str) -> None:
         self.exists_object(object_name, raise_err=True)
         ob = self.get_object(object_name)
         try:
