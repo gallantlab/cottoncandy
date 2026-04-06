@@ -262,7 +262,7 @@ class S3Client(CCBackEnd):
         return response
 
     @property
-    def size(self):
+    def size(self) -> int:
         return self.get_current_bucket_size()
 
     def get_current_bucket_size(self, limit: int=10 ** 6, page_size: int=10 ** 6) -> int:
@@ -344,6 +344,8 @@ class S3Client(CCBackEnd):
         -------
 
         """
+        assert permissions is not None, 'Permissions must be specified for S3 uploads'
+
         obj = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,

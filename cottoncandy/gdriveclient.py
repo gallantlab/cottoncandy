@@ -896,7 +896,7 @@ class GDriveClient(CCBackEnd):
             return False
 
     @property
-    def size(self):
+    def size(self) -> int:
         files = self.drive.ListFile({'q': "trashed=false"}).GetList()
         sizes = [f.metadata['size'] for f in files]
         return sum(sizes)
