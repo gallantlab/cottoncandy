@@ -2,6 +2,8 @@ from io import BytesIO
 from pathlib import Path
 import time
 
+import cottoncandy as cc
+
 from ..localclient import LocalClient
 
 
@@ -134,3 +136,85 @@ def test_move_cleans_up_empty_directories(cci, object_name):
         and cci.download_object(object_name + '/source') == content
     cci.rm(object_name + '/source')
     time.sleep(cci.wait_time)
+
+
+def test_move_cleans_up_source_bucket_directories_across_buckets(tmp_path):
+    """Moving across buckets should remove empty source directories."""
+    source_bucket = tmp_path / 'source-bucket'
+    destination_bucket = tmp_path / 'destination-bucket'
+    source_bucket.mkdir()
+    destination_bucket.mkdir()
+
+    cci_src = cc.get_interface(
+        bucket_name=str(source_bucket),
+        backend='local',
+        verbose=False,
+    )
+    cci_dest = cc.get_interface(
+        bucket_name=str(destination_bucket),
+        backend='local',
+        verbose=False,
+    )
+    source_key = 'nested/a/b/file.txt'
+    destination_key = 'moved/file.txt'
+    content = b'cross bucket move content'
+
+    cci_src.upload_object(source_key, BytesIO(content))
+
+    source_root = source_bucket / 'nested'
+    source_a = source_root / 'a'
+    source_b = source_a / 'b'
+    source_file = source_b / 'file.txt'
+
+    assert source_file.exists()
+
+    # mv from src --> dest, calling from src client
+    cci_src.mv(
+        source_name=source_key,
+        dest_name=destination_key,
+        source_bucket=str(source_bucket),
+        dest_bucket=str(destination_bucket),
+        overwrite=True,
+    )
+
+    moved_file = destination_bucket / 'moved' / 'file.txt'
+    moved_metadata = destination_bucket / 'moved' / 'file.txt.meta.json'
+
+    assert moved_file.exists()
+    assert cci_dest.download_object(destination_key) == content
+    assert moved_metadata.exists()
+    assert not cci_src.exists_object(source_key, bucket_name=str(source_bucket))
+
+    # The source bucket should be cleaned up back to the bucket root.
+    assert not source_file.exists()
+    assert not source_b.exists()
+    assert not source_a.exists()
+    assert not source_root.exists()
+    assert source_bucket.exists()
+
+    # Cleanup
+    cci_dest.rm(destination_key)
+    assert not moved_file.exists()
+    assert not moved_metadata.exists()
+    assert not (destination_bucket / 'moved').exists()
+
+    # Now try the same thing, but calling `.mv()` from the destination client instead.
+    cci_src.upload_object(source_key, BytesIO(content))
+    cci_dest.mv(
+        source_name=source_key,
+        dest_name=destination_key,
+        source_bucket=str(source_bucket),
+        dest_bucket=str(destination_bucket),
+        overwrite=True,
+    )
+
+    assert moved_file.exists()
+    assert cci_dest.download_object(destination_key) == content
+    assert moved_metadata.exists()
+    assert not cci_src.exists_object(source_key, bucket_name=str(source_bucket))
+
+    assert not source_file.exists()
+    assert not source_b.exists()
+    assert not source_a.exists()
+    assert not source_root.exists()
+    assert source_bucket.exists()
