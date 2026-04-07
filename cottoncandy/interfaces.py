@@ -9,7 +9,7 @@ from urllib.parse import unquote
 from warnings import warn
 
 import six
-from typing import Any, BinaryIO, Iterable, List, Literal, TypedDict, Optional, Union
+from typing import Any, BinaryIO, Iterable, List, Literal, Mapping, TypedDict, Optional, Union, cast
 
 import cottoncandy.browser
 from cottoncandy.backend import FileNotFoundError, CloudStream
@@ -409,7 +409,7 @@ class BasicInterface(InterfaceObject):
         return self.download_stream(object_name, threads).content.read()
 
     @clean_object_name
-    def upload_json(self, object_name: str, ddict: dict, acl: str = DEFAULT_ACL, threads: int = 1, **metadata: str) -> None:
+    def upload_json(self, object_name: str, ddict: Mapping[Any, Any], acl: str = DEFAULT_ACL, threads: int = 1, **metadata: str) -> None:
         """Upload a dict as a JSON using ``json.dumps``
 
         Parameters
@@ -579,8 +579,8 @@ class ArrayInterface(BasicInterface):
         # Backward compatibility
         if 'gzip' in metadata:
             warn("Deprecated keyword argument `gzip`. Use `compression='gzip'` instead", DeprecationWarning)
-            gz = metadata.pop('gzip')
-            compression = 'gzip' if gz else False
+            use_gzip = metadata.pop('gzip')
+            compression = 'gzip' if use_gzip else False
 
         if compression is True:
             # check whether array is >= 2 GB
@@ -673,7 +673,7 @@ class ArrayInterface(BasicInterface):
         shape = arraystream.metadata['shape']
         shape = tuple(map(int, shape.split(',')) if shape else ())
         dtype = np.dtype(arraystream.metadata['dtype'])
-        order: Literal['C', 'F'] = arraystream.metadata.get('order', 'C')
+        order = cast(Literal['C', 'F'], arraystream.metadata.get('order', 'C'))
         assert order in ['C', 'F'], f'Invalid array order in metadata: {order}'
         array = np.empty(tuple(shape), dtype = dtype, order = order)
 
@@ -690,6 +690,7 @@ class ArrayInterface(BasicInterface):
 
         assert 'compression' in arraystream.metadata
 
+        datastream: BinaryIO
         if arraystream.metadata['compression'] == 'gzip':
             # gzipped!
             datastream = GzipInputStream(body)
@@ -885,7 +886,6 @@ class ArrayInterface(BasicInterface):
 
         chunks = [[value for k, value in sorted(sizes.items())] for sizes in dimension_sizes]
         metadata['chunks'] = chunks
-        # TODO: whys is metadata typed wrong?
         return self.upload_json(self.pathjoin(object_name, 'metadata.json'), metadata, threads=threads, **metakwargs)
 
     @clean_object_name
@@ -1172,7 +1172,10 @@ class FileSystemInterface(BasicInterface):
             return self.backend_interface.list_objects(True)
 
         nextFolderExp = r'^/?[^/]*/'
-        nextFolder = re.match(nextFolderExp, pattern).group(0)
+        match = re.match(nextFolderExp, pattern)
+        if match is None:
+            raise ValueError('Invalid pattern: %s' % pattern)
+        nextFolder = match.group(0)
         pattern = re.sub(nextFolderExp, '', pattern)
 
         if '*' not in nextFolder:	# no wildcard, simply cd into it
