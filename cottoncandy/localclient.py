@@ -391,8 +391,6 @@ class LocalClient(CCBackEnd):
                 # Stop cleanup if the directory was removed or changed concurrently
                 break
 
-
-
 def auto_makedirs(destination: str) -> None:
     """Create directory tree if destination does not exist."""
     if not os.path.exists(os.path.dirname(destination)):

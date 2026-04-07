@@ -41,14 +41,18 @@ def test_delete_cleans_up_empty_directories(cci, object_name):
 
     # Try creating objects in place of the deleted directories.
     cci.upload_object(object_name + '/subdir1/subdir2', BytesIO(content))
+    time.sleep(cci.wait_time)
     assert cci.exists_object(object_name + '/subdir1/subdir2') \
         and cci.download_object(object_name + '/subdir1/subdir2') == content
     cci.rm(object_name + '/subdir1/subdir2')
+    time.sleep(cci.wait_time)
 
     cci.upload_object(object_name + '/subdir1', BytesIO(content))
+    time.sleep(cci.wait_time)
     assert cci.exists_object(object_name + '/subdir1') \
         and cci.download_object(object_name + '/subdir1') == content
     cci.rm(object_name + '/subdir1')
+    time.sleep(cci.wait_time)
 
     # Test recursive=True also cleans up empty directories
     # Create the file again
@@ -118,11 +122,15 @@ def test_move_cleans_up_empty_directories(cci, object_name):
 
     # Try creating objects in place of the deleted directories.
     cci.upload_object(object_name + '/source/nested', BytesIO(content))
+    time.sleep(cci.wait_time)
     assert cci.exists_object(object_name + '/source/nested') \
         and cci.download_object(object_name + '/source/nested') == content
     cci.rm(object_name + '/source/nested')
+    time.sleep(cci.wait_time)
 
     cci.upload_object(object_name + '/source', BytesIO(content))
+    time.sleep(cci.wait_time)
     assert cci.exists_object(object_name + '/source') \
         and cci.download_object(object_name + '/source') == content
     cci.rm(object_name + '/source')
+    time.sleep(cci.wait_time)
