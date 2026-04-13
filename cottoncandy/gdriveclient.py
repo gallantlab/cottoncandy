@@ -70,6 +70,11 @@ class GDriveClient(CCBackEnd):
 
         return authenticator
 
+    @property
+    def bucket_name(self):
+        print('Google drive has no concept of buckets')
+        return None
+
     def __init__(self, secrets='client_secrets.json', credentials='gdrive-credentials.txt'):
         """
 
