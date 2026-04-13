@@ -9,7 +9,7 @@ from urllib.parse import unquote
 from warnings import warn
 
 import six
-from typing import Any, BinaryIO, Iterable, List, Literal, Mapping, TypedDict, Optional, Union, cast
+from typing import Any, BinaryIO, Iterable, List, Literal, Mapping, TypedDict, Optional, Union, cast, no_type_check
 
 import cottoncandy.browser
 from cottoncandy.backend import FileNotFoundError, CloudStream
@@ -1163,6 +1163,7 @@ class FileSystemInterface(BasicInterface):
         else:
             return self.glob_s3(pattern, **kwargs)
 
+    @no_type_check # this function isn't implemented yet
     def glob_google_drive(self, pattern: str) -> List[str]:
         """Globbing on google drive
 
