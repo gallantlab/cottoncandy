@@ -46,7 +46,7 @@ COMPRESSION_LARGE: str = config.get('compression', 'large_array')
 import numpy as np
 import numpy.typing as npt
 try:
-    from scipy.sparse import bsr_matrix, coo_matrix, csc_matrix, csr_matrix, dia_matrix
+    import scipy.sparse
 except ImportError:
     warn('scipy not available')
 
@@ -932,8 +932,11 @@ class ArrayInterface(BasicInterface):
             A scipy.sparse array to be saved. If type is DOK or LIL,
             it will be converted to csr before saving
         threads: int
-        	number of connection threads to use
+            number of connection threads to use
         """
+        # Import sparse matrix classes here to avoid unbound reference
+        from scipy.sparse import bsr_matrix, coo_matrix, csc_matrix, csr_matrix, dia_matrix
+
         if isinstance(arr, csr_matrix):
             attrs = ['data', 'indices', 'indptr']
             arrtype = 'csr'
@@ -972,13 +975,16 @@ class ArrayInterface(BasicInterface):
         object_name : str
             The object name for the sparse array to be retrieved.
         threads: int
-        	number of connection threads to use
+            number of connection threads to use
 
         Returns
         -------
         arr : scipy.sparse.spmatrix
             The array stored at the location given by object_name
         """
+        # Import sparse matrix classes here to avoid unbound reference
+        from scipy.sparse import bsr_matrix, coo_matrix, csc_matrix, csr_matrix, dia_matrix
+
         # Get metadata
         metadata = self.download_json(self.pathjoin(object_name, 'metadata.json'))
         # Get type, shape
@@ -989,6 +995,7 @@ class ArrayInterface(BasicInterface):
         for attr in metadata['attrs']:
             d[attr] = self.download_raw_array(self.pathjoin(object_name, attr), threads = threads)
 
+        arr: Union[csr_matrix, coo_matrix, csc_matrix, bsr_matrix, dia_matrix]
         if arrtype == 'csr':
             arr = csr_matrix((d['data'], d['indices'], d['indptr']),
                              shape = shape)
