@@ -5,7 +5,7 @@ import logging
 import os
 from functools import reduce
 from io import BytesIO
-from typing import BinaryIO, Optional
+from typing import BinaryIO, Optional, cast
 from urllib.parse import unquote
 
 import boto3
@@ -242,7 +242,7 @@ class S3Client(CCBackEnd):
                         )
         defaults.update(kwargs)
         bucket = self.get_bucket()
-        prefix = defaults.pop('filter')
+        prefix = cast(dict[str, str], defaults.pop('filter'))
 
         if prefix['Prefix'] == SEPARATOR:
             request = bucket.objects
