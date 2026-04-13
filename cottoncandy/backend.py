@@ -27,6 +27,12 @@ class CCBackEnd:
     def __init__(self):
         pass
 
+    @property
+    @abstractmethod
+    def bucket_name(self) -> Optional[str]:
+        """Name of the current bucket or backing path."""
+        pass
+
     ## Basic File IO
     @abstractmethod
     def check_file_exists(self, cloud_name: str, bucket_name: Optional[str] = None) -> bool:

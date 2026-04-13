@@ -144,13 +144,7 @@ class BasicInterface(InterfaceObject):
 
     @property
     def bucket_name(self) -> Optional[str]:
-        if self.backend == "s3":
-            return self.backend_interface.bucket_name
-        elif self.backend == "gdrive":
-            print('Google drive has no concept of buckets')
-            return None
-        else:
-            return self.backend_interface.path
+        return self.backend_interface.bucket_name
 
     @clean_object_name
     def exists_object(self, object_name: str, bucket_name: Optional[str]=None, raise_err: bool=False) -> bool:
@@ -300,7 +294,7 @@ class BasicInterface(InterfaceObject):
                 object_list = self.backend_interface.list_objects(limit = limit, page_size = page_size * 100)
                 print_objects(object_list)
         elif self.backend == 'gdrive':
-            drivefiles = self.backend_interface.drive.ListFile({'q': "trashed=false"}).GetList()
+            drivefiles = self.backend_interface.drive.ListFile({'q': "trashed=false"}).GetList() # type: ignore
             object_list = [df['title'] for df in drivefiles]
             for obj in object_list:
                 # TODO: also print last modified date and whatever else to match s3
