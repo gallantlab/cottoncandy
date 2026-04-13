@@ -83,7 +83,7 @@ class S3Client(CCBackEnd):
 
         self.connection = S3Client.connect(access_key, secret_key, s3url, **kwargs)
         self.url = s3url
-        self.bucket_name: Optional[str] = None
+        self._bucket_name: Optional[str] = None
 
         if bucket:
             # bucket given
@@ -119,6 +119,10 @@ class S3Client(CCBackEnd):
             if bucket_name is None \
             else bucket_name
         return bucket_name
+
+    @property
+    def bucket_name(self) -> Optional[str]:
+        return self._bucket_name
 
     @clean_object_name
     def check_file_exists(self, cloud_name: str, bucket_name: Optional[str] = None) -> bool:
@@ -202,7 +206,7 @@ class S3Client(CCBackEnd):
         """
         if not self.check_bucket_exists(bucket_name):
             raise IOError('Bucket "%s" does not exist' % bucket_name)
-        self.bucket_name = bucket_name
+        self._bucket_name = bucket_name
 
     def get_bucket(self):
         """Get bucket boto3 object

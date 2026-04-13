@@ -23,6 +23,10 @@ class LocalClient(CCBackEnd):
             os.makedirs(path)
         self.path = path
 
+    @property
+    def bucket_name(self) -> str:
+        return self.path
+
     def check_file_exists(self, cloud_name: str, bucket_name: Optional[str] = None) -> bool:
         """Checks whether a file exists on the cloud
 
