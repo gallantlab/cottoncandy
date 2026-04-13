@@ -9,7 +9,7 @@ from urllib.parse import unquote
 from warnings import warn
 
 import six
-from typing import Any, BinaryIO, Iterable, List, Literal, Mapping, TypedDict, Optional, Union, cast, no_type_check
+from typing import Any, BinaryIO, Iterable, Literal, Mapping, TypedDict, Optional, Union, cast, no_type_check
 
 import cottoncandy.browser
 from cottoncandy.backend import FileNotFoundError, CloudStream
@@ -1039,7 +1039,7 @@ class FileSystemInterface(BasicInterface):
         """
         super(FileSystemInterface, self).__init__(*args, **kwargs)
 
-    def lsdir(self, path: str='/', limit: int=10**3) -> List[str]:
+    def lsdir(self, path: str='/', limit: int=10**3) -> list[str]:
         """List the contents of a directory
 
         Parameters
@@ -1054,7 +1054,7 @@ class FileSystemInterface(BasicInterface):
         return self.backend_interface.list_directory(path, limit)
 
     @clean_object_name
-    def ls(self, pattern: str, page_size: int=10**3, limit: int=10**3, verbose: bool=False) -> List[str]:
+    def ls(self, pattern: str, page_size: int=10**3, limit: int=10**3, verbose: bool=False) -> list[str]:
         """File-system like search for S3 objects
 
         Parameters
@@ -1107,7 +1107,7 @@ class FileSystemInterface(BasicInterface):
         return list(object_names)
 
     @clean_object_name
-    def glob(self, pattern: str, **kwargs) -> List[str]:
+    def glob(self, pattern: str, **kwargs) -> list[str]:
         """Return a list of object names in the cloud storage
         that match the glob pattern.
 
@@ -1164,7 +1164,7 @@ class FileSystemInterface(BasicInterface):
             return self.glob_s3(pattern, **kwargs)
 
     @no_type_check # this function isn't implemented yet
-    def glob_google_drive(self, pattern: str) -> List[str]:
+    def glob_google_drive(self, pattern: str) -> list[str]:
         """Globbing on google drive
 
         Parameters
@@ -1199,7 +1199,7 @@ class FileSystemInterface(BasicInterface):
         return matches
 
 
-    def glob_s3(self, pattern: str, **kwargs) -> List[str]:
+    def glob_s3(self, pattern: str, **kwargs) -> list[str]:
         """Globbing on S3
 
         Parameters
