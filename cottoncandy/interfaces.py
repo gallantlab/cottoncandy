@@ -328,7 +328,7 @@ class BasicInterface(InterfaceObject):
         return self.backend_interface.download_stream(object_name, threads)
 
     def upload_from_file(self, flname: str, object_name: Optional[str]=None,
-                         ExtraArgs=dict(ACL=DEFAULT_ACL),
+                         ExtraArgs: Optional[Mapping[str, str]]=None,
                          threads: int = THREADS) -> None:
         """Upload a file to the cloud.
 
@@ -348,7 +348,8 @@ class BasicInterface(InterfaceObject):
         -------
         response : boto3 response
         """
-        return self.backend_interface.upload_file(flname, object_name, ExtraArgs['ACL'], threads)
+        extra_args = dict(ACL=DEFAULT_ACL) if ExtraArgs is None else ExtraArgs
+        return self.backend_interface.upload_file(flname, object_name, extra_args['ACL'], threads)
 
     def upload_from_directory(self, disk_path: str, cloud_path: Optional[str]=None,
                               recursive: bool=False, ExtraArgs=dict(ACL=DEFAULT_ACL), threads: int = THREADS) -> None:
