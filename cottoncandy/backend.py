@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any, NamedTuple, BinaryIO, Optional
+from typing import Any, NamedTuple, BinaryIO, Optional, Sequence
 
 
 class FileNotFoundError(RuntimeError):
@@ -154,7 +154,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def list_objects(self) -> list[Any]:
+    def list_objects(self) -> Sequence[Any]:
         """Gets all objects contained by backend
 
         Returns

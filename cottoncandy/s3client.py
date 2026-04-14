@@ -5,7 +5,7 @@ import logging
 import os
 from functools import reduce
 from io import BytesIO
-from typing import Any, BinaryIO, Optional, cast
+from typing import Any, BinaryIO, Sequence, Optional, cast
 from urllib.parse import unquote
 
 import boto3
@@ -218,7 +218,7 @@ class S3Client(CCBackEnd):
         s3_bucket = self.connection.Bucket(self.bucket_name)
         return s3_bucket
 
-    def list_objects(self, **kwargs):
+    def list_objects(self, **kwargs) -> Sequence[Any]:
         """Get list of objects from the bucket
         This is a wrapper to ``self.get_bucket().bucket.objects``
 
