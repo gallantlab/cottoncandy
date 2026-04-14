@@ -9,7 +9,7 @@ from urllib.parse import unquote
 from warnings import warn
 
 import six
-from typing import Any, BinaryIO, Iterable, Literal, Mapping, TypedDict, Optional, Union, cast, no_type_check
+from typing import Any, BinaryIO, Iterable, Literal, Mapping, Sequence, TypedDict, Optional, Union, cast, no_type_check
 
 import cottoncandy.browser
 from cottoncandy.backend import FileNotFoundError, CloudStream
@@ -190,7 +190,7 @@ class BasicInterface(InterfaceObject):
         """Get bucket boto3 object"""
         return self.backend_interface.get_bucket()
 
-    def get_bucket_objects(self, **kwargs) -> list[Any]:
+    def get_bucket_objects(self, **kwargs) -> Sequence[Any]:
         """Get list of objects from the bucket.
 
         This is a wrapper to ``self.get_bucket().bucket.objects``
@@ -220,7 +220,7 @@ class BasicInterface(InterfaceObject):
         warn('Deprecated. Use get_objects() instead', DeprecationWarning)
         return self.backend_interface.list_objects(**kwargs)
 
-    def get_objects(self, **kwargs) -> list[Any]:
+    def get_objects(self, **kwargs) -> Sequence[Any]:
         """
         Like get_bucket_objects, but more aptly named to the generic interface
         Parameters
