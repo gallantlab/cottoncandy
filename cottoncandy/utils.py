@@ -493,11 +493,11 @@ class GzipInputStream(BytesIO):
         self.WINDOW_BUFFER_SIZE = 16 + zlib.MAX_WBITS
 
         self._file = fileobj
-        self._zip = zlib.decompressobj(self.WINDOW_BUFFER_SIZE)
+        self._zip: Optional[zlib._Decompress] = zlib.decompressobj(self.WINDOW_BUFFER_SIZE)
         self._offset = 0  # position in unzipped stream
         self._data = b''
 
-    def __fill(self, num_bytes):
+    def __fill(self, num_bytes: int) -> None:
         """
         Fill the internal buffer with 'num_bytes' of data.
 
@@ -519,7 +519,7 @@ class GzipInputStream(BytesIO):
     def __iter__(self):
         return self
 
-    def seek(self, offset: int, whence: int = 0):
+    def seek(self, offset: int, whence: int = 0) -> int:
         if whence == 0:
             position = offset
         elif whence == 1:
@@ -536,10 +536,11 @@ class GzipInputStream(BytesIO):
 
         return position
 
-    def tell(self):
+    def tell(self) -> int:
         return self._offset
 
     def read(self, size: Optional[int] = 0) -> bytes:
+        assert size is not None
         self.__fill(size)
         if size:
             data = self._data[:size]
@@ -550,13 +551,13 @@ class GzipInputStream(BytesIO):
         self._offset = self._offset + len(data)
         return data
 
-    def next(self):
+    def next(self) -> bytes:
         line = self.readline()
         if not line:
             raise StopIteration()
         return line
 
-    def readline(self, size: Optional[int] = None):
+    def readline(self, size: Optional[int] = None) -> bytes:
         assert size is None
         # make sure we have an entire line
         while self._zip and b"\n" not in self._data:
@@ -567,7 +568,7 @@ class GzipInputStream(BytesIO):
             return self.read()
         return self.read(pos)
 
-    def readlines(self, size: Optional[int] = None):
+    def readlines(self, size: Optional[int] = None) -> list[bytes]:
         assert size is None
         lines = []
         while True:
