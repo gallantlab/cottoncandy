@@ -488,6 +488,7 @@ class GzipInputStream(BytesIO):
 
         @param fileobj: file-like object,
         """
+        super().__init__()
         self.BLOCK_SIZE = block_size                       # Read block size
         # zlib window buffer size, set to gzip's format
         self.WINDOW_BUFFER_SIZE = 16 + zlib.MAX_WBITS
