@@ -190,7 +190,7 @@ class BasicInterface(InterfaceObject):
         """Get bucket boto3 object"""
         return self.backend_interface.get_bucket()
 
-    def get_bucket_objects(self, **kwargs):
+    def get_bucket_objects(self, **kwargs) -> list[Any]:
         """Get list of objects from the bucket.
 
         This is a wrapper to ``self.get_bucket().bucket.objects``
@@ -220,7 +220,7 @@ class BasicInterface(InterfaceObject):
         warn('Deprecated. Use get_objects() instead', DeprecationWarning)
         return self.backend_interface.list_objects(**kwargs)
 
-    def get_objects(self, **kwargs):
+    def get_objects(self, **kwargs) -> list[Any]:
         """
         Like get_bucket_objects, but more aptly named to the generic interface
         Parameters
@@ -1335,7 +1335,7 @@ class FileSystemInterface(BasicInterface):
         # TODO: Support directories
         return self.backend_interface.move(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
-    def rm(self, object_name: str, recursive: bool=False, delete: bool=True):
+    def rm(self, object_name: str, recursive: bool=False, delete: bool=True) -> Any:
         """Delete an object, or a subtree ('path/to/stuff').
 
         Parameters
