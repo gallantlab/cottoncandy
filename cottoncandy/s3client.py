@@ -5,7 +5,7 @@ import logging
 import os
 from functools import reduce
 from io import BytesIO
-from typing import BinaryIO, Optional, cast
+from typing import Any, BinaryIO, Optional, cast
 from urllib.parse import unquote
 
 import boto3
@@ -424,7 +424,7 @@ class S3Client(CCBackEnd):
                                 multipart_threshold = MPU_THRESHOLD)
         return s3_object.download_file(local_name, Config = config)
 
-    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> Any:
         source_bucket = self.get_bucket_name(source_bucket)
         assert source_bucket is not None, 'Source bucket must be specified'
         dest_bucket = source_bucket if (destination_bucket is None) else destination_bucket
@@ -440,7 +440,7 @@ class S3Client(CCBackEnd):
         ob_new.copy_from(CopySource = fpath)
         return ob_new
 
-    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
+    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> Any:
         new_ob = self.copy(source, destination, source_bucket, destination_bucket, overwrite)
         old_ob = self.get_s3_object(source, bucket_name = source_bucket)
         old_ob.delete()

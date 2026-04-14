@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import NamedTuple, BinaryIO, Optional
+from typing import Any, NamedTuple, BinaryIO, Optional
 
 
 class FileNotFoundError(RuntimeError):
@@ -154,7 +154,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def list_objects(self) -> list[str]:
+    def list_objects(self) -> list[Any]:
         """Gets all objects contained by backend
 
         Returns
@@ -164,7 +164,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False):
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> Any:
         """Copies an object
 
         Parameters
@@ -187,7 +187,7 @@ class CCBackEnd:
         pass
 
     @abstractmethod
-    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> bool:
+    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> Any:
         """Moves an object
 
         Parameters

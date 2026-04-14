@@ -195,7 +195,7 @@ class LocalClient(CCBackEnd):
         results = self._remove_path_and_metadata(results)
         return results
 
-    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False, copy_metadata: bool = True):
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False, copy_metadata: bool = True) -> None:
         """Copies an object
 
         Parameters
