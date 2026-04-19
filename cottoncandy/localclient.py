@@ -254,11 +254,12 @@ class LocalClient(CCBackEnd):
         source_metadata = os.path.join(source_bucket, source + METADATA_SUFFIX)
         destination_metadata = os.path.join(destination_bucket, destination + METADATA_SUFFIX)
         auto_makedirs(destination)
-        shutil.move(source, destination)
-        shutil.move(source_metadata, destination_metadata)
+        move_result = shutil.move(source, destination)
+        if os.path.isfile(source_metadata):
+            shutil.move(source_metadata, destination_metadata)
         # Clean up empty parent directories at source to mimic S3 behavior
         self._cleanup_empty_dirs(os.path.dirname(source), root_path=source_bucket)
-        return True
+        return move_result
 
     def delete(self, cloud_name, recursive=False, delete=False):
         """Deletes an object
