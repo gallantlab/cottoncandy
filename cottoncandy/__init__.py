@@ -8,7 +8,6 @@ from cottoncandy import options
 
 from .utils import get_keys, string2bool
 
-
 __version__ = "0.4.0"
 
 ACCESS_KEY = options.config.get('login', 'access_key')
