@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 from io import BytesIO as StringIO
+from typing import Optional
 
 from .backend import CCBackEnd, CloudStream
 from .utils import SEPARATOR, remove_root, remove_trivial_magic, sanitize_metadata
@@ -17,7 +18,7 @@ class LocalClient(CCBackEnd):
     Handle metadata in CouldStream objects by storing a json file (.meta.json).
     """
 
-    def __init__(self, path):
+    def __init__(self, path: str):
         if not os.path.isdir(path):
             os.makedirs(path)
         self.path = path
@@ -253,7 +254,12 @@ class LocalClient(CCBackEnd):
         source_metadata = os.path.join(source_bucket, source + METADATA_SUFFIX)
         destination_metadata = os.path.join(destination_bucket, destination + METADATA_SUFFIX)
         auto_makedirs(destination)
-        return shutil.move(source, destination) and shutil.move(source_metadata, destination_metadata)
+        move_result = shutil.move(source, destination)
+        if os.path.isfile(source_metadata):
+            shutil.move(source_metadata, destination_metadata)
+        # Clean up empty parent directories at source to mimic S3 behavior
+        self._cleanup_empty_dirs(os.path.dirname(source), root_path=source_bucket)
+        return move_result
 
     def delete(self, cloud_name, recursive=False, delete=False):
         """Deletes an object
@@ -277,11 +283,16 @@ class LocalClient(CCBackEnd):
             cloud_metadata_name = cloud_name + METADATA_SUFFIX
             if os.path.isfile(cloud_metadata_name):
                 os.remove(cloud_metadata_name)
-        else:
+        elif os.path.isdir(cloud_name):
             if recursive:
                 shutil.rmtree(cloud_name)
             else:
                 os.rmdir(cloud_name)
+
+        # Clean up empty parent directories to mimic S3 behavior
+        self._cleanup_empty_dirs(os.path.dirname(cloud_name))
+
+        return True
 
     @property
     def size(self):
@@ -344,8 +355,49 @@ class LocalClient(CCBackEnd):
         size = os.path.getsize(file_name)
         return size
 
+    def _cleanup_empty_dirs(self, dir_path: str, root_path: Optional[str] = None) -> None:
+        """Remove empty parent directories up to self.path.
 
-def auto_makedirs(destination):
+        This mimics S3 behavior where directories don't exist independently -
+        they only exist as part of object keys. When the last file in a
+        directory is deleted, the directory should disappear.
+
+        Parameters
+        ----------
+        dir_path : str
+            The directory path to start cleaning from
+        root_path : Optional[str]
+            The root path to stop cleaning at. If None, defaults to self.path.
+        """
+        # Normalize paths for comparison
+        dir_path = os.path.normpath(dir_path)
+        if root_path is None:
+            root_path = self.path
+        root_path = os.path.normpath(root_path)
+
+        # Ensure the directory is under the root path before attempting cleanup
+        try:
+            if os.path.commonpath([root_path, dir_path]) != root_path:
+                return
+        except ValueError:
+            # Paths on different drives or otherwise incomparable; do nothing
+            return
+
+        # Walk up the directory tree
+        while dir_path != root_path:
+            try:
+                # Only remove if directory exists and is empty
+                if os.path.isdir(dir_path) and len(os.listdir(dir_path)) == 0:
+                    os.rmdir(dir_path)
+                    dir_path = os.path.dirname(dir_path)
+                else:
+                    # Stop if directory is not empty or doesn't exist
+                    break
+            except OSError:
+                # Stop cleanup if the directory was removed or changed concurrently
+                break
+
+def auto_makedirs(destination: str) -> None:
     """Create directory tree if destination does not exist."""
     if not os.path.exists(os.path.dirname(destination)):
         os.makedirs(os.path.dirname(destination))
