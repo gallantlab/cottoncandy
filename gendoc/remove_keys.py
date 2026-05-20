@@ -25,9 +25,7 @@ files_changed = 0
 errors = []
 
 def should_replace(word):
-    if isinstance(word, bool) or (word is None) or (not isinstance(word, str)):
-        return False
-    return len(word) != 0
+    return isinstance(word, str) and len(word) > 0
 
 def sanitize_file(file_path, replacements):
     global files_sanitized, files_changed
