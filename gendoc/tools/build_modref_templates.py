@@ -11,7 +11,7 @@ from os.path import join as pjoin
 from apigen import ApiDocWriter
 
 # version comparison
-from distutils.version import LooseVersion as V
+from looseversion import LooseVersion as V
 
 # *****************************************************************************
 

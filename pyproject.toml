@@ -43,7 +43,10 @@ test = [
     "pytest-rerunfailures",
 ]
 docs = [
+    "looseversion",
+    "numpydoc",
     "sphinx",
+    "sphinx_bootstrap_theme",
     "sphinx-rtd-theme",
 ]
 dev = [
