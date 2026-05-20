@@ -24,9 +24,9 @@ files_changed = 0
 errors = []
 
 def should_replace(word):
-    if isinstance(word, bool) or (word is None) or (len(word) == 0):
+    if isinstance(word, bool) or (word is None) or (not isinstance(word, str)):
         return False
-    return isinstance(word, str)
+    return len(word) != 0
 
 def sanitize_file(file_path, replacements):
     global files_sanitized, files_changed
@@ -43,13 +43,14 @@ def sanitize_file(file_path, replacements):
             continue
         content = content.replace(word, replacement)
 
-    files_sanitized += 1
     if content == original:
+        files_sanitized += 1
         return
 
     try:
         with open(file_path, "w", encoding="utf-8", errors="ignore") as handle:
             handle.write(content)
+        files_sanitized += 1
         files_changed += 1
     except OSError:
         errors.append(file_path)
