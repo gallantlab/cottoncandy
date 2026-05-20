@@ -32,7 +32,7 @@ def should_replace(word):
 def sanitize_file(file_path, replacements):
     global files_sanitized, files_changed
     try:
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as handle:
+        with open(file_path, "r", encoding="utf-8", errors="replace") as handle:
             content = handle.read()
     except OSError:
         errors.append(file_path)
@@ -49,7 +49,7 @@ def sanitize_file(file_path, replacements):
         return
 
     try:
-        with open(file_path, "w", encoding="utf-8", errors="ignore") as handle:
+        with open(file_path, "w", encoding="utf-8", errors="replace") as handle:
             handle.write(content)
         files_sanitized += 1
         files_changed += 1
