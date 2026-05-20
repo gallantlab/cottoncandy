@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 from cottoncandy import options
@@ -41,7 +42,7 @@ def sanitize_file(file_path, replacements):
     for word, replacement in replacements.items():
         if not should_replace(word):
             continue
-        content = content.replace(word, replacement)
+        content = re.sub(re.escape(word), replacement, content, flags=re.IGNORECASE)
 
     if content == original:
         files_sanitized += 1
