@@ -17,15 +17,13 @@ This library relies heavily on boto3 (https://github.com/boto/boto3)
 Installation
 ------------
 
-Clone the repo from GitHub and do the usual python install
-
-Install the latest stable release via pip:
+Install from PyPI
 
 ::
 
    pip install cottoncandy
 
-Or the development version from GitHub:
+Or install the development version from GitHub:
 
 ::
 

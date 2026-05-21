@@ -10,7 +10,6 @@
    ArrayInterface
    BasicInterface
    DefaultInterface
-   EncryptedInterface
    FileSystemInterface
    InterfaceObject
 
@@ -47,18 +46,6 @@
 
 
 .. autoclass:: DefaultInterface
-  :members:
-  :undoc-members:
-  :show-inheritance:
-
-  .. automethod:: __init__
-
-
-:class:`EncryptedInterface`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-.. autoclass:: EncryptedInterface
   :members:
   :undoc-members:
   :show-inheritance:

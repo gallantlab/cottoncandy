@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>browser &#8212; cottoncandy 0.2.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9f61996d" />
+    <script src="../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="interfaces" href="cottoncandy.interfaces.html" />
@@ -68,10 +68,36 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">browser</span></code></a><ul>
-<li><a class="reference internal" href="#browserobject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BrowserObject</span></code></a></li>
-<li><a class="reference internal" href="#s3directory"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3Directory</span></code></a></li>
-<li><a class="reference internal" href="#s3fslike"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3FSLike</span></code></a></li>
-<li><a class="reference internal" href="#s3hdf5"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3HDF5</span></code></a></li>
+<li><a class="reference internal" href="#browserobject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BrowserObject</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.browser.BrowserObject"><code class="docutils literal notranslate"><span class="pre">BrowserObject</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.browser.BrowserObject.__init__"><code class="docutils literal notranslate"><span class="pre">BrowserObject.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#s3directory"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3Directory</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.browser.S3Directory"><code class="docutils literal notranslate"><span class="pre">S3Directory</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.browser.S3Directory.__init__"><code class="docutils literal notranslate"><span class="pre">S3Directory.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#s3fslike"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3FSLike</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.browser.S3FSLike"><code class="docutils literal notranslate"><span class="pre">S3FSLike</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.browser.S3FSLike.__init__"><code class="docutils literal notranslate"><span class="pre">S3FSLike.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#s3hdf5"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3HDF5</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.browser.S3HDF5"><code class="docutils literal notranslate"><span class="pre">S3HDF5</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.browser.S3HDF5.__init__"><code class="docutils literal notranslate"><span class="pre">S3HDF5.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.browser.S3HDF5.keys"><code class="docutils literal notranslate"><span class="pre">S3HDF5.keys()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.browser.S3HDF5.load"><code class="docutils literal notranslate"><span class="pre">S3HDF5.load()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -140,13 +166,9 @@
       </div>
     <div class="body col-md-9 content" role="main">
       
-  <div class="section" id="module-cottoncandy.browser">
-<span id="browser"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">browser</span></code><a class="headerlink" href="#module-cottoncandy.browser" title="Permalink to this headline">¶</a></h1>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+  <section id="module-cottoncandy.browser">
+<span id="browser"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">browser</span></code><a class="headerlink" href="#module-cottoncandy.browser" title="Link to this heading">¶</a></h1>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.browser.BrowserObject" title="cottoncandy.browser.BrowserObject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrowserObject</span></code></a>()</p></td>
 <td><p></p></td>
@@ -162,48 +184,48 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="browserobject">
-<h2><a class="reference internal" href="#cottoncandy.browser.BrowserObject" title="cottoncandy.browser.BrowserObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BrowserObject</span></code></a><a class="headerlink" href="#browserobject" title="Permalink to this headline">¶</a></h2>
+<section id="browserobject">
+<h2><a class="reference internal" href="#cottoncandy.browser.BrowserObject" title="cottoncandy.browser.BrowserObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BrowserObject</span></code></a><a class="headerlink" href="#browserobject" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cottoncandy.browser.BrowserObject">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.browser.</span></span><span class="sig-name descname"><span class="pre">BrowserObject</span></span><a class="headerlink" href="#cottoncandy.browser.BrowserObject" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cottoncandy.browser.</span></span><span class="sig-name descname"><span class="pre">BrowserObject</span></span><a class="headerlink" href="#cottoncandy.browser.BrowserObject" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.browser.BrowserObject.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.BrowserObject.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.BrowserObject.__init__" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="s3directory">
-<h2><a class="reference internal" href="#cottoncandy.browser.S3Directory" title="cottoncandy.browser.S3Directory"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3Directory</span></code></a><a class="headerlink" href="#s3directory" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="s3directory">
+<h2><a class="reference internal" href="#cottoncandy.browser.S3Directory" title="cottoncandy.browser.S3Directory"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3Directory</span></code></a><a class="headerlink" href="#s3directory" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cottoncandy.browser.S3Directory">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.browser.</span></span><span class="sig-name descname"><span class="pre">S3Directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3Directory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#cottoncandy.browser.S3FSLike" title="cottoncandy.browser.S3FSLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.browser.S3FSLike</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cottoncandy.browser.</span></span><span class="sig-name descname"><span class="pre">S3Directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3Directory" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cottoncandy.browser.S3FSLike" title="cottoncandy.browser.S3FSLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3FSLike</span></code></a></p>
 <p>Get an object that allows you to tab-complete your
 way through your objects.
 One also has access to <code class="docutils literal notranslate"><span class="pre">_ls()</span></code> and <code class="docutils literal notranslate"><span class="pre">_fullpath()</span></code> methods.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.browser.S3Directory.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3Directory.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3Directory.__init__" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<em>str</em>) – The path to start naviation from</p></li>
 <li><p><strong>interface</strong> – A <cite>cottoncandy.InterfaceObject</cite> instance</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ccbrowser</strong> – A cottoncandy browser object</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>cottoncandy.BrowserObject</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cottoncandy</span> <span class="k">as</span> <span class="nn">cc</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cottoncandy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cc</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">browser</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">get_browser</span><span class="p">(</span><span class="s1">&#39;my_bucket_name&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">browser</span><span class="o">.</span><span class="n">s</span><span class="o">&lt;</span><span class="n">TAB</span><span class="o">&gt;</span>
 <span class="go">browser.sweet_project</span>
@@ -250,17 +272,17 @@ One also has access to <code class="docutils literal notranslate"><span class="p
 
 </dd></dl>
 
-</div>
-<div class="section" id="s3fslike">
-<h2><a class="reference internal" href="#cottoncandy.browser.S3FSLike" title="cottoncandy.browser.S3FSLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3FSLike</span></code></a><a class="headerlink" href="#s3fslike" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="s3fslike">
+<h2><a class="reference internal" href="#cottoncandy.browser.S3FSLike" title="cottoncandy.browser.S3FSLike"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3FSLike</span></code></a><a class="headerlink" href="#s3fslike" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cottoncandy.browser.S3FSLike">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.browser.</span></span><span class="sig-name descname"><span class="pre">S3FSLike</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3FSLike" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#cottoncandy.browser.BrowserObject" title="cottoncandy.browser.BrowserObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.browser.BrowserObject</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cottoncandy.browser.</span></span><span class="sig-name descname"><span class="pre">S3FSLike</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3FSLike" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cottoncandy.browser.BrowserObject" title="cottoncandy.browser.BrowserObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BrowserObject</span></code></a></p>
 <p>Base class for file-system-like backend_interface to S3</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.browser.S3FSLike.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3FSLike.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3FSLike.__init__" title="Link to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>path: str</dt><dd><p>The path to start naviation from</p>
 </dd>
@@ -271,33 +293,33 @@ One also has access to <code class="docutils literal notranslate"><span class="p
 
 </dd></dl>
 
-</div>
-<div class="section" id="s3hdf5">
-<h2><a class="reference internal" href="#cottoncandy.browser.S3HDF5" title="cottoncandy.browser.S3HDF5"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3HDF5</span></code></a><a class="headerlink" href="#s3hdf5" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="s3hdf5">
+<h2><a class="reference internal" href="#cottoncandy.browser.S3HDF5" title="cottoncandy.browser.S3HDF5"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3HDF5</span></code></a><a class="headerlink" href="#s3hdf5" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cottoncandy.browser.S3HDF5">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.browser.</span></span><span class="sig-name descname"><span class="pre">S3HDF5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3HDF5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#cottoncandy.browser.S3Directory" title="cottoncandy.browser.S3Directory"><code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.browser.S3Directory</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cottoncandy.browser.</span></span><span class="sig-name descname"><span class="pre">S3HDF5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3HDF5" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cottoncandy.browser.S3Directory" title="cottoncandy.browser.S3Directory"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3Directory</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.browser.S3HDF5.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3HDF5.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3HDF5.__init__" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.browser.S3HDF5.keys">
-<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3HDF5.keys" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3HDF5.keys" title="Link to this definition">¶</a></dt>
 <dd><p>Show the contents of</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.browser.S3HDF5.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3HDF5.load" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.browser.S3HDF5.load" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
     </div>
@@ -312,7 +334,7 @@ One also has access to <code class="docutils literal notranslate"><span class="p
     </p>
     <p>
         &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.7.<br/>
     </p>
   </div>
 </footer>

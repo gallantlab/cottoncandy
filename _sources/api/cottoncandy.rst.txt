@@ -8,7 +8,6 @@
 .. autosummary::
 
    get_browser
-   get_encrypted_interface
    get_interface
 
 
@@ -18,11 +17,6 @@ get_browser
 ~~~~~~~~~~~
 
 .. autofunction:: get_browser
-
-get_encrypted_interface
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autofunction:: get_encrypted_interface
 
 get_interface
 ~~~~~~~~~~~~~

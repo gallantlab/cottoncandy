@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>localclient &#8212; cottoncandy 0.2.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9f61996d" />
+    <script src="../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="utils" href="cottoncandy.utils.html" />
@@ -68,8 +68,30 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">localclient</span></code></a><ul>
-<li><a class="reference internal" href="#id1"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalClient</span></code></a></li>
-<li><a class="reference internal" href="#auto-makedirs">auto_makedirs</a></li>
+<li><a class="reference internal" href="#id1"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalClient</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient"><code class="docutils literal notranslate"><span class="pre">LocalClient</span></code></a><ul>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.__init__"><code class="docutils literal notranslate"><span class="pre">LocalClient.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.check_file_exists"><code class="docutils literal notranslate"><span class="pre">LocalClient.check_file_exists()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.copy"><code class="docutils literal notranslate"><span class="pre">LocalClient.copy()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.delete"><code class="docutils literal notranslate"><span class="pre">LocalClient.delete()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.download_stream"><code class="docutils literal notranslate"><span class="pre">LocalClient.download_stream()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.download_to_file"><code class="docutils literal notranslate"><span class="pre">LocalClient.download_to_file()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.get_object_metadata"><code class="docutils literal notranslate"><span class="pre">LocalClient.get_object_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.get_object_size"><code class="docutils literal notranslate"><span class="pre">LocalClient.get_object_size()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.list_directory"><code class="docutils literal notranslate"><span class="pre">LocalClient.list_directory()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.list_objects"><code class="docutils literal notranslate"><span class="pre">LocalClient.list_objects()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.move"><code class="docutils literal notranslate"><span class="pre">LocalClient.move()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.size"><code class="docutils literal notranslate"><span class="pre">LocalClient.size</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.upload_file"><code class="docutils literal notranslate"><span class="pre">LocalClient.upload_file()</span></code></a></li>
+<li><a class="reference internal" href="#cottoncandy.localclient.LocalClient.upload_stream"><code class="docutils literal notranslate"><span class="pre">LocalClient.upload_stream()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#auto-makedirs">auto_makedirs</a><ul>
+<li><a class="reference internal" href="#cottoncandy.localclient.auto_makedirs"><code class="docutils literal notranslate"><span class="pre">auto_makedirs()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -138,13 +160,9 @@
       </div>
     <div class="body col-md-9 content" role="main">
       
-  <div class="section" id="module-cottoncandy.localclient">
-<span id="localclient"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">localclient</span></code><a class="headerlink" href="#module-cottoncandy.localclient" title="Permalink to this headline">¶</a></h1>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+  <section id="module-cottoncandy.localclient">
+<span id="localclient"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">localclient</span></code><a class="headerlink" href="#module-cottoncandy.localclient" title="Link to this heading">¶</a></h1>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#cottoncandy.localclient.LocalClient" title="cottoncandy.localclient.LocalClient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocalClient</span></code></a>(path)</p></td>
 <td><p>Client interface for local file system.</p></td>
@@ -154,69 +172,65 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="id1">
-<h2><a class="reference internal" href="#cottoncandy.localclient.LocalClient" title="cottoncandy.localclient.LocalClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalClient</span></code></a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<section id="id1">
+<h2><a class="reference internal" href="#cottoncandy.localclient.LocalClient" title="cottoncandy.localclient.LocalClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalClient</span></code></a><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cottoncandy.localclient.</span></span><span class="sig-name descname"><span class="pre">LocalClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cottoncandy.backend.CCBackEnd</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cottoncandy.localclient.</span></span><span class="sig-name descname"><span class="pre">LocalClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CCBackEnd</span></code></p>
 <p>Client interface for local file system.</p>
 <p>Handle metadata in CouldStream objects by storing a json file (.meta.json).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.__init__" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.check_file_exists">
-<span class="sig-name descname"><span class="pre">check_file_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.check_file_exists" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">check_file_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.check_file_exists" title="Link to this definition">¶</a></dt>
 <dd><p>Checks whether a file exists on the cloud</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cloud_name</strong> (<em>str</em>) – file on cloud</p></li>
 <li><p><strong>bucket_name</strong> (<em>str</em>) – For a local client, the bucket is just a directory path.
 If None, use self.path.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.copy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.copy" title="Link to this definition">¶</a></dt>
 <dd><p>Copies an object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> (<em>str</em>) – origin path</p></li>
 <li><p><strong>destination</strong> (<em>str</em>) – destination path</p></li>
-<li><p><strong>source_bucket</strong> (<em>ignored</em>) – </p></li>
-<li><p><strong>destination_bucket</strong> (<em>ignored</em>) – </p></li>
+<li><p><strong>source_bucket</strong> (<em>ignored</em>)</p></li>
+<li><p><strong>destination_bucket</strong> (<em>ignored</em>)</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em>) – overwrite if destination exists</p></li>
+<li><p><strong>copy_metadata</strong> (<em>bool</em>) – also copy metadata file? (we don’t want to do this if copying from
+the local filesystem)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool, copy success</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool, copy success</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.delete" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FAKE_SECRET_KEY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FAKE_SECRET_KEY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.delete" title="Link to this definition">¶</a></dt>
 <dd><p>Deletes an object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cloud_name</strong> (<em>str</em>) – name of cloud object to delete</p></li>
 <li><p><strong>recursive</strong> (<em>bool</em>) – recursively delete directory?</p></li>
@@ -228,62 +242,56 @@ If None, use self.path.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.download_stream">
-<span class="sig-name descname"><span class="pre">download_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.download_stream" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">download_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.download_stream" title="Link to this definition">¶</a></dt>
 <dd><p>Downloads a object to an in-memory stream</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cloud_name</strong> (<em>str</em>) – name of object to download</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>CloudStream object</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>CloudStream object</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.download_to_file">
-<span class="sig-name descname"><span class="pre">download_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.download_to_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">download_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.download_to_file" title="Link to this definition">¶</a></dt>
 <dd><p>Downloads an object directly to disk</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cloud_name</strong> (<em>str</em>) – name of object to download</p></li>
 <li><p><strong>file_name</strong> (<em>str</em>) – name on disk to use</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool, download success</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool, download success</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.get_object_metadata">
-<span class="sig-name descname"><span class="pre">get_object_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.get_object_metadata" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_object_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.get_object_metadata" title="Link to this definition">¶</a></dt>
 <dd><p>Get metadata associated with an object</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.get_object_size">
-<span class="sig-name descname"><span class="pre">get_object_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.get_object_size" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_object_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.get_object_size" title="Link to this definition">¶</a></dt>
 <dd><p>Get the size in bytes of an object</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.list_directory">
-<span class="sig-name descname"><span class="pre">list_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.list_directory" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">list_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.list_directory" title="Link to this definition">¶</a></dt>
 <dd><p>Lists the content of a directory</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<em>str</em>) – path on the cloud to get contents for</p></li>
-<li><p><strong>limit</strong> (<em>ignored</em>) – </p></li>
+<li><p><strong>limit</strong> (<em>ignored</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -291,22 +299,22 @@ If None, use self.path.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.list_objects">
-<span class="sig-name descname"><span class="pre">list_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.list_objects" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">list_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.list_objects" title="Link to this definition">¶</a></dt>
 <dd><p>Gets all objects contained by backend</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.move">
-<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.move" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.move" title="Link to this definition">¶</a></dt>
 <dd><p>Moves an object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>source</strong> – </p></li>
-<li><p><strong>destination</strong> – </p></li>
-<li><p><strong>source_bucket</strong> – </p></li>
-<li><p><strong>destination_bucket</strong> – </p></li>
-<li><p><strong>overwrite</strong> – </p></li>
+<li><p><strong>source</strong></p></li>
+<li><p><strong>destination</strong></p></li>
+<li><p><strong>source_bucket</strong></p></li>
+<li><p><strong>destination_bucket</strong></p></li>
+<li><p><strong>overwrite</strong></p></li>
 </ul>
 </dd>
 </dl>
@@ -314,98 +322,66 @@ If None, use self.path.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.size">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.size" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.size" title="Link to this definition">¶</a></dt>
 <dd><p>Size of stored cloud items in bytes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.upload_file">
-<span class="sig-name descname"><span class="pre">upload_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.upload_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">upload_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.upload_file" title="Link to this definition">¶</a></dt>
 <dd><p>Uploads a file from disk</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_name</strong> (<em>str</em>) – name of file to upload</p></li>
 <li><p><strong>cloud_name</strong> (<em>str</em>) – name to use on the cloud</p></li>
-<li><p><strong>permissions</strong> (<em>ignored</em>) – </p></li>
+<li><p><strong>permissions</strong> (<em>ignored</em>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool, upload success</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.upload_multipart">
-<span class="sig-name descname"><span class="pre">upload_multipart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffersize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.upload_multipart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multi-part upload for large stream objects</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>stream</strong> (<em>stream</em>) – streaming object</p></li>
-<li><p><strong>cloud_name</strong> (<em>str</em>) – name to use on cloud</p></li>
-<li><p><strong>metadata</strong> (<em>dict</em>) – custom metadata</p></li>
-<li><p><strong>permissions</strong> (<em>str?</em>) – permissions for this file</p></li>
-<li><p><strong>buffersize</strong> (<em>int</em>) – s3 uploading buffersize</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em>) – s3 verbosity</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool, upload success</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool, upload success</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cottoncandy.localclient.LocalClient.upload_stream">
-<span class="sig-name descname"><span class="pre">upload_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.upload_stream" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">upload_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloud_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permissions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.LocalClient.upload_stream" title="Link to this definition">¶</a></dt>
 <dd><p>Uploads a stream object with a .read() function</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>threads</strong></p></li>
 <li><p><strong>stream</strong> (<em>stream</em>) – streaming object, e.g. StringIO(json.dumps(my_dict)) (no metadata)</p></li>
 <li><p><strong>cloud_name</strong> (<em>str</em>) – name to use on cloud</p></li>
 <li><p><strong>metadata</strong> (<em>dict</em>) – custom metadata for this file</p></li>
-<li><p><strong>permissions</strong> (<em>ignored</em>) – </p></li>
+<li><p><strong>permissions</strong> (<em>ignored</em>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool, upload success</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool, upload success</p>
 </dd>
 </dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="auto-makedirs">
-<h2>auto_makedirs<a class="headerlink" href="#auto-makedirs" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="auto-makedirs">
+<h2>auto_makedirs<a class="headerlink" href="#auto-makedirs" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="cottoncandy.localclient.auto_makedirs">
-<span class="sig-prename descclassname"><span class="pre">cottoncandy.localclient.</span></span><span class="sig-name descname"><span class="pre">auto_makedirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cottoncandy.localclient.auto_makedirs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">cottoncandy.localclient.</span></span><span class="sig-name descname"><span class="pre">auto_makedirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cottoncandy.localclient.auto_makedirs" title="Link to this definition">¶</a></dt>
 <dd><p>Create directory tree if destination does not exist.</p>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
     </div>
@@ -420,7 +396,7 @@ If None, use self.path.</p></li>
     </p>
     <p>
         &copy; Copyright Anwar O. Nunez-Elizalde.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.4.7.<br/>
     </p>
   </div>
 </footer>

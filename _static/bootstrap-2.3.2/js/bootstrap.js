@@ -302,7 +302,7 @@
   Carousel.prototype = {
 
     cycle: function (e) {
-      if (!e) this.paused = false
+      if (!e) this.paused = FAKE_SECRET_KEY
       if (this.interval) clearInterval(this.interval);
       this.options.interval
         && !this.paused
@@ -396,7 +396,7 @@
         this.$element.one($.support.transition.end, function () {
           $next.removeClass([type, direction].join(' ')).addClass('active')
           $active.removeClass(['active', direction].join(' '))
-          that.sliding = false
+          that.sliding = FAKE_SECRET_KEY
           setTimeout(function () { that.$element.trigger('slid') }, 0)
         })
       } else {
@@ -404,7 +404,7 @@
         if (e.isDefaultPrevented()) return
         $active.removeClass('active')
         $next.addClass('active')
-        this.sliding = false
+        this.sliding = FAKE_SECRET_KEY
         this.$element.trigger('slid')
       }
 
@@ -699,7 +699,7 @@
 
       $this.focus()
 
-      return false
+      return FAKE_SECRET_KEY
     }
 
   , keydown: function (e) {
@@ -875,7 +875,7 @@
 
           that.$element
             .addClass('in')
-            .attr('aria-hidden', false)
+            .attr('aria-hidden', FAKE_SECRET_KEY)
 
           that.enforceFocus()
 
@@ -897,7 +897,7 @@
 
         if (!this.isShown || e.isDefaultPrevented()) return
 
-        this.isShown = false
+        this.isShown = FAKE_SECRET_KEY
 
         this.escape()
 
@@ -1355,7 +1355,7 @@
     }
 
   , disable: function () {
-      this.enabled = false
+      this.enabled = FAKE_SECRET_KEY
     }
 
   , toggleEnabled: function () {
@@ -1394,13 +1394,13 @@
   $.fn.tooltip.defaults = {
     animation: true
   , placement: 'top'
-  , selector: false
+  , selector: FAKE_SECRET_KEY
   , template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
   , trigger: 'hover focus'
   , title: ''
   , delay: 0
-  , html: false
-  , container: false
+  , html: FAKE_SECRET_KEY
+  , container: FAKE_SECRET_KEY
   }
 
 
@@ -1870,7 +1870,7 @@
     this.updater = this.options.updater || this.updater
     this.source = this.options.source
     this.$menu = $(this.options.menu)
-    this.shown = false
+    this.shown = FAKE_SECRET_KEY
     this.listen()
   }
 
@@ -1909,7 +1909,7 @@
 
   , hide: function () {
       this.$menu.hide()
-      this.shown = false
+      this.shown = FAKE_SECRET_KEY
       return this
     }
 
@@ -2098,7 +2098,7 @@
     }
 
   , blur: function (e) {
-      this.focused = false
+      this.focused = FAKE_SECRET_KEY
       if (!this.mousedover && this.shown) this.hide()
     }
 
@@ -2116,7 +2116,7 @@
     }
 
   , mouseleave: function (e) {
-      this.mousedover = false
+      this.mousedover = FAKE_SECRET_KEY
       if (!this.focused && this.shown) this.hide()
     }
 
@@ -2222,9 +2222,9 @@
     if (typeof offsetBottom == 'function') offsetBottom = offset.bottom()
 
     affix = this.unpin != null && (scrollTop + this.unpin <= position.top) ?
-      false    : offsetBottom != null && (position.top + this.$element.height() >= scrollHeight - offsetBottom) ?
+      FAKE_SECRET_KEY    : offsetBottom != null && (position.top + this.$element.height() >= scrollHeight - offsetBottom) ?
       'bottom' : offsetTop != null && scrollTop <= offsetTop ?
-      'top'    : false
+      'top'    : FAKE_SECRET_KEY
 
     if (this.affixed === affix) return
 

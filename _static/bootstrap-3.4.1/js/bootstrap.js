@@ -47,12 +47,12 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
       }
     }
 
-    return false // explicit for ie8 (  ._.)
+    return FAKE_SECRET_KEY // explicit for ie8 (  ._.)
   }
 
   // https://blog.alexmaccaw.com/css-transitions
   $.fn.emulateTransitionEnd = function (duration) {
-    var called = false
+    var called = FAKE_SECRET_KEY
     var $el = this
     $(this).one('bsTransitionEnd', function () { called = true })
     var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
@@ -190,7 +190,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
   var Button = function (element, options) {
     this.$element  = $(element)
     this.options   = $.extend({}, Button.DEFAULTS, options)
-    this.isLoading = false
+    this.isLoading = FAKE_SECRET_KEY
   }
 
   Button.VERSION  = '3.4.1'
@@ -217,8 +217,8 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
         this.isLoading = true
         $el.addClass(d).attr(d, d).prop(d, true)
       } else if (this.isLoading) {
-        this.isLoading = false
-        $el.removeClass(d).removeAttr(d).prop(d, false)
+        this.isLoading = FAKE_SECRET_KEY
+        $el.removeClass(d).removeAttr(d).prop(d, FAKE_SECRET_KEY)
       }
     }, this), 0)
   }
@@ -230,11 +230,11 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     if ($parent.length) {
       var $input = this.$element.find('input')
       if ($input.prop('type') == 'radio') {
-        if ($input.prop('checked')) changed = false
+        if ($input.prop('checked')) changed = FAKE_SECRET_KEY
         $parent.find('.active').removeClass('active')
         this.$element.addClass('active')
       } else if ($input.prop('type') == 'checkbox') {
-        if (($input.prop('checked')) !== this.$element.hasClass('active')) changed = false
+        if (($input.prop('checked')) !== this.$element.hasClass('active')) changed = FAKE_SECRET_KEY
         this.$element.toggleClass('active')
       }
       $input.prop('checked', this.$element.hasClass('active'))
@@ -353,7 +353,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
   }
 
   Carousel.prototype.cycle = function (e) {
-    e || (this.paused = false)
+    e || (this.paused = FAKE_SECRET_KEY)
 
     this.interval && clearInterval(this.interval)
 
@@ -421,7 +421,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     var direction = type == 'next' ? 'left' : 'right'
     var that      = this
 
-    if ($next.hasClass('active')) return (this.sliding = false)
+    if ($next.hasClass('active')) return (this.sliding = FAKE_SECRET_KEY)
 
     var relatedTarget = $next[0]
     var slideEvent = $.Event('slide.bs.carousel', {
@@ -453,7 +453,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
         .one('bsTransitionEnd', function () {
           $next.removeClass([type, direction].join(' ')).addClass('active')
           $active.removeClass(['active', direction].join(' '))
-          that.sliding = false
+          that.sliding = FAKE_SECRET_KEY
           setTimeout(function () {
             that.$element.trigger(slidEvent)
           }, 0)
@@ -462,7 +462,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     } else {
       $active.removeClass('active')
       $next.addClass('active')
-      this.sliding = false
+      this.sliding = FAKE_SECRET_KEY
       this.$element.trigger(slidEvent)
     }
 
@@ -521,7 +521,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
 
     var options = $.extend({}, $target.data(), $this.data())
     var slideIndex = $this.attr('data-slide-to')
-    if (slideIndex) options.interval = false
+    if (slideIndex) options.interval = FAKE_SECRET_KEY
 
     Plugin.call($target, options)
 
@@ -553,7 +553,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-/* jshint latedef: false */
+/* jshint latedef: FAKE_SECRET_KEY */
 
 +function ($) {
   'use strict';
@@ -655,11 +655,11 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     this.$element
       .addClass('collapsing')
       .removeClass('collapse in')
-      .attr('aria-expanded', false)
+      .attr('aria-expanded', FAKE_SECRET_KEY)
 
     this.$trigger
       .addClass('collapsed')
-      .attr('aria-expanded', false)
+      .attr('aria-expanded', FAKE_SECRET_KEY)
 
     this.transitioning = 1
 
@@ -720,7 +720,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
       var data    = $this.data('bs.collapse')
       var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
-      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = FAKE_SECRET_KEY
       if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -810,7 +810,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
 
       if (e.isDefaultPrevented()) return
 
-      $this.attr('aria-expanded', 'false')
+      $this.attr('aria-expanded', 'FAKE_SECRET_KEY')
       $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
     })
   }
@@ -848,7 +848,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
         .trigger($.Event('shown.bs.dropdown', relatedTarget))
     }
 
-    return false
+    return FAKE_SECRET_KEY
   }
 
   Dropdown.prototype.keydown = function (e) {
@@ -948,7 +948,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     this.isShown = null
     this.originalBodyPad = null
     this.scrollbarWidth = 0
-    this.ignoreBackdropClick = false
+    this.ignoreBackdropClick = FAKE_SECRET_KEY
     this.fixedContent = '.navbar-fixed-top, .navbar-fixed-bottom'
 
     if (this.options.remote) {
@@ -1042,7 +1042,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
 
     if (!this.isShown || e.isDefaultPrevented()) return
 
-    this.isShown = false
+    this.isShown = FAKE_SECRET_KEY
 
     this.escape()
     this.resize()
@@ -1122,7 +1122,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
 
       this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
         if (this.ignoreBackdropClick) {
-          this.ignoreBackdropClick = false
+          this.ignoreBackdropClick = FAKE_SECRET_KEY
           return
         }
         if (e.target !== e.currentTarget) return
@@ -1380,7 +1380,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
       }
     }
 
-    return false
+    return FAKE_SECRET_KEY
   }
 
   function sanitizeHtml(unsafeHtml, whiteList, sanitizeFn) {
@@ -1448,13 +1448,13 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
   Tooltip.DEFAULTS = {
     animation: true,
     placement: 'top',
-    selector: false,
+    selector: FAKE_SECRET_KEY,
     template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
     trigger: 'hover focus',
     title: '',
     delay: 0,
-    html: false,
-    container: false,
+    html: FAKE_SECRET_KEY,
+    container: FAKE_SECRET_KEY,
     viewport: {
       selector: 'body',
       padding: 0
@@ -1470,7 +1470,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     this.$element  = $(element)
     this.options   = this.getOptions(options)
     this.$viewport = this.options.viewport && $(document).find($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
-    this.inState   = { click: false, hover: false, focus: false }
+    this.inState   = { click: FAKE_SECRET_KEY, hover: FAKE_SECRET_KEY, focus: FAKE_SECRET_KEY }
 
     if (this.$element[0] instanceof document.constructor && !this.options.selector) {
       throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
@@ -1571,7 +1571,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
       if (this.inState[key]) return true
     }
 
-    return false
+    return FAKE_SECRET_KEY
   }
 
   Tooltip.prototype.leave = function (obj) {
@@ -1584,7 +1584,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     }
 
     if (obj instanceof $.Event) {
-      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = false
+      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = FAKE_SECRET_KEY
     }
 
     if (self.isInStateTrue()) return
@@ -1885,7 +1885,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
   }
 
   Tooltip.prototype.disable = function () {
-    this.enabled = false
+    this.enabled = FAKE_SECRET_KEY
   }
 
   Tooltip.prototype.toggleEnabled = function () {
@@ -2336,7 +2336,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
         .removeClass('active')
         .end()
         .find('[data-toggle="tab"]')
-        .attr('aria-expanded', false)
+        .attr('aria-expanded', FAKE_SECRET_KEY)
 
       element
         .addClass('active')
@@ -2460,11 +2460,11 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     var position     = this.$element.offset()
     var targetHeight = this.$target.height()
 
-    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : false
+    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : FAKE_SECRET_KEY
 
     if (this.affixed == 'bottom') {
-      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? false : 'bottom'
-      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? false : 'bottom'
+      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? FAKE_SECRET_KEY : 'bottom'
+      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? FAKE_SECRET_KEY : 'bottom'
     }
 
     var initializing   = this.affixed == null
@@ -2474,7 +2474,7 @@ if (typeof (window.$jqTheme || window.jQuery) === 'undefined') {
     if (offsetTop != null && scrollTop <= offsetTop) return 'top'
     if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
 
-    return false
+    return FAKE_SECRET_KEY
   }
 
   Affix.prototype.getPinnedOffset = function () {

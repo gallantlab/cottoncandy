@@ -6,7 +6,6 @@ API Reference
 .. toctree::
 
    cottoncandy.rst
-   cottoncandy.Encryption.rst
    cottoncandy.appdirs.rst
    cottoncandy.backend.rst
    cottoncandy.browser.rst
