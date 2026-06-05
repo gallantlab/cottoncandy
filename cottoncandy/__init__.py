@@ -80,7 +80,7 @@ def get_interface(bucket_name=None,
     signature_version = settings['signature_version']
 
     if backend == 's3':
-        if ACCESS_KEY in [False, "False"] or SECRET_KEY in [False, "False"]:
+        if ACCESS_KEY in [False, "False", None] or SECRET_KEY in [False, "False", None]:
             ACCESS_KEY, SECRET_KEY = get_keys()
     elif backend == 'gdrive':
         ACCESS_KEY = os.path.join(options.userdir, settings['secrets'])
