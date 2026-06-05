@@ -162,7 +162,7 @@ def get_browser(bucket_name=None,
     if endpoint_url is None:
         endpoint_url = settings['endpoint_url']
 
-    if ACCESS_KEY in [False, "False"] and SECRET_KEY in [False, "False"]:
+    if ACCESS_KEY in [False, "False", None] and SECRET_KEY in [False, "False", None]:
         from .utils import get_keys
         ACCESS_KEY, SECRET_KEY = get_keys()
 
