@@ -153,6 +153,9 @@ def get_browser(bucket_name=None,
     # Resolve the profile (falls back to the base config sections); explicitly
     # passed arguments win over the profile.
     settings = options.get_profile(profile)
+    backend = settings['backend'] or 's3'
+    if backend != 's3':
+        raise ValueError("get_browser only supports the 's3' backend; got %r" % backend)
     if bucket_name is None:
         bucket_name = settings['default_bucket']
     if ACCESS_KEY is None:
