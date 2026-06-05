@@ -39,7 +39,7 @@ def get_interface(bucket_name=None,
     SECRET_KEY : str
     endpoint_url : str
         The URL for the S3 gateway
-    backend : 's3'|'gdrive'
+    backend : 's3'|'gdrive'|'local'
         What backend to hook on to
     profile : str, optional
         Name of a ``[profile:NAME]`` section in the configuration file from
