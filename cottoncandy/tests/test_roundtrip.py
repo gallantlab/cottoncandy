@@ -3,13 +3,17 @@ import tempfile
 import time
 
 import numpy as np
+import pytest
+
+scipy = pytest.importorskip("scipy")
+from scipy import sparse
 
 
 def content_generator():
     orders = ['C', 'F']
     types = [
         'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
-        'uint8', 'uint16', 'uint32', 'int', 'float'
+        'uint8', 'uint16', 'uint32', 'int', 'float', 'bool'
     ]
 
     kinds = ['raw', 'slice', 'nonco']
@@ -26,6 +30,34 @@ def content_generator():
                     yield data[..., int(data.shape[0] / 2):]
                 elif kind == 'nonco':
                     yield data[np.random.randint(0, data.shape[0], 10)]
+
+
+def sparse_content_generator():
+    types = [
+        'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
+        'uint8', 'uint16', 'uint32', 'int', 'float', 'bool'
+    ]
+
+    formats = [
+        ("csr", lambda arr: sparse.csr_matrix(arr)),
+        ("coo", lambda arr: sparse.coo_matrix(arr)),
+        ("csc", lambda arr: sparse.csc_matrix(arr)),
+        ("bsr", lambda arr: sparse.bsr_matrix(arr, blocksize=(2, 2))),
+        ("dia", lambda arr: sparse.dia_matrix(arr)),
+        ("lil", lambda arr: sparse.lil_matrix(arr)),
+        ("dok", lambda arr: sparse.dok_matrix(arr)),
+    ]
+
+    for dtype in types:
+        data = np.random.randn(20, 20).astype(dtype)
+
+        # Apply a sparsity mask to the data
+        mask = np.random.rand(*data.shape) < 0.8  # 80% sparsity
+        sparse_data = np.where(mask, 0, data)
+
+        for format_name, factory in formats:
+            print(format_name)
+            yield format_name, factory(sparse_data)
 
 
 def test_upload_from_file(cci, object_name):
@@ -173,3 +205,20 @@ def test_move(cci, object_name):
         dat = cci.download_raw_array(dest_object_name)
         assert np.allclose(dat, content)
         cci.rm(dest_object_name)
+
+
+def test_sparse_roundtrip_matrix_types(cci, object_name):
+    for idx, (format_name, matrix) in enumerate(sparse_content_generator()):
+        sparse_name = cci.pathjoin(object_name, f"sparse_{format_name}_{idx}")
+
+        cci.upload_sparse_array(sparse_name, matrix)
+        time.sleep(cci.wait_time)
+
+        downloaded = cci.download_sparse_array(sparse_name)
+        if not isinstance(matrix, (sparse.dok_matrix, sparse.lil_matrix)):
+            # DOK and LIL formats are converted to CSR format during upload, so we can't expect the same type back
+            assert isinstance(downloaded, type(matrix))
+        assert downloaded.shape == matrix.shape
+        assert np.allclose(downloaded.toarray(), matrix.toarray())
+
+        cci.rm(sparse_name, recursive=True)
