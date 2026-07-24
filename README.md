@@ -57,6 +57,41 @@ By default, cottoncandy sets object and bucket permissions to ``authenticated-re
 
 Advanced (for admins): One can customize the cottoncandy system install by cloning the repo and modifying `defaults.cfg`. For example, one can set the default encryption key across the system for all users (`key = SoMeEncypTionKey`). When a user first uses cottoncandy, this default value will be copied to their personal configuration file. Note however that the user can still overwrite that value.
 
+### Profiles
+
+If you work across multiple accounts, endpoints, or buckets, you can define named
+**profiles** in your configuration file and select one when creating an interface:
+
+```python
+>>> cci = cc.get_interface(profile='mylab')
+```
+
+Each profile is a `[profile:NAME]` section that may set any subset of
+`access_key`, `secret_key`, `endpoint_url`, `default_bucket`, `signature_version`,
+`force_bucket_creation`, `backend`, and (for `backend = gdrive`) `secrets` and
+`credentials`. Any setting a profile omits falls back to the base
+`[login]`/`[basic]`/`[gdrive]` sections (the default profile, used when no
+`profile` is given). Arguments passed directly to `get_interface` always take
+precedence over the profile.
+
+Profiles can **inherit** from one another with `inherits`; a child only needs to
+specify the keys it overrides:
+
+```ini
+[profile:mylab]
+access_key = LABACCESSKEY
+secret_key = LABSECRETKEY
+endpoint_url = https://s3.example.edu/
+default_bucket = lab-shared
+
+[profile:mylab-scratch]
+inherits = mylab
+default_bucket = lab-scratch
+```
+
+Use `cottoncandy.options.list_profiles()` to see the profiles defined in your
+configuration.
+
 
 ## Getting started
 Setup the connection (endpoint, access and secret keys can be specified in the configuration file instead):
