@@ -37,6 +37,7 @@ from .utils import (
     pathjoin,
     print_objects,
     read_buffered,
+    SupportsRead,
     remove_root,
     remove_trivial_magic,
     string2bool,
@@ -684,7 +685,7 @@ class ArrayInterface(BasicInterface):
 
         assert 'compression' in arraystream.metadata
 
-        datastream: BinaryIO
+        datastream: SupportsRead
         if arraystream.metadata['compression'] == 'gzip':
             # gzipped!
             datastream = GzipInputStream(body)

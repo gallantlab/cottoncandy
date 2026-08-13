@@ -1,12 +1,12 @@
 '''Helper functions
 '''
-from io import BytesIO
+from io import RawIOBase, UnsupportedOperation
 import itertools
 import os
 import re
 import zlib
 from functools import wraps
-from typing import Iterable, Iterator, Optional, cast, Any, BinaryIO, Callable, TypeVar, Union
+from typing import Iterable, Iterator, Optional, Protocol, cast, Any, BinaryIO, Callable, TypeVar, Union
 
 
 from urllib.parse import unquote
@@ -441,7 +441,16 @@ def generate_ndarray_chunks(arr: npt.NDArray, axis: Optional[int]=None, buffersi
         yield chunk_coords, arr[slicers]
 
 
-def read_buffered(frm: BinaryIO, to: npt.NDArray, buffersize: int = 64) -> None:
+class SupportsRead(Protocol):
+    '''Anything we can pull bytes out of a chunk at a time.
+
+    Narrower than ``BinaryIO`` on purpose: ``GzipInputStream`` is a
+    forward-only raw stream, so it is not a ``BinaryIO``.
+    '''
+    def read(self, size: int = ..., /) -> bytes: ...
+
+
+def read_buffered(frm: SupportsRead, to: npt.NDArray, buffersize: int = 64) -> None:
     '''Fill a numpy n-d array with file-like object contents
 
     Parameters
@@ -472,7 +481,7 @@ def read_buffered(frm: BinaryIO, to: npt.NDArray, buffersize: int = 64) -> None:
             raise Exception("Unknown python version") # not sure six will ever do anything here (6=2x3)
 
 
-class GzipInputStream(BytesIO):
+class GzipInputStream(RawIOBase):
     """Simple class that allow streaming reads from GZip files
     (from https://gist.github.com/beaufour/4205533).
 
@@ -480,6 +489,12 @@ class GzipInputStream(BytesIO):
     doesn't support this (@see: http://bo4.me/YKWSsL).
 
     Adapted from: http://effbot.org/librarybook/zlib-example-4.py
+
+    This is a read-only, forward-only raw stream: seeking backwards
+    (or relative to the end) raises ``io.UnsupportedOperation``.
+    Implementing ``readinto`` is what lets the inherited ``io`` machinery
+    (``readall``, iteration, wrapping in a ``BufferedReader``) see the
+    decompressed bytes.
     """
 
     def __init__(self, fileobj: BinaryIO, block_size: int=16384):
@@ -517,8 +532,25 @@ class GzipInputStream(BytesIO):
 
             self._data = self._data + self._zip.decompress(data)
 
-    def __iter__(self):
-        return self
+    def readable(self) -> bool:
+        return True
+
+    def seekable(self) -> bool:
+        # forward-only: see seek()
+        return True
+
+    def readinto(self, buffer: Any) -> int:
+        '''Read up to ``len(buffer)`` bytes into ``buffer``.
+
+        Everything ``RawIOBase`` gives us for free is built on this.
+        '''
+        size = len(buffer)
+        if size == 0:
+            # read(0) means "read everything" here, so short-circuit
+            return 0
+        data = self.read(size)
+        buffer[:len(data)] = data
+        return len(data)
 
     def seek(self, offset: int, whence: int = 0) -> int:
         if whence == 0:
@@ -526,22 +558,28 @@ class GzipInputStream(BytesIO):
         elif whence == 1:
             position = self._offset + offset
         else:
-            raise IOError("Illegal argument")
+            # UnsupportedOperation is also an IOError and a ValueError
+            raise UnsupportedOperation("Cannot seek relative to the end")
         if position < self._offset:
-            raise IOError("Cannot seek backwards")
+            raise UnsupportedOperation("Cannot seek backwards")
 
         # skip forward, in blocks
         while position > self._offset:
             if not self.read(min(position - self._offset, self.BLOCK_SIZE)):
                 break
 
-        return position
+        # the loop above stops short at EOF, so report where we
+        # actually landed rather than where we were asked to go
+        return self._offset
 
     def tell(self) -> int:
         return self._offset
 
     def read(self, size: Optional[int] = 0) -> bytes:
-        assert size is not None
+        # 0 (this class' historical default), None and negative sizes
+        # (the io convention) all mean "read everything"
+        if size is None or size < 0:
+            size = 0
         self.__fill(size)
         if size:
             data = self._data[:size]
@@ -559,7 +597,9 @@ class GzipInputStream(BytesIO):
         return line
 
     def readline(self, size: Optional[int] = None) -> bytes:
-        assert size is None
+        # None and negative sizes mean "no limit"; anything else is unsupported
+        if size is not None and size >= 0:
+            raise NotImplementedError('size-limited readline is not supported')
         # make sure we have an entire line
         while self._zip and b"\n" not in self._data:
             self.__fill(len(self._data) + 512)
@@ -570,7 +610,9 @@ class GzipInputStream(BytesIO):
         return self.read(pos)
 
     def readlines(self, size: Optional[int] = None) -> list[bytes]:
-        assert size is None
+        # None and negative sizes mean "no limit"; anything else is unsupported
+        if size is not None and size >= 0:
+            raise NotImplementedError('size-limited readlines is not supported')
         lines = []
         while True:
             line = self.readline()
