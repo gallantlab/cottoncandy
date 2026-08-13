@@ -15,11 +15,11 @@ try:
 except ImportError:
     try:
         # support >=ipython-0.11, <ipython-1.0
-        from IPython.core.ipapi import get as get_ipython
+        from IPython.core.ipapi import get as get_ipython  # type: ignore
     except ImportError:
         # support <ipython-0.11
         try:
-            from IPython.ipapi import get as get_ipython
+            from IPython.ipapi import get as get_ipython  # type: ignore
         except ImportError:
             print('Not ipython')
 
@@ -69,6 +69,11 @@ class GDriveClient(CCBackEnd):
         authenticator.SaveCredentialsFile(credentials)  # update/save credentials
 
         return authenticator
+
+    @property
+    def bucket_name(self):
+        print('Google drive has no concept of buckets')
+        return None
 
     def __init__(self, secrets='client_secrets.json', credentials='gdrive-credentials.txt'):
         """
@@ -896,7 +901,7 @@ class GDriveClient(CCBackEnd):
             return False
 
     @property
-    def size(self):
+    def size(self) -> int:
         files = self.drive.ListFile({'q': "trashed=false"}).GetList()
         sizes = [f.metadata['size'] for f in files]
         return sum(sizes)

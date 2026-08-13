@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 from io import BytesIO as StringIO
-from typing import Optional
+from typing import BinaryIO, Optional
 
 from .backend import CCBackEnd, CloudStream
 from .utils import SEPARATOR, remove_root, remove_trivial_magic, sanitize_metadata
@@ -15,7 +15,7 @@ class LocalClient(CCBackEnd):
     """
     Client interface for local file system.
 
-    Handle metadata in CouldStream objects by storing a json file (.meta.json).
+    Handle metadata in CloudStream objects by storing a json file (.meta.json).
     """
 
     def __init__(self, path: str):
@@ -23,7 +23,11 @@ class LocalClient(CCBackEnd):
             os.makedirs(path)
         self.path = path
 
-    def check_file_exists(self, cloud_name, bucket_name=None):
+    @property
+    def bucket_name(self) -> str:
+        return self.path
+
+    def check_file_exists(self, cloud_name: str, bucket_name: Optional[str] = None) -> bool:
         """Checks whether a file exists on the cloud
 
         Parameters
@@ -42,7 +46,7 @@ class LocalClient(CCBackEnd):
             bucket_name = self.path
         return os.path.isfile(os.path.join(bucket_name, cloud_name))
 
-    def upload_stream(self, stream, cloud_name, metadata, permissions, threads = 1):
+    def upload_stream(self, stream: BinaryIO, cloud_name: str, metadata: dict[str, str], permissions: Optional[str] = None, threads: int = 1) -> None:
         """Uploads a stream object with a .read() function
 
         Parameters
@@ -69,7 +73,7 @@ class LocalClient(CCBackEnd):
         with open(metadata_file_name, 'w') as local_file:
             json.dump(metadata, local_file, indent=4)
 
-    def upload_file(self, file_name, cloud_name, permissions, threads = 1):
+    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: Optional[str] = None, threads: int = 1) -> None:
         """Uploads a file from disk
 
         Parameters
@@ -84,6 +88,8 @@ class LocalClient(CCBackEnd):
         -------
         bool, upload success
         """
+        if cloud_name is None:
+            cloud_name = file_name
         destination = os.path.join(self.path, cloud_name)
         auto_makedirs(destination)
         self.copy(
@@ -95,7 +101,7 @@ class LocalClient(CCBackEnd):
             copy_metadata=False,
         )
 
-    def download_stream(self, cloud_name, threads = 1):
+    def download_stream(self, cloud_name: str, threads: int = 1) -> CloudStream:
         """Downloads a object to an in-memory stream
 
         Parameters
@@ -122,7 +128,7 @@ class LocalClient(CCBackEnd):
 
         return CloudStream(content, sanitize_metadata(metadata))
 
-    def download_to_file(self, cloud_name, file_name, threads = 1):
+    def download_to_file(self, cloud_name: str, file_name: str, threads: int = 1):
         """Downloads an object directly to disk
 
         Parameters
@@ -144,7 +150,7 @@ class LocalClient(CCBackEnd):
             overwrite=True,
         )
 
-    def list_directory(self, path, limit):
+    def list_directory(self, path: str, limit: int) -> list[str]:
         """Lists the content of a directory
 
         Parameters
@@ -155,7 +161,7 @@ class LocalClient(CCBackEnd):
 
         Returns
         -------
-
+        list[str]
         """
         if (path != '') and (path != '/'):
             path = remove_root(path)
@@ -167,7 +173,7 @@ class LocalClient(CCBackEnd):
         results = self._remove_path_and_metadata(results)
         return results
 
-    def list_objects(self, **kwargs):
+    def list_objects(self, **kwargs) -> list[str]:
         """Gets all objects contained by backend
 
         Returns
@@ -189,8 +195,7 @@ class LocalClient(CCBackEnd):
         results = self._remove_path_and_metadata(results)
         return results
 
-    def copy(self, source, destination, source_bucket, destination_bucket,
-             overwrite, copy_metadata=True):
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False, copy_metadata: bool = True) -> None:
         """Copies an object
 
         Parameters
@@ -225,10 +230,9 @@ class LocalClient(CCBackEnd):
             shutil.copy(source_metadata, destination_metadata)
 
         auto_makedirs(destination)
-        return shutil.copy(source, destination)
+        shutil.copy(source, destination)
 
-    def move(self, source, destination, source_bucket, destination_bucket,
-             overwrite):
+    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> bool:
         """Moves an object
 
         Parameters
@@ -261,7 +265,7 @@ class LocalClient(CCBackEnd):
         self._cleanup_empty_dirs(os.path.dirname(source), root_path=source_bucket)
         return move_result
 
-    def delete(self, cloud_name, recursive=False, delete=False):
+    def delete(self, cloud_name: str, recursive: bool = False, delete: bool = False) -> bool:
         """Deletes an object
 
         Parameters
@@ -295,7 +299,7 @@ class LocalClient(CCBackEnd):
         return True
 
     @property
-    def size(self):
+    def size(self) -> int:
         """Size of stored cloud items in bytes
 
         Returns
@@ -312,12 +316,12 @@ class LocalClient(CCBackEnd):
 
         return total_size
 
-    def _remove_path_and_metadata(self, file_list, path=None):
+    def _remove_path_and_metadata(self, file_list: list[str], path: Optional[str] = None) -> list[str]:
         """Removes path from filenames, removes .meta.json files from the list.
         """
         if path is None:
             path = self.path
-        results = []
+        results: list[str] = []
         for file_name in file_list:
             # remove path
             if file_name.startswith(path):
@@ -331,7 +335,7 @@ class LocalClient(CCBackEnd):
                 results.append(file_name)
         return results
 
-    def get_object_metadata(self, object_name):
+    def get_object_metadata(self, object_name: str) -> dict[str, str]:
         """Get metadata associated with an object"""
         file_name = os.path.join(self.path, object_name)
 
@@ -349,7 +353,7 @@ class LocalClient(CCBackEnd):
 
         return metadata
 
-    def get_object_size(self, object_name):
+    def get_object_size(self, object_name: str) -> int:
         """Get the size in bytes of an object"""
         file_name = os.path.join(self.path, object_name)
         size = os.path.getsize(file_name)

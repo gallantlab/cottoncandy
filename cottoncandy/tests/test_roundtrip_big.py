@@ -1,11 +1,12 @@
 import time
+from typing import Literal
 
 import numpy as np
 
 
 def content_generator():
     size_mb = 200
-    orders = ['C', 'F']
+    orders: list[Literal['C', 'F']] = ['C', 'F']
     types = [
         'float64',
     ]

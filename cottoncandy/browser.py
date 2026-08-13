@@ -165,7 +165,7 @@ class S3Directory(S3FSLike):
     def __len__(self):
         return len(self._subdirs)
 
-    def __dir__(self):
+    def __dir__(self): # type: ignore[no-redef]
         return list(self._subdirs.keys())
 
     def __getattr__(self, attr):

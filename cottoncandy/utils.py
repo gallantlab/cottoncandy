@@ -1,14 +1,18 @@
 '''Helper functions
 '''
+from io import BytesIO
 import itertools
 import os
 import re
-import string
 import zlib
 from functools import wraps
+from typing import Iterable, Iterator, Optional, cast, Any, BinaryIO, Callable, TypeVar, Union
+
+
 from urllib.parse import unquote
 
 import numpy as np
+import numpy.typing as npt
 import six
 from dateutil.tz import tzlocal
 
@@ -44,14 +48,14 @@ THREADS = int(options.config.get('basic', 'threads'))
 # misc functions
 ##############################
 
-def sanitize_metadata(metadict):
+def sanitize_metadata(metadict: dict[str, str]) -> dict[str, str]:
     outdict = {}
     for key,val in metadict.items():
         outdict[key.lower()] = val
     return outdict
 
 
-def pathjoin(a, *p):
+def pathjoin(a: str, *p: str) -> str:
     """Join two or more pathname components, inserting SEPARATOR as needed.
     If any component is an absolute path, all previous path components
     will be discarded.  An empty last part will result in a path that
@@ -67,10 +71,10 @@ def pathjoin(a, *p):
     return path
 
 
-def string2bool(mstring):
+def string2bool(mstring: str) -> Union[bool, None]:
     '''
     '''
-    truth_value = False
+    truth_value: Union[bool, None] = False
     if mstring in ['True','true', 'tru', 't',
                    'y','yes', '1']:
         truth_value = True
@@ -79,7 +83,7 @@ def string2bool(mstring):
     return truth_value
 
 
-def bytes2human(nbytes):
+def bytes2human(nbytes: int) -> str:
     '''Return string representation of bytes.
 
     Parameters
@@ -127,7 +131,7 @@ def get_object_size(boto_s3_object):
     return boto_s3_object.meta.data['ContentLength']/2.**20
 
 
-def get_fileobject_size(file_object):
+def get_fileobject_size(file_object: BinaryIO) -> int:
     '''Return byte size of file-object
 
     Parameters
@@ -217,7 +221,7 @@ def objects2names(objects):
     return [unquote(t.key) for t in objects]
 
 
-def unquote_names(object_names):
+def unquote_names(object_names: list[str]) -> list[str]:
     '''Clean URL names from a list.
 
     Parameters
@@ -253,15 +257,19 @@ def print_objects(object_list):
 ##############################
 
 
-def clean_object_name(input_function):
+# Decorator typing from mypy docs:
+# https://mypy.readthedocs.io/en/stable/generics.html#declaring-decorators
+F = TypeVar('F', bound=Callable[..., Any])
+
+def clean_object_name(input_function: F) -> F:
     '''Remove leading "/" from object_name
 
     This is important for compatibility with S3fs.
     S3fs does not list objects with a "/" prefix.
     '''
     @wraps(input_function)
-    def iremove_root(self, object_name, *args, **kwargs):
-        object_name = re.sub('//+', '/', object_name)
+    def iremove_root(self, cloud_name: str, *args: Any, **kwargs: Any) -> Any:
+        object_name = re.sub('//+', '/', cloud_name)
 
         if object_name == '':
             pass
@@ -269,10 +277,10 @@ def clean_object_name(input_function):
             object_name = object_name[1:]
 
         return input_function(self, object_name, *args, **kwargs)
-    return iremove_root
+    return cast(F, iremove_root)
 
 
-def remove_root(string_):
+def remove_root(string_: str) -> str:
     '''remove leading "/" from a string'''
     if string_[0] == SEPARATOR:
         string_ = string_[1:]
@@ -292,7 +300,7 @@ def has_start_digit(s):
 
 
 
-def has_magic(s):
+def has_magic(s: str) -> bool:
     '''Check string to see if it has any glob magic
     '''
     return MAGIC_CHECK.search(s) is not None
@@ -312,13 +320,13 @@ def has_trivial_magic(s):
         return False
 
 
-def has_real_magic(s):
+def has_real_magic(s: str) -> bool:
     '''Check if string has non-trivial glob pattern
     '''
     return has_magic(s) and (not has_trivial_magic(s))
 
 
-def remove_trivial_magic(s):
+def remove_trivial_magic(s: str) -> str:
     '''
     * xxx/*      -> xxx/
     * xxx/       -> xxx/
@@ -330,7 +338,7 @@ def remove_trivial_magic(s):
     return s[:-1] # remove '*' at end
 
 
-def split_uri(uri, pattern='s3://', separator='/'):
+def split_uri(uri: str, pattern: str='s3://', separator: str='/') -> tuple[str, str]:
     """Convert a URI to a bucket, object name tuple.
 
     's3://bucket/path/to/thing' -> ('bucket', 'path/to/thing')
@@ -342,7 +350,7 @@ def split_uri(uri, pattern='s3://', separator='/'):
     return bucket, path
 
 
-def mk_aws_path(path):
+def mk_aws_path(path: str) -> str:
     """Make the `path` behave as expected when querying S3 with
     `list_objects`.
 
@@ -367,7 +375,7 @@ def mk_aws_path(path):
 ##############################
 
 
-def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
+def generate_ndarray_chunks(arr: npt.NDArray, axis: Optional[int]=None, buffersize: int=100*MB) -> Iterator[tuple[tuple[int, ...], npt.NDArray]]:
     '''A generator that splits an array into chunks of desired byte size
 
     Parameters
@@ -414,7 +422,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
 
     logii = ((np.log(buffersize) - np.log(arr.itemsize)) - logsum)/factor
     ii = int(np.ceil(np.exp(logii)))
-    dim_nchunks = map(lambda x: int(np.ceil(x/ii)) + 1, shape)
+    dim_nchunks: Iterable[int] = map(lambda x: int(np.ceil(x/ii)) + 1, shape)
 
     if axis is not None:
         # only slicing one dimension
@@ -433,7 +441,7 @@ def generate_ndarray_chunks(arr, axis=None, buffersize=100*MB):
         yield chunk_coords, arr[slicers]
 
 
-def read_buffered(frm, to, buffersize=64):
+def read_buffered(frm: BinaryIO, to: npt.NDArray, buffersize: int = 64) -> None:
     '''Fill a numpy n-d array with file-like object contents
 
     Parameters
@@ -450,7 +458,8 @@ def read_buffered(frm, to, buffersize=64):
         else:
             vw = to.view()
         vw.shape = (-1,)                # Must be a ravel-able object
-        vw.dtype = np.dtype('uint8')    # 256 values in each byte
+        # 256 values in each byte
+        vw.dtype = np.dtype('uint8')    # type: ignore[misc]
 
     for ci in range(int(np.ceil(nbytes_total / float(buffersize)))):
         start = ci * buffersize
@@ -460,10 +469,10 @@ def read_buffered(frm, to, buffersize=64):
         elif six.PY3:
             vw.data[start:end] = frm.read(end - start)
         else:
-            raise("Unknown python version") # not sure six will ever do anything here (6=2x3)
+            raise Exception("Unknown python version") # not sure six will ever do anything here (6=2x3)
 
 
-class GzipInputStream:
+class GzipInputStream(BytesIO):
     """Simple class that allow streaming reads from GZip files
     (from https://gist.github.com/beaufour/4205533).
 
@@ -473,22 +482,23 @@ class GzipInputStream:
     Adapted from: http://effbot.org/librarybook/zlib-example-4.py
     """
 
-    def __init__(self, fileobj, block_size=16384):
+    def __init__(self, fileobj: BinaryIO, block_size: int=16384):
         """
         Initialize with the given file-like object.
 
         @param fileobj: file-like object,
         """
+        super().__init__()
         self.BLOCK_SIZE = block_size                       # Read block size
         # zlib window buffer size, set to gzip's format
         self.WINDOW_BUFFER_SIZE = 16 + zlib.MAX_WBITS
 
         self._file = fileobj
-        self._zip = zlib.decompressobj(self.WINDOW_BUFFER_SIZE)
+        self._zip: Optional[zlib._Decompress] = zlib.decompressobj(self.WINDOW_BUFFER_SIZE)
         self._offset = 0  # position in unzipped stream
         self._data = b''
 
-    def __fill(self, num_bytes):
+    def __fill(self, num_bytes: int) -> None:
         """
         Fill the internal buffer with 'num_bytes' of data.
 
@@ -510,7 +520,7 @@ class GzipInputStream:
     def __iter__(self):
         return self
 
-    def seek(self, offset, whence=0):
+    def seek(self, offset: int, whence: int = 0) -> int:
         if whence == 0:
             position = offset
         elif whence == 1:
@@ -525,10 +535,13 @@ class GzipInputStream:
             if not self.read(min(position - self._offset, self.BLOCK_SIZE)):
                 break
 
-    def tell(self):
+        return position
+
+    def tell(self) -> int:
         return self._offset
 
-    def read(self, size=0):
+    def read(self, size: Optional[int] = 0) -> bytes:
+        assert size is not None
         self.__fill(size)
         if size:
             data = self._data[:size]
@@ -539,23 +552,25 @@ class GzipInputStream:
         self._offset = self._offset + len(data)
         return data
 
-    def next(self):
+    def next(self) -> bytes:
         line = self.readline()
         if not line:
             raise StopIteration()
         return line
 
-    def readline(self):
+    def readline(self, size: Optional[int] = None) -> bytes:
+        assert size is None
         # make sure we have an entire line
-        while self._zip and "\n" not in self._data:
+        while self._zip and b"\n" not in self._data:
             self.__fill(len(self._data) + 512)
 
-        pos = string.find(self._data, "\n") + 1
+        pos = self._data.find(b"\n") + 1
         if pos <= 0:
             return self.read()
         return self.read(pos)
 
-    def readlines(self):
+    def readlines(self, size: Optional[int] = None) -> list[bytes]:
+        assert size is None
         lines = []
         while True:
             line = self.readline()
