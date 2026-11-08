@@ -3,7 +3,6 @@ import json
 import os
 import shutil
 from io import BytesIO as StringIO
-from typing import Optional
 
 from .backend import CCBackEnd, CloudStream
 from .utils import SEPARATOR, remove_root, remove_trivial_magic, sanitize_metadata
@@ -355,7 +354,7 @@ class LocalClient(CCBackEnd):
         size = os.path.getsize(file_name)
         return size
 
-    def _cleanup_empty_dirs(self, dir_path: str, root_path: Optional[str] = None) -> None:
+    def _cleanup_empty_dirs(self, dir_path: str, root_path: str | None = None) -> None:
         """Remove empty parent directories up to self.path.
 
         This mimics S3 behavior where directories don't exist independently -
@@ -366,7 +365,7 @@ class LocalClient(CCBackEnd):
         ----------
         dir_path : str
             The directory path to start cleaning from
-        root_path : Optional[str]
+        root_path : str | None
             The root path to stop cleaning at. If None, defaults to self.path.
         """
         # Normalize paths for comparison
