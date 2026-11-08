@@ -14,7 +14,7 @@ uv run python -c "import cottoncandy"
 - Version is a hand-edited string, `__version__` in `cottoncandy/__init__.py` (read dynamically by `pyproject.toml`).
 - `boto3<1.36` is pinned deliberately: newer boto defaults break several third-party S3 services. Leave the pin when touching dependencies.
 - CI covers Python 3.10 to 3.14; keep code compatible with 3.10.
-- All new code must have type annotations (parameters and return types), using `X | Y` and `X | None` rather than `Union`/`Optional`. `localclient.py` is the style reference.
+- All new code must have type annotations (parameters and return types), using `X | Y` and `X | None` rather than `Union`/`Optional`.
 - A new git worktree gets its own `.venv`; rerun `uv sync` there.
 
 ## Tests
@@ -45,15 +45,15 @@ get_interface() -> DefaultInterface
 
 - **`interfaces.py`**: the public API (`upload_raw_array`, `download_json`, `ls`, `glob`, `cp`, `mv`, `rm`, ...). `BasicInterface` handles objects, JSON, pickle and files; `ArrayInterface` adds numpy/dask/sparse arrays; `FileSystemInterface` adds path-like operations. Backend selection happens in `BasicInterface.__init__` (`backend='s3'|'gdrive'|'local'`).
 - **`backend.py`**: `CCBackEnd` is the contract every client implements, and `CloudStream` wraps a stream plus its metadata. A new backend subclasses `CCBackEnd` and is wired into `BasicInterface.__init__` and `get_interface`.
-- **Backend asymmetries**: S3 stores metadata as native object metadata. `LocalClient` writes a `<name>.meta.json` sidecar (`METADATA_SUFFIX`), so any listing/copy/move/delete code on the local backend must keep the sidecar in step with its file. GDrive uses file properties and has its own `glob_google_drive` path. Interface-level changes need a check against all three.
-- **Arrays**: `upload_raw_array` stores raw bytes with dtype/shape/order in metadata (optionally compressed through `numcodecs`; `gzip` below 2 GB, `Zstd` above, per `[compression]` in the config). `upload_npy_array` uses the `.npy` format. Large uploads switch to multipart above `mpu_use_threshold`.
+- **Backend asymmetries**: S3 stores metadata as native object metadata. `LocalClient` writes a `<name>.meta.json` sidecar (`METADATA_SUFFIX`), so any listing/copy/move/delete code on the local backend must keep the sidecar in step with its file. GDrive uses file properties and has its own `glob_google_drive` path, while local reuses `glob_s3` (the `else` branch of `FileSystemInterface.glob`), so a change there affects both S3 and local. Interface-level changes need a check against all three.
+- **Arrays**: `upload_raw_array` stores raw bytes with dtype/shape/order in metadata (optionally compressed through `numcodecs`; `gzip` up to 2 GiB, `Zstd` above, per `[compression]` in the config). `upload_npy_array` uses the `.npy` format. On S3 only, large uploads switch to multipart above `mpu_use_threshold`; the local and gdrive clients ignore it.
 - **Groups and datasets**: `dict2cloud`/`cloud2dict` store a dict of arrays as a directory-like "group"; extensions (`.grp`, `.arr`, ...) come from the `[extensions]` config section.
 - **`browser.py`**: tab-completion browser (`get_browser`). Path characters are mangled into attribute names (`.` becomes `_DOT_`).
 - **`utils.py`**: path helpers (`SEPARATOR`, `remove_root`), metadata sanitizing, ndarray chunking for multipart/dask uploads, credential lookup (`get_keys`).
 
 ## Configuration
 
-- `cottoncandy/defaults.cfg` holds the defaults. `options.py` loads it, then overlays the per-user `options.cfg` (platform user-data dir, via `appdirs.py`), writing that file on first import.
+- `cottoncandy/defaults.cfg` holds the defaults. `options.py` loads it, then overlays the per-user `options.cfg` (`$XDG_CONFIG_HOME/cottoncandy/`, default `~/.config/cottoncandy/`; the vendored `appdirs.user_data_dir` resolves there, unlike upstream appdirs), writing that file on first import.
 - Module-level constants in `__init__.py` (`ACCESS_KEY`, `default_bucket`, ...) and the defaults in `interfaces.py` are read once at import time. Changing the config mid-session needs a reload, and tests should pass explicit arguments to `get_interface` instead.
 - `appdirs.py` is vendored; leave it as is (excluded from ruff).
 - A new config key needs an entry in `defaults.cfg`. Existing users' `options.cfg` files do not get new keys automatically, so add a fallback or a migration step in `options.py` (see the `gdrive` section handling there).
