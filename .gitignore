@@ -67,3 +67,6 @@ test.cfg
 
 # npm/cache
 .npm/
+
+# uv lockfile (not maintained in this repo)
+uv.lock
