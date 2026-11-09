@@ -1,17 +1,7 @@
 from __future__ import annotations
 
-import builtins
 from abc import ABC, abstractmethod
 from typing import Any, BinaryIO, Iterable, NamedTuple
-
-
-class FileNotFoundError(builtins.FileNotFoundError):
-    """Object not found on the backend.
-
-    Kept as a name for backwards compatibility. It subclasses the built-in
-    :class:`FileNotFoundError`, so ``except FileNotFoundError`` catches it
-    whichever of the two is in scope.
-    """
 
 
 class CloudStream(NamedTuple):

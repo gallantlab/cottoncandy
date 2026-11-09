@@ -9,7 +9,6 @@
 
    CCBackEnd
    CloudStream
-   FileNotFoundError
 
 
 .. currentmodule:: cottoncandy.backend
@@ -32,18 +31,6 @@
 
 
 .. autoclass:: CloudStream
-  :members:
-  :undoc-members:
-  :show-inheritance:
-
-  .. automethod:: __init__
-
-
-:class:`FileNotFoundError`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-.. autoclass:: FileNotFoundError
   :members:
   :undoc-members:
   :show-inheritance:

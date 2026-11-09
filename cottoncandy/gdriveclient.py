@@ -6,7 +6,7 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from pydrive.files import ApiRequestError, FileNotUploadedError, GoogleDriveFile
 
-from .backend import CCBackEnd, CloudStream, FileNotFoundError
+from .backend import CCBackEnd, CloudStream
 
 # Ipython autocomplete
 try:

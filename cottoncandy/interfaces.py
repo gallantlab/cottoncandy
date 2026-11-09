@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import builtins
 import fnmatch
 import json
 import os
@@ -15,7 +14,7 @@ import six
 from typing import Any, BinaryIO, Iterable, Literal, Mapping, TypedDict, Optional, Union, cast, no_type_check
 
 import cottoncandy.browser
-from cottoncandy.backend import FileNotFoundError, CloudStream
+from cottoncandy.backend import CloudStream
 
 from .options import config
 from .s3client import S3Client, botocore
@@ -1407,7 +1406,7 @@ class FileSystemInterface(BasicInterface):
         else:
             try:
                 self.backend_interface.delete(object_name, recursive, delete)
-            except builtins.FileNotFoundError:  # not the cottoncandy subclass imported above
+            except FileNotFoundError:
                 if not missing_ok:
                     raise
             return
