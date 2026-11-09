@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import builtins
 import fnmatch
 import json
 import os
@@ -9,7 +12,7 @@ from urllib.parse import unquote
 from warnings import warn
 
 import six
-from typing import Any, BinaryIO, Iterable, Literal, Mapping, Sequence, TypedDict, Optional, Union, cast, no_type_check
+from typing import Any, BinaryIO, Iterable, Literal, Mapping, TypedDict, Optional, Union, cast, no_type_check
 
 import cottoncandy.browser
 from cottoncandy.backend import FileNotFoundError, CloudStream
@@ -190,7 +193,7 @@ class BasicInterface(InterfaceObject):
         """Get bucket boto3 object"""
         return self.backend_interface.get_bucket()
 
-    def get_bucket_objects(self, **kwargs) -> Sequence[Any]:
+    def get_bucket_objects(self, **kwargs: Any) -> Iterable[Any]:
         """Get list of objects from the bucket.
 
         This is a wrapper to ``self.get_bucket().bucket.objects``
@@ -220,7 +223,7 @@ class BasicInterface(InterfaceObject):
         warn('Deprecated. Use get_objects() instead', DeprecationWarning)
         return self.backend_interface.list_objects(**kwargs)
 
-    def get_objects(self, **kwargs) -> Sequence[Any]:
+    def get_objects(self, **kwargs: Any) -> Iterable[Any]:
         """
         Like get_bucket_objects, but more aptly named to the generic interface
         Parameters
@@ -343,13 +346,9 @@ class BasicInterface(InterfaceObject):
             Defaults ``dict(ACL=DEFAULT_ACL)``
         threads: int
         	number of threads to use for uploading
-
-        Returns
-        -------
-        response : boto3 response
         """
         extra_args = dict(ACL=DEFAULT_ACL) if ExtraArgs is None else ExtraArgs
-        return self.backend_interface.upload_file(flname, object_name, extra_args['ACL'], threads)
+        self.backend_interface.upload_file(flname, object_name, extra_args['ACL'], threads)
 
     def upload_from_directory(self, disk_path: str, cloud_path: Optional[str]=None,
                               recursive: bool=False, ExtraArgs=dict(ACL=DEFAULT_ACL), threads: int = THREADS) -> None:
@@ -383,7 +382,7 @@ class BasicInterface(InterfaceObject):
         threads: int
         	number of threads to use for downloading
         """
-        return self.backend_interface.download_to_file(object_name, file_name, threads)
+        self.backend_interface.download_to_file(object_name, file_name, threads)
 
     @clean_object_name
     def download_object(self, object_name: str, threads: int = THREADS) -> Any:
@@ -1293,7 +1292,7 @@ class FileSystemInterface(BasicInterface):
         return cottoncandy.browser.S3Directory('', interface = self)
 
     def cp(self, source_name: str, dest_name: str,
-           source_bucket: Optional[str]=None, dest_bucket: Optional[str]=None, overwrite: bool=False):
+           source_bucket: str | None=None, dest_bucket: str | None=None, overwrite: bool=False) -> str:
         """Copy an object
 
         Parameters
@@ -1310,12 +1309,24 @@ class FileSystemInterface(BasicInterface):
             Defaults to ``source_bucket``
         overwrite : bool (defaults to False)
             Whether to overwrite the `dest_name` object if it already exists
+
+        Returns
+        -------
+        str
+            Name of the new object.
+
+        Raises
+        ------
+        FileNotFoundError
+            If `source_name` does not exist.
+        FileExistsError
+            If `dest_name` exists and `overwrite` is False.
         """
         # TODO: support directories
         return self.backend_interface.copy(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
     def mv(self, source_name: str, dest_name: str,
-           source_bucket: Optional[str]=None, dest_bucket: Optional[str]=None, overwrite: bool=False):
+           source_bucket: str | None=None, dest_bucket: str | None=None, overwrite: bool=False) -> str:
         """Move an object (make copy and delete old object)
 
         Parameters
@@ -1332,11 +1343,23 @@ class FileSystemInterface(BasicInterface):
             Defaults to ``source_bucket``
         overwrite : bool (defaults to False)
             Whether to overwrite the `dest_name` object if it already exists.
+
+        Returns
+        -------
+        str
+            Name of the moved object.
+
+        Raises
+        ------
+        FileNotFoundError
+            If `source_name` does not exist.
+        FileExistsError
+            If `dest_name` exists and `overwrite` is False.
         """
         # TODO: Support directories
         return self.backend_interface.move(source_name, dest_name, source_bucket, dest_bucket, overwrite)
 
-    def rm(self, object_name: str, recursive: bool=False, delete: bool=True) -> Any:
+    def rm(self, object_name: str, recursive: bool=False, delete: bool=True, missing_ok: bool=False) -> None:
         """Delete an object, or a subtree ('path/to/stuff').
 
         Parameters
@@ -1349,14 +1372,28 @@ class FileSystemInterface(BasicInterface):
             similar in behavior to 'rm -r /path/to/directory'.
         delete : bool
             When in google drive, actually delete the file or only trash it?
+            On S3, ``object_name`` can also be a glob pattern, such as
+            ``'data/*.npy'``, which needs ``recursive=True``.
+        missing_ok : bool
+            If True, do nothing when ``object_name`` does not exist,
+            like ``pathlib.Path.unlink(missing_ok=True)``.
+
+        Raises
+        ------
+        FileNotFoundError
+            If nothing exists under `object_name` and `missing_ok` is False.
+        IsADirectoryError
+            If `object_name` is a subtree and `recursive` is False.
 
         Example
         -------
         >>> import cottoncandy as cc
         >>> cci = cc.get_interface('mybucket', verbose=False)
-        >>> response = cci.rm('data/experiment/file01.txt')
+        >>> cci.rm('data/experiment/file01.txt')
         >>> cci.rm('data/experiment')
-        cannot remove 'data/experiment': use `recursive` to remove branch
+        Traceback (most recent call last):
+        ...
+        IsADirectoryError: Cannot remove "data/experiment": use `recursive` to remove branch
         >>> cci.rm('data/experiment', recursive=True)
         deleting 15 objects...
         """
@@ -1364,11 +1401,15 @@ class FileSystemInterface(BasicInterface):
         # not moving this to the basic S3Client because it depends on glob
         if self.backend == "s3":
             if self.exists_object(object_name):
-                return self.backend_interface.get_s3_object(object_name).delete()
-        elif self.backend == "gdrive":
-            return self.backend_interface.delete(object_name, recursive, delete)
+                self.backend_interface.get_s3_object(object_name).delete()
+                return
         else:
-            return self.backend_interface.delete(object_name, recursive, delete)
+            try:
+                self.backend_interface.delete(object_name, recursive, delete)
+            except builtins.FileNotFoundError:  # not the cottoncandy subclass imported above
+                if not missing_ok:
+                    raise
+            return
 
         has_objects = len(self.ls(object_name)) > 0
         if has_objects:
@@ -1378,11 +1419,9 @@ class FileSystemInterface(BasicInterface):
                 for obname in self.glob(object_name):
                     _ = self.get_object(obname).delete()
                 return
-
-        msg = "cannot remove '%s': use `recursive` to remove branch" \
-            if has_objects else \
-            "nothing found under '%s"
-        print(msg % object_name)
+            raise IsADirectoryError('Cannot remove "%s": use `recursive` to remove branch' % object_name)
+        if not missing_ok:
+            raise FileNotFoundError('Nothing found under "%s"' % object_name)
 
     def get_object_owner(self, object_name: str) -> None:
         self.exists_object(object_name, raise_err=True)

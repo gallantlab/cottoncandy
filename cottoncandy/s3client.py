@@ -5,7 +5,7 @@ import logging
 import os
 from functools import reduce
 from io import BytesIO
-from typing import Any, BinaryIO, Sequence, Optional, cast
+from typing import Any, BinaryIO, Iterable, Optional, cast
 from urllib.parse import unquote
 
 import boto3
@@ -218,7 +218,7 @@ class S3Client(CCBackEnd):
         s3_bucket = self.connection.Bucket(self.bucket_name)
         return s3_bucket
 
-    def list_objects(self, **kwargs) -> Sequence[Any]:
+    def list_objects(self, **kwargs: Any) -> Iterable[Any]:
         """Get list of objects from the bucket
         This is a wrapper to ``self.get_bucket().bucket.objects``
 
@@ -340,21 +340,21 @@ class S3Client(CCBackEnd):
 
         Parameters
         ----------
-        threads
-        permissions
-        metadata
-
-        Returns
-        -------
-
+        stream : stream
+        cloud_name : str
+        metadata : dict
+        permissions : str
+            S3 ACL
+        threads : int
         """
-        assert permissions is not None, 'Permissions must be specified for S3 uploads'
+        if permissions is None:
+            raise ValueError('Permissions must be specified for S3 uploads')
 
         obj = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
                                 multipart_threshold = MPU_THRESHOLD)
-        return obj.upload_fileobj(stream, ExtraArgs = {'ACL': permissions, 'Metadata': metadata},
+        obj.upload_fileobj(stream, ExtraArgs = {'ACL': permissions, 'Metadata': metadata},
                                                 Config = config)
 
     def download_stream(self, cloud_name: str, threads: int) -> CloudStream:
@@ -371,7 +371,7 @@ class S3Client(CCBackEnd):
             file-like stream of object data
         """
         if not self.check_file_exists(cloud_name):
-            raise IOError('Object "%s" does not exist' % cloud_name)
+            raise FileNotFoundError('Object "%s" does not exist' % cloud_name)
         s3_object = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
@@ -391,24 +391,23 @@ class S3Client(CCBackEnd):
         cloud_name : str, None
             Name of uploaded object. If None, use
             the full file name as the object name.
-        permissions: ???
-            S3 permissions
-
-        Returns
-        -------
-        response : boto3 response
+        permissions : str
+            S3 ACL
+        threads : int
         """
-        assert os.path.exists(file_name)
-        assert permissions is not None, 'Permissions must be specified for S3 uploads'
+        if not os.path.exists(file_name):
+            raise FileNotFoundError('File "%s" does not exist' % file_name)
+        if permissions is None:
+            raise ValueError('Permissions must be specified for S3 uploads')
         if cloud_name is None:
             cloud_name = file_name
         s3_object = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
                                 multipart_threshold = MPU_THRESHOLD)
-        return s3_object.upload_file(file_name, ExtraArgs={'ACL': permissions}, Config = config)
+        s3_object.upload_file(file_name, ExtraArgs={'ACL': permissions}, Config = config)
 
-    def download_to_file(self, cloud_name: str, local_name: str, threads: int):
+    def download_to_file(self, cloud_name: str, local_name: str, threads: int) -> None:
         """Download S3 object to a file
 
         Parameters
@@ -416,35 +415,39 @@ class S3Client(CCBackEnd):
         cloud_name : str
         local_name : str
             Absolute path where the data will be downloaded on disk
+        threads : int
         """
-        assert self.check_file_exists(cloud_name)  # make sure object exists
+        if not self.check_file_exists(cloud_name):
+            raise FileNotFoundError('Object "%s" does not exist' % cloud_name)
         s3_object = self.get_s3_object(cloud_name)
         config = TransferConfig(max_concurrency = threads,
                                 multipart_chunksize = MPU_CHUNKSIZE,
                                 multipart_threshold = MPU_THRESHOLD)
-        return s3_object.download_file(local_name, Config = config)
+        s3_object.download_file(local_name, Config = config)
 
-    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> Any:
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> str:
         source_bucket = self.get_bucket_name(source_bucket)
-        assert source_bucket is not None, 'Source bucket must be specified'
+        if source_bucket is None:
+            raise ValueError('Source bucket must be specified')
         dest_bucket = source_bucket if (destination_bucket is None) else destination_bucket
         dest_bucket = self.get_bucket_name(dest_bucket)
 
-        assert self.check_file_exists(source, bucket_name = source_bucket)
+        if not self.check_file_exists(source, bucket_name = source_bucket):
+            raise FileNotFoundError('Object "%s" does not exist in bucket "%s"' % (source, source_bucket))
         ob_new = self.get_s3_object(destination, bucket_name = dest_bucket)
 
-        if self.check_file_exists(ob_new.key, bucket_name = dest_bucket):
-            assert overwrite is True
+        if not overwrite and self.check_file_exists(ob_new.key, bucket_name = dest_bucket):
+            raise FileExistsError('Object "%s" already exists in bucket "%s"' % (ob_new.key, dest_bucket))
 
         fpath = pathjoin(source_bucket, source)
         ob_new.copy_from(CopySource = fpath)
-        return ob_new
+        return ob_new.key
 
-    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> Any:
-        new_ob = self.copy(source, destination, source_bucket, destination_bucket, overwrite)
+    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> str:
+        new_key = self.copy(source, destination, source_bucket, destination_bucket, overwrite)
         old_ob = self.get_s3_object(source, bucket_name = source_bucket)
         old_ob.delete()
-        return new_ob
+        return new_key
 
     def list_directory(self, path: str, limit: int) -> list[str]:
         """List the contents of a "directory"

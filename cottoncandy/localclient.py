@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 from io import BytesIO as StringIO
-from typing import BinaryIO, Optional
+from typing import Any, BinaryIO, Optional
 
 from .backend import CCBackEnd, CloudStream
 from .utils import SEPARATOR, remove_root, remove_trivial_magic, sanitize_metadata
@@ -59,10 +59,6 @@ class LocalClient(CCBackEnd):
         metadata : dict
             custom metadata for this file
         permissions : ignored
-
-        Returns
-        -------
-        bool, upload success
         """
         file_name = os.path.join(self.path, cloud_name)
         auto_makedirs(file_name)
@@ -83,10 +79,6 @@ class LocalClient(CCBackEnd):
         cloud_name : str
             name to use on the cloud
         permissions : ignored
-
-        Returns
-        -------
-        bool, upload success
         """
         if cloud_name is None:
             cloud_name = file_name
@@ -128,7 +120,7 @@ class LocalClient(CCBackEnd):
 
         return CloudStream(content, sanitize_metadata(metadata))
 
-    def download_to_file(self, cloud_name: str, file_name: str, threads: int = 1):
+    def download_to_file(self, cloud_name: str, file_name: str, threads: int = 1) -> None:
         """Downloads an object directly to disk
 
         Parameters
@@ -137,12 +129,8 @@ class LocalClient(CCBackEnd):
             name of object to download
         file_name : str
             name on disk to use
-
-        Returns
-        -------
-        bool, download success
         """
-        return self.copy(
+        self.copy(
             source=os.path.join(self.path, cloud_name),
             destination=file_name,
             source_bucket=None,
@@ -173,7 +161,7 @@ class LocalClient(CCBackEnd):
         results = self._remove_path_and_metadata(results)
         return results
 
-    def list_objects(self, **kwargs) -> list[str]:
+    def list_objects(self, **kwargs: Any) -> list[str]:
         """Gets all objects contained by backend
 
         Returns
@@ -195,7 +183,7 @@ class LocalClient(CCBackEnd):
         results = self._remove_path_and_metadata(results)
         return results
 
-    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False, copy_metadata: bool = True) -> None:
+    def copy(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False, copy_metadata: bool = True) -> str:
         """Copies an object
 
         Parameters
@@ -214,58 +202,71 @@ class LocalClient(CCBackEnd):
 
         Returns
         -------
-        bool, copy success
+        str
+            Name of the destination object (``destination`` as passed in).
         """
-        if overwrite is False:
-            raise NotImplementedError()
         if source_bucket is None:
             source_bucket = self.path
         if destination_bucket is None:
             destination_bucket = source_bucket
-        source = os.path.join(source_bucket, source)
-        destination = os.path.join(destination_bucket, destination)
+        source_path = os.path.join(source_bucket, source)
+        destination_path = os.path.join(destination_bucket, destination)
+        if not os.path.isfile(source_path):
+            raise FileNotFoundError('Object "%s" does not exist' % source)
+        if not overwrite and os.path.exists(destination_path):
+            raise FileExistsError('Object "%s" already exists' % destination)
+
         if copy_metadata:
-            source_metadata = os.path.join(source_bucket, source + METADATA_SUFFIX)
-            destination_metadata = os.path.join(destination_bucket, destination + METADATA_SUFFIX)
+            source_metadata = source_path + METADATA_SUFFIX
+            destination_metadata = destination_path + METADATA_SUFFIX
             shutil.copy(source_metadata, destination_metadata)
 
-        auto_makedirs(destination)
-        shutil.copy(source, destination)
+        auto_makedirs(destination_path)
+        shutil.copy(source_path, destination_path)
+        return destination
 
-    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> bool:
+    def move(self, source: str, destination: str, source_bucket: Optional[str] = None, destination_bucket: Optional[str] = None, overwrite: bool = False) -> str:
         """Moves an object
 
         Parameters
         ----------
-        source
-        destination
-        source_bucket
-        destination_bucket
-        overwrite
+        source : str
+            origin path
+        destination : str
+            destination path
+        source_bucket : str
+            directory to move from; defaults to ``self.path``
+        destination_bucket : str
+            directory to move to; defaults to ``source_bucket``
+        overwrite : bool
+            overwrite if destination exists
 
         Returns
         -------
-
+        str
+            Name of the destination object (``destination`` as passed in).
         """
-        if overwrite is False:
-            raise NotImplementedError()
         if source_bucket is None:
             source_bucket = self.path
         if destination_bucket is None:
             destination_bucket = source_bucket
-        source = os.path.join(source_bucket, source)
-        destination = os.path.join(destination_bucket, destination)
-        source_metadata = os.path.join(source_bucket, source + METADATA_SUFFIX)
-        destination_metadata = os.path.join(destination_bucket, destination + METADATA_SUFFIX)
-        auto_makedirs(destination)
-        move_result = shutil.move(source, destination)
+        source_path = os.path.join(source_bucket, source)
+        destination_path = os.path.join(destination_bucket, destination)
+        if not os.path.isfile(source_path):
+            raise FileNotFoundError('Object "%s" does not exist' % source)
+        if not overwrite and os.path.exists(destination_path):
+            raise FileExistsError('Object "%s" already exists' % destination)
+        source_metadata = source_path + METADATA_SUFFIX
+        destination_metadata = destination_path + METADATA_SUFFIX
+        auto_makedirs(destination_path)
+        shutil.move(source_path, destination_path)
         if os.path.isfile(source_metadata):
             shutil.move(source_metadata, destination_metadata)
         # Clean up empty parent directories at source to mimic S3 behavior
-        self._cleanup_empty_dirs(os.path.dirname(source), root_path=source_bucket)
-        return move_result
+        self._cleanup_empty_dirs(os.path.dirname(source_path), root_path=source_bucket)
+        return destination
 
-    def delete(self, cloud_name: str, recursive: bool = False, delete: bool = False) -> bool:
+    def delete(self, cloud_name: str, recursive: bool = False, delete: bool = False) -> None:
         """Deletes an object
 
         Parameters
@@ -276,27 +277,25 @@ class LocalClient(CCBackEnd):
             recursively delete directory?
         delete : bool
             ignored
-
-        Returns
-        -------
-
         """
-        cloud_name = os.path.join(self.path, cloud_name)
-        if os.path.isfile(cloud_name):
-            os.remove(cloud_name)
-            cloud_metadata_name = cloud_name + METADATA_SUFFIX
-            if os.path.isfile(cloud_metadata_name):
-                os.remove(cloud_metadata_name)
-        elif os.path.isdir(cloud_name):
+        path = os.path.join(self.path, cloud_name)
+        if os.path.isfile(path):
+            os.remove(path)
+            metadata_path = path + METADATA_SUFFIX
+            if os.path.isfile(metadata_path):
+                os.remove(metadata_path)
+        elif os.path.isdir(path):
             if recursive:
-                shutil.rmtree(cloud_name)
+                shutil.rmtree(path)
+            elif os.listdir(path):
+                raise IsADirectoryError('Cannot remove "%s": use `recursive` to remove branch' % cloud_name)
             else:
-                os.rmdir(cloud_name)
+                os.rmdir(path)
+        else:
+            raise FileNotFoundError('Nothing found under "%s"' % cloud_name)
 
         # Clean up empty parent directories to mimic S3 behavior
-        self._cleanup_empty_dirs(os.path.dirname(cloud_name))
-
-        return True
+        self._cleanup_empty_dirs(os.path.dirname(path))
 
     @property
     def size(self) -> int:

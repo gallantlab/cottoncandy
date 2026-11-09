@@ -1,9 +1,11 @@
 import os
+from io import BytesIO
 import tempfile
 import time
 from typing import Literal
 
 import numpy as np
+import pytest
 
 
 def content_generator():
@@ -174,3 +176,61 @@ def test_move(cci, object_name):
         dat = cci.download_raw_array(dest_object_name)
         assert np.allclose(dat, content)
         cci.rm(dest_object_name)
+
+
+def test_errors_and_return_values(cci, object_name):
+    # Backends follow the stdlib: failures raise OSError subclasses,
+    # cp/mv return the destination name, everything else returns None.
+    src = object_name + '/src'
+    dst = object_name + '/dst'
+    moved = object_name + '/moved'
+    content = b'error contract'
+
+    assert cci.upload_object(src, BytesIO(content)) is None
+    time.sleep(cci.wait_time)
+
+    assert cci.cp(src, dst) == dst
+    time.sleep(cci.wait_time)
+    assert cci.download_object(dst) == content
+    with pytest.raises(FileExistsError):
+        cci.cp(src, dst)
+    with pytest.raises(FileNotFoundError):
+        cci.cp(object_name + '/missing', object_name + '/other')
+
+    assert cci.mv(dst, moved) == moved
+    time.sleep(cci.wait_time)
+    assert not cci.exists_object(dst)
+    with pytest.raises(FileExistsError):
+        cci.mv(src, moved)
+    with pytest.raises(FileNotFoundError):
+        cci.mv(object_name + '/missing', object_name + '/other')
+
+    with pytest.raises(FileNotFoundError):
+        cci.rm(object_name + '/missing')
+    assert cci.rm(object_name + '/missing', missing_ok=True) is None
+
+    with pytest.raises(IsADirectoryError):
+        cci.rm(object_name)
+    assert cci.exists_object(src)
+
+    assert cci.rm(object_name, recursive=True) is None
+    time.sleep(cci.wait_time)
+    assert not cci.exists_object(src)
+    assert not cci.exists_object(moved)
+
+
+def test_rm_wildcard_s3(cci, object_name):
+    # Only the s3 path of rm expands glob patterns.
+    if cci.backend != 's3':
+        pytest.skip('wildcard rm is only supported on S3')
+    for name in ['a.npy', 'b.txt']:
+        cci.upload_object(object_name + '/' + name, BytesIO(b'x'))
+    time.sleep(cci.wait_time)
+
+    with pytest.raises(IsADirectoryError):
+        cci.rm(object_name + '/*.npy')
+    cci.rm(object_name + '/*.npy', recursive=True)
+    time.sleep(cci.wait_time)
+    assert not cci.exists_object(object_name + '/a.npy')
+    assert cci.exists_object(object_name + '/b.txt')
+    cci.rm(object_name, recursive=True)

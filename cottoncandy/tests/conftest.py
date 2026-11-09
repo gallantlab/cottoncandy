@@ -61,4 +61,4 @@ def cci(request):
         raise ValueError("Invalid client type")
 
     # cleanup the directory entirely
-    cci.rm(directory, recursive=True)
+    cci.rm(directory, recursive=True, missing_ok=True)
