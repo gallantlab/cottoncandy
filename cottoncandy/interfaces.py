@@ -139,8 +139,9 @@ class BasicInterface(InterfaceObject):
             details = (__package__, self.backend_interface.path)
             return '%s.backend_interface on local machine (%s)' % details
 
-    def _get_bucket_name(self, bucket_name):
-        return self.backend_interface._get_bucket_name(bucket_name)
+    def get_bucket_name(self, bucket_name: str | None = None) -> str | None:
+        """Return ``bucket_name``, or the current bucket if it is None (s3 only)"""
+        return self.backend_interface.get_bucket_name(bucket_name)
 
     def pathjoin(self, a: str, *p: str) -> str:
         return pathjoin(a, *p)
