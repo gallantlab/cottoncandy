@@ -381,7 +381,7 @@ class S3Client(CCBackEnd):
         byteStream.seek(0)
         return CloudStream(byteStream, sanitize_metadata(s3_object.metadata))
 
-    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: Optional[str] = None, threads: int = THREADS) -> None:
+    def upload_file(self, file_name: str, cloud_name: Optional[str] = None, permissions: Optional[str] = DEFAULT_ACL, threads: int = THREADS) -> None:
         """Upload a file to S3.
 
         Parameters
@@ -392,7 +392,7 @@ class S3Client(CCBackEnd):
             Name of uploaded object. If None, use
             the full file name as the object name.
         permissions : str
-            S3 ACL
+            S3 ACL, by default ``DEFAULT_ACL``
         threads : int
         """
         if not os.path.exists(file_name):
