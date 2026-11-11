@@ -42,6 +42,11 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --ignore=E402,C901 --max-line-length=127 --statistics
 
+    - name: Check types with mypy
+      continue-on-error: true
+      run: |
+        python -m mypy --install-types --non-interactive cottoncandy/
+
     - name: Test with pytest
       env:
         DL_BUCKET_NAME: ${{ secrets.DL_BUCKET_NAME }} 
